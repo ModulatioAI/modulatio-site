@@ -1,0 +1,70 @@
+---
+title: Overview
+description: What Modulatio is, who it's for, and how the rest of the docs are organized.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**A multi-model agent framework for running long, high-stakes projects with real quality control.**
+
+<Aside type="caution" title="Beta software">
+v0.1.0 is the initial Modulatio Beta. It's the producer-collapse / skills-first engine: agents are producers-with-skills, tasks are skill-routed, QC-as-fixer patches what producers can't clear (on by default), and the concurrent-wave path uses per-task artifact staging with a deterministic merge. The engine was validated end-to-end on a live heterogeneous model lineup and cleared a full multi-reviewer audit. Read the [v0.1.0 Beta calibration page](/v0-1-0-beta/) before kicking off serious work — knowing the engine's real ceilings is the difference between a smooth run and a frustrated one. **Python 3.12+**. Bug reports and discussions welcome at the [issues tab](https://github.com/ModulatioAI/modulatio/issues) and [discussions](https://github.com/ModulatioAI/modulatio/discussions).
+</Aside>
+
+Modulatio is a TUI-and-CLI framework for orchestrating teams of LLM agents on projects that take more than one prompt. You define an objective, set the standards, pick the models, and the team plans, executes, reviews, and iterates — with you in the loop at the levels that matter and out of the loop where automation is safe.
+
+It's designed for work like:
+
+- Drafting and revising long-form content (essays, reports, books) against an editorial standard
+- Running a small business loop (research, content production, social engagement, weekly review)
+- Multi-step research where the team has to track decisions across many sub-tasks
+- Any artifact class where quality matters and a single LLM call won't cut it
+
+What makes Modulatio different from "spin up a chat" or single-agent tools:
+
+- **Real multi-model routing per agent.** Drafter on GLM 5.1, QC on Kimi-K2.5, Leader on Sonnet — each role on its own model and its own provider. Native to the architecture, not an afterthought.
+- **Quality control as a first-class subsystem.** Three-layer TQM (universal axes × per-artifact-kind standards × per-team overrides). QC reviews every artifact before it ships; rejects route back to the producer in a structured retry loop.
+- **Skills over fixed roles.** Agents are compositions of skills, not fixed templates. Skills can be created conversationally and persist to your vault.
+- **Plan-mode end-to-end.** Leader is a conversational partner. Project is the unit being led. Plan is the unit of execution. Long plans run as daemons in the background, with reflection between sub-objectives and Telegram approvals where needed.
+- **Open architecture.** Your data, your vault, your providers, your models. No SaaS, no per-instance subscription, no vendor lock-in.
+
+---
+
+## What's in the rest of the docs
+
+**[v0.1.0 Beta calibration](/v0-1-0-beta/)** — what the engine does well, what it does NOT do yet, the QC-as-fixer / self-heal scope, and how to report bugs. Read this before serious work.
+
+**[Getting started](/getting-started/install/)** — install, run the setup wizard, get to a working first plan.
+
+**[Concepts](/concepts/concepts/)** — the mental model: project, plan, agent, skill, standard, vault. Read this once and the rest of the system gets a lot less mysterious.
+
+**[Agents](/concepts/agents/)** — the Leader + QC structural roles, producers (skill-holders), choosing models by role, and how the team composes around a project.
+
+**[Plan lifecycle](/concepts/plan-lifecycle/)** — what actually happens from "Leader, can you help me with X" to "plan complete, here's your output." The state machine, the approval gates, the reflection step, the audit trail.
+
+**[Providers & models](/concepts/providers/)** — every supported provider (Anthropic, xAI, OpenRouter, Ollama, LM Studio) with the auth flow, the gotchas, and how to point each agent at the model you want.
+
+**[CLI reference](/reference/cli/)** — every command, every flag, with examples.
+
+**[Roadmap](/roadmap/)** — what's shipping next, what's under design, and the long-horizon pillars.
+
+**[Troubleshooting](/troubleshooting/)** — common errors mapped to fixes. Auth failures, model-not-found, paused plans, divergence flags, what to do when QC keeps rejecting.
+
+---
+
+## Where Modulatio sits
+
+Modulatio is **standalone** — it runs entirely on your machine, talks to whichever model providers you configure, and stores everything in your Obsidian vault (or any directory of your choosing).
+
+It's intentionally a different shape from chat UIs (single-agent, no quality gate, no plan persistence) and from cloud agent platforms (multi-tenant, SaaS, your data on their servers). If you want a tool you fully own that runs real teams of agents on real work, Modulatio is built for that.
+
+---
+
+## Getting unstuck
+
+If you hit something the docs don't cover, or you find a mistake:
+
+- Errors at install or first run — start with [Troubleshooting](/troubleshooting/).
+- Provider auth issues — see the [Providers & models](/concepts/providers/) page for that specific provider.
+- Conceptual confusion ("why is this paused?", "why did QC reject?") — [Plan lifecycle](/concepts/plan-lifecycle/) covers state transitions; [Agents](/concepts/agents/) covers role responsibilities.
+- Open an issue at the project repo with the relevant `modulatio doctor` output.

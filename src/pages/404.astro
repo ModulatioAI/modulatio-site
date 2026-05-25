@@ -1,0 +1,106 @@
+---
+// Custom 404 page — full-screen WOPR moment.
+// Standalone HTML (no Starlight nav) so the "lost in the system" feeling
+// reads cleanly. Just the navy field, the prompt, and a way home.
+import '../styles/modulatio.css';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>PATH NOT FOUND — Modulatio</title>
+		<meta name="robots" content="noindex" />
+	</head>
+	<body class="modulatio-404-body">
+		<main class="modulatio-404">
+			<p class="modulatio-404__code">ERROR 0x0404</p>
+			<p class="modulatio-404__line">
+				&gt; PATH NOT FOUND<span class="cursor" aria-hidden="true"></span>
+			</p>
+			<p class="modulatio-404__hint">
+				THE SYSTEM HAS NO RECORD OF THIS LOCATION.
+			</p>
+			<a href="/" class="modulatio-action">
+				<span>&gt; RETURN TO ROOT</span>
+			</a>
+			<p class="modulatio-404__aphorism">
+				<em>— ἓν οἶδα ὅτι οὐδὲν οἶδα —</em>
+			</p>
+		</main>
+
+		<style>
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				min-height: 100vh;
+				background-color: var(--modulatio-bg);
+			}
+
+			.modulatio-404-body::before {
+				content: '';
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				background-image:
+					linear-gradient(to right, var(--modulatio-grid) 1px, transparent 1px),
+					linear-gradient(to bottom, var(--modulatio-grid) 1px, transparent 1px);
+				background-size: 56px 56px;
+				opacity: 0.5;
+				z-index: 0;
+			}
+
+			.modulatio-404 {
+				position: relative;
+				z-index: 1;
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 1.4rem;
+				padding: 2rem;
+				text-align: center;
+			}
+
+			.modulatio-404__code {
+				font-family: var(--font-mono);
+				font-size: 0.78rem;
+				letter-spacing: 0.4em;
+				color: var(--phosphor-dim);
+				margin: 0;
+				text-transform: uppercase;
+			}
+
+			.modulatio-404__line {
+				font-family: var(--font-mono);
+				font-size: clamp(1.4rem, 3vw, 2.4rem);
+				color: var(--phosphor-primary);
+				text-shadow: var(--phosphor-glow);
+				margin: 0;
+				letter-spacing: 0.06em;
+			}
+
+			.modulatio-404__hint {
+				font-family: var(--font-mono);
+				font-size: 0.82rem;
+				letter-spacing: 0.18em;
+				color: var(--phosphor-body);
+				margin: 0 0 2rem;
+				text-transform: uppercase;
+				opacity: 0.7;
+			}
+
+			.modulatio-404__aphorism {
+				margin-top: 3rem;
+				font-family: var(--font-aphorism);
+				font-style: italic;
+				font-size: 1.05rem;
+				color: var(--phosphor-dim);
+				letter-spacing: 0.06em;
+			}
+		</style>
+	</body>
+</html>

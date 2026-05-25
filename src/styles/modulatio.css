@@ -1,0 +1,587 @@
+/* ──────────────────────────────────────────────────────────────────
+ * Modulatio — phosphor amber theme over Starlight
+ * ──────────────────────────────────────────────────────────────────
+ * 1982 mainframe terminal × Greek/Latin philosophy.
+ * IBM 3270 amber phosphor on deep navy. Single accent: beacon orange.
+ * No other hues. The navy field is structural, not chromatic.
+ * ────────────────────────────────────────────────────────────── */
+
+/* ── Fonts ───────────────────────────────────────────────────────── */
+@import '@fontsource/cinzel/400.css';
+@import '@fontsource/cinzel/600.css';
+@import '@fontsource/cinzel/700.css';
+@import '@fontsource/cormorant-garamond/400-italic.css';
+@import '@fontsource/cormorant-garamond/500-italic.css';
+@import '@fontsource/source-serif-4/400.css';
+@import '@fontsource/source-serif-4/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/* ── Palette tokens ──────────────────────────────────────────────── */
+:root {
+	/* Field */
+	--modulatio-bg: #0a1628;
+	--modulatio-bg-deeper: #050b14;
+	--modulatio-grid: rgba(26, 42, 64, 0.5);
+
+	/* Phosphor tiers — amber only, ranged by intensity */
+	--phosphor-primary: #ffb000; /* UI accents, links, headings, cursor */
+	--phosphor-body: #e8d8b4; /* aged-parchment, long-read body */
+	--phosphor-dim: #b08858; /* secondary text, meta */
+	--phosphor-faint: rgba(255, 176, 0, 0.15); /* hairlines, glow halos */
+	--phosphor-faintest: rgba(255, 176, 0, 0.06);
+
+	/* Single hot key — rare CTA only */
+	--phosphor-hot: #ff6b35;
+
+	/* Type stacks */
+	--font-hero: 'Cinzel', 'Trajan Pro', 'Times New Roman', serif;
+	--font-aphorism: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+	--font-body: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+	--font-mono: 'IBM Plex Mono', 'JetBrains Mono', 'Courier New', monospace;
+
+	/* Glow primitives */
+	--phosphor-glow: 0 0 6px rgba(255, 176, 0, 0.45),
+		0 0 14px rgba(255, 176, 0, 0.2);
+	--phosphor-glow-soft: 0 0 4px rgba(255, 176, 0, 0.2);
+	--phosphor-glow-hot: 0 0 8px rgba(255, 107, 53, 0.6),
+		0 0 18px rgba(255, 107, 53, 0.25);
+}
+
+/* ── Starlight token overrides ──────────────────────────────────── */
+/* Starlight uses --sl-color-* tokens internally. Remap them all to    */
+/* our phosphor palette so every default surface inherits the theme.   */
+:root,
+:root[data-theme='dark'],
+:root[data-theme='light'] {
+	/* Backgrounds */
+	--sl-color-bg: var(--modulatio-bg);
+	--sl-color-bg-nav: var(--modulatio-bg-deeper);
+	--sl-color-bg-sidebar: var(--modulatio-bg);
+	--sl-color-bg-inline-code: rgba(255, 176, 0, 0.07);
+	--sl-color-bg-accent: var(--phosphor-primary);
+	--sl-color-bg-badge: rgba(255, 176, 0, 0.12);
+
+	/* Text */
+	--sl-color-text: var(--phosphor-body);
+	--sl-color-text-accent: var(--phosphor-primary);
+	--sl-color-text-invert: var(--modulatio-bg);
+	--sl-color-white: var(--phosphor-primary);
+	--sl-color-black: var(--modulatio-bg);
+
+	/* Gray ramp → amber dim ramp (Starlight uses these everywhere) */
+	--sl-color-gray-1: var(--phosphor-body);
+	--sl-color-gray-2: var(--phosphor-dim);
+	--sl-color-gray-3: #8a6840;
+	--sl-color-gray-4: #5e4828;
+	--sl-color-gray-5: #2a1f10;
+	--sl-color-gray-6: var(--modulatio-bg-deeper);
+
+	/* Borders / hairlines */
+	--sl-color-hairline: var(--phosphor-faint);
+	--sl-color-hairline-shade: var(--phosphor-faintest);
+	--sl-color-hairline-light: rgba(255, 176, 0, 0.25);
+
+	/* Accent ramp */
+	--sl-color-accent-low: rgba(255, 176, 0, 0.15);
+	--sl-color-accent: var(--phosphor-primary);
+	--sl-color-accent-high: var(--phosphor-hot);
+
+	/* Fonts — Starlight uses these on body/headings/code */
+	--sl-font: var(--font-body);
+	--sl-font-mono: var(--font-mono);
+
+	/* Selection */
+	--sl-color-text-selection: var(--modulatio-bg);
+	--sl-color-bg-selection: var(--phosphor-primary);
+}
+
+/* ── Field + grid overlay ────────────────────────────────────────── */
+html,
+body {
+	background-color: var(--modulatio-bg);
+	color: var(--phosphor-body);
+}
+
+/* Subtle blueprint grid — low opacity, large cells, fixed to viewport */
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(to right, var(--modulatio-grid) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--modulatio-grid) 1px, transparent 1px);
+	background-size: 56px 56px;
+	z-index: 0;
+	opacity: 0.5;
+}
+
+/* Push content above the grid */
+body > * {
+	position: relative;
+	z-index: 1;
+}
+
+/* ── Typography ──────────────────────────────────────────────────── */
+body {
+	font-family: var(--font-body);
+	font-weight: 400;
+	letter-spacing: 0.005em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.sl-heading,
+.hero-title,
+[class*='Hero'] h1 {
+	font-family: var(--font-hero);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--phosphor-primary);
+	text-shadow: var(--phosphor-glow-soft);
+}
+
+h1,
+.hero-title {
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-shadow: var(--phosphor-glow);
+}
+
+/* Aphorisms / blockquotes — classical italic, the philosophy moments */
+blockquote {
+	font-family: var(--font-aphorism);
+	font-style: italic;
+	font-size: 1.2em;
+	font-weight: 400;
+	color: var(--phosphor-body);
+	border-left: 1px solid var(--phosphor-faint);
+	padding-left: 1.2em;
+	letter-spacing: 0.01em;
+}
+
+/* Code / nav / mono surfaces */
+code,
+pre,
+kbd,
+samp,
+.sl-sidebar-state-persist,
+nav,
+.sl-nav,
+.site-title,
+.sidebar-content {
+	font-family: var(--font-mono);
+}
+
+code,
+:not(pre) > code {
+	color: var(--phosphor-primary);
+	background: rgba(255, 176, 0, 0.08);
+	border: 1px solid var(--phosphor-faint);
+	padding: 0.1em 0.4em;
+	border-radius: 2px;
+	font-size: 0.92em;
+}
+
+pre {
+	background: var(--modulatio-bg-deeper) !important;
+	border: 1px solid var(--phosphor-faint);
+	border-radius: 3px;
+}
+
+/* ── Links + interactive states ──────────────────────────────────── */
+a {
+	color: var(--phosphor-primary);
+	text-decoration: none;
+	border-bottom: 1px solid var(--phosphor-faint);
+	transition: text-shadow 80ms step-end, border-color 80ms step-end;
+}
+
+a:hover,
+a:focus {
+	text-shadow: var(--phosphor-glow);
+	border-bottom-color: var(--phosphor-primary);
+	outline: none;
+}
+
+/* Hot key — beacon-orange, reserved for primary CTAs */
+.cta-hot,
+a.cta-hot,
+button.cta-hot {
+	color: var(--phosphor-hot);
+	border-color: var(--phosphor-hot);
+	text-shadow: var(--phosphor-glow-hot);
+}
+
+.cta-hot:hover {
+	background: rgba(255, 107, 53, 0.08);
+}
+
+/* ── Blinking cursor ─────────────────────────────────────────────── */
+/* IBM 3270 historical rate: 530ms half-cycle, step-end snap.        */
+.cursor {
+	display: inline-block;
+	width: 0.55em;
+	height: 1em;
+	background: var(--phosphor-primary);
+	box-shadow: var(--phosphor-glow);
+	vertical-align: text-bottom;
+	margin-left: 0.1em;
+	animation: cursor-blink 1.06s step-end infinite;
+}
+
+.cursor-hot {
+	background: var(--phosphor-hot);
+	box-shadow: var(--phosphor-glow-hot);
+}
+
+@keyframes cursor-blink {
+	0%,
+	50% {
+		opacity: 1;
+	}
+	50.01%,
+	100% {
+		opacity: 0;
+	}
+}
+
+/* ── Typewriter intro (used by hero strapline) ──────────────────── */
+.typewriter {
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	border-right: none; /* the .cursor span handles the trailing cursor */
+	width: 0;
+	animation: typewriter 2.4s steps(40, end) forwards;
+}
+
+@keyframes typewriter {
+	from {
+		width: 0;
+	}
+	to {
+		width: 100%;
+	}
+}
+
+/* ── Sidebar / nav tuning ────────────────────────────────────────── */
+.sidebar-content a {
+	border-bottom: none;
+	letter-spacing: 0.04em;
+	font-size: 0.92em;
+}
+
+.sidebar-content a[aria-current='page'] {
+	color: var(--phosphor-primary);
+	background: rgba(255, 176, 0, 0.06);
+	text-shadow: var(--phosphor-glow-soft);
+}
+
+/* Section headings in sidebar — caps */
+.sidebar-content summary,
+.sidebar-content .group-label {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	font-size: 0.78em;
+	color: var(--phosphor-dim);
+}
+
+/* ── Search input — terminal-styled ──────────────────────────────── */
+.sl-search-button,
+input[type='search'] {
+	background: var(--modulatio-bg-deeper) !important;
+	border: 1px solid var(--phosphor-faint) !important;
+	color: var(--phosphor-body) !important;
+	font-family: var(--font-mono) !important;
+	border-radius: 2px !important;
+}
+
+.sl-search-button:hover,
+.sl-search-button:focus {
+	border-color: var(--phosphor-primary) !important;
+	box-shadow: var(--phosphor-glow-soft);
+}
+
+/* ── Site title (top-left brand mark) ───────────────────────────── */
+.site-title {
+	font-family: var(--font-hero);
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: var(--phosphor-primary);
+	text-shadow: var(--phosphor-glow);
+}
+
+/* ── Hairlines + dividers ────────────────────────────────────────── */
+hr,
+.divider {
+	border: none;
+	border-top: 1px solid var(--phosphor-faint);
+	margin: 2em 0;
+}
+
+/* ── Tables ──────────────────────────────────────────────────────── */
+table {
+	border-collapse: collapse;
+}
+th {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	font-size: 0.82em;
+	color: var(--phosphor-primary);
+	border-bottom: 1px solid var(--phosphor-faint);
+}
+td {
+	border-bottom: 1px solid var(--phosphor-faintest);
+}
+
+/* ── Asides / callouts ───────────────────────────────────────────── */
+.starlight-aside {
+	background: rgba(255, 176, 0, 0.04) !important;
+	border-left-color: var(--phosphor-primary) !important;
+	border-radius: 2px;
+}
+.starlight-aside--caution,
+.starlight-aside--danger {
+	border-left-color: var(--phosphor-hot) !important;
+	background: rgba(255, 107, 53, 0.05) !important;
+}
+.starlight-aside__title {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--phosphor-primary);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Landing page (splash template) — scoped via .modulatio-* prefixes
+ * ────────────────────────────────────────────────────────────── */
+
+/* Suppress Starlight's default <div class="hero"> entirely — we render
+   our own custom hero in the MDX body. Starlight still emits the .hero
+   wrapper from the empty `hero:` frontmatter; killing it here avoids a
+   redundant <h1>Modulatio</h1> + tagline block above our hero. */
+.hero {
+	display: none !important;
+}
+
+/* On the landing page only, suppress the nav site-title — our hero is
+   the brand statement there. Detect landing via :has(.hero) since hero
+   frontmatter is present on landing and nowhere else. */
+body:has(.hero) .site-title {
+	display: none;
+}
+
+/* μ — drawn as a thin-vector SVG (see src/components/MuMark.astro).
+   Font-fallback approaches were unreliable (Cinzel has no Greek, and
+   even with Source Serif 4 as a backup the browser kept falling back
+   to a system font that rendered mu as a stunted capital M). SVG gives
+   us a deterministic letterform sized to the hero typography, with
+   the phosphor glow applied via drop-shadow filters so it matches the
+   text-shadow on the surrounding MODULATIO caps. */
+.modulatio-mu {
+	display: inline-block;
+	height: 1.05em;
+	width: auto;
+	vertical-align: -0.22em;
+	margin-right: 0.45em;
+	/* Hot phosphor — the μ is the brand's singular chromatic identity.
+	   Used here intentionally despite the "rare accent" rule because
+	   the mark is the one thing that should look the same on every
+	   surface (hero, favicon, social card, business card). */
+	color: var(--phosphor-hot);
+	filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.55))
+		drop-shadow(0 0 16px rgba(255, 107, 53, 0.25));
+}
+
+.modulatio-hero {
+	text-align: center;
+	padding: 4rem 1rem 3rem;
+	max-width: 56rem;
+	margin: 0 auto;
+}
+
+.modulatio-hero__mark {
+	font-family: var(--font-hero);
+	font-weight: 700;
+	font-size: clamp(2.4rem, 5vw, 4.2rem);
+	letter-spacing: 0.22em;
+	color: var(--phosphor-primary);
+	text-shadow: var(--phosphor-glow);
+	margin-bottom: 0.4rem;
+	text-transform: uppercase;
+}
+
+.modulatio-hero__system-line {
+	font-family: var(--font-mono);
+	font-size: 0.78rem;
+	letter-spacing: 0.4em;
+	color: var(--phosphor-dim);
+	text-transform: uppercase;
+	margin: 0 0 2.5rem;
+}
+
+.modulatio-hero__tagline {
+	font-family: var(--font-mono);
+	font-size: clamp(1rem, 1.6vw, 1.25rem);
+	color: var(--phosphor-body);
+	margin: 0 0 1.6rem;
+	min-height: 1.5em;
+}
+
+.modulatio-hero__sub {
+	font-family: var(--font-body);
+	font-size: 1.05rem;
+	color: var(--phosphor-body);
+	max-width: 42rem;
+	margin: 0 auto 2.8rem;
+	line-height: 1.6;
+	opacity: 0.9;
+}
+
+.modulatio-hero__actions {
+	display: flex;
+	gap: 1.6rem;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin-top: 1.5rem;
+}
+
+.modulatio-action {
+	font-family: var(--font-mono);
+	font-size: 0.92rem;
+	letter-spacing: 0.06em;
+	color: var(--phosphor-primary);
+	text-transform: uppercase;
+	padding: 0.7rem 1.4rem;
+	border: 1px solid var(--phosphor-faint);
+	background: transparent;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	transition: border-color 80ms step-end, background 80ms step-end,
+		text-shadow 80ms step-end;
+}
+
+.modulatio-action:hover {
+	border-color: var(--phosphor-primary);
+	background: rgba(255, 176, 0, 0.05);
+	text-shadow: var(--phosphor-glow);
+}
+
+.modulatio-action.cta-hot {
+	color: var(--phosphor-hot);
+	border-color: rgba(255, 107, 53, 0.4);
+	text-shadow: var(--phosphor-glow-hot);
+}
+
+.modulatio-action.cta-hot:hover {
+	border-color: var(--phosphor-hot);
+	background: rgba(255, 107, 53, 0.08);
+}
+
+.modulatio-section {
+	max-width: 48rem;
+	margin: 4rem auto;
+	padding: 0 1rem;
+}
+
+.modulatio-section h2 {
+	font-family: var(--font-hero);
+	font-size: 1.4rem;
+	letter-spacing: 0.18em;
+	color: var(--phosphor-primary);
+	text-align: center;
+	margin-bottom: 2rem;
+	text-shadow: var(--phosphor-glow-soft);
+}
+
+.modulatio-section blockquote {
+	text-align: center;
+	font-size: 1.4rem;
+	border-left: none;
+	border-top: 1px solid var(--phosphor-faint);
+	border-bottom: 1px solid var(--phosphor-faint);
+	padding: 1.2rem 0;
+	margin: 0 0 1.8rem;
+	color: var(--phosphor-primary);
+	font-style: italic;
+}
+
+.modulatio-section blockquote em {
+	font-family: var(--font-aphorism);
+	color: var(--phosphor-body);
+	font-size: 0.85em;
+	display: block;
+	margin-top: 0.4rem;
+	opacity: 0.85;
+}
+
+.modulatio-section--quiet {
+	margin-top: 6rem;
+	margin-bottom: 4rem;
+}
+
+.modulatio-footer-aphorism {
+	text-align: center;
+	font-family: var(--font-aphorism);
+	font-style: italic;
+	font-size: 1.2rem;
+	color: var(--phosphor-dim);
+	letter-spacing: 0.06em;
+}
+
+.modulatio-section pre {
+	background: var(--modulatio-bg-deeper) !important;
+	border: 1px solid var(--phosphor-faint);
+	padding: 1.2rem 1.5rem;
+	font-family: var(--font-mono);
+}
+
+.prompt-line {
+	display: block;
+	color: var(--phosphor-body);
+	font-family: var(--font-mono);
+	line-height: 1.7;
+}
+
+.modulatio-cursor-line {
+	display: flex;
+	align-items: center;
+}
+
+.modulatio-hint {
+	font-family: var(--font-mono);
+	font-size: 0.82rem;
+	color: var(--phosphor-dim);
+	text-align: center;
+	margin-top: 1rem;
+}
+
+.modulatio-hint code {
+	color: var(--phosphor-primary);
+}
+
+/* ── Reduce motion respectful ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+	.cursor,
+	.typewriter {
+		animation: none;
+	}
+	.cursor {
+		opacity: 1;
+	}
+	.typewriter {
+		width: 100%;
+	}
+}

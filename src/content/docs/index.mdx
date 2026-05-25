@@ -1,40 +1,88 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: Modulatio
+description: Multi-model agent framework. Modulate across models, agents, and registers in one coherent line.
+template: splash
+tableOfContents: false
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: Example Guide
-      link: /guides/example/
-      icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+  tagline: ' '
+  actions: []
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import HeroTypewriter from '../../components/HeroTypewriter.astro';
+import MuMark from '../../components/MuMark.astro';
 
-## Next steps
+<div class="modulatio-hero">
+	<h1 class="modulatio-hero__mark"><MuMark aria-label="mu" />MODULATIO</h1>
+	<p class="modulatio-hero__system-line">SYSTEM READY.</p>
+	<p class="modulatio-hero__tagline">
+		<HeroTypewriter text="Modulate across models, agents, and registers." />
+	</p>
+	<p class="modulatio-hero__sub">
+		A multi-model agent framework with role-tiered orchestration, goal-state
+		compression for long-horizon work, and QC that authors fixes instead of
+		abandoning rejected tasks.
+	</p>
+	<div class="modulatio-hero__actions">
+		<a class="modulatio-action cta-hot" href="/getting-started/introduction/">
+			<span>&gt; READ THE DOCS</span>
+			<span class="cursor cursor-hot" aria-hidden="true"></span>
+		</a>
+		<a class="modulatio-action" href="https://github.com/StarlingAgents/Starling">
+			<span>&gt; VIEW ON GITHUB</span>
+		</a>
+	</div>
+</div>
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
-</CardGrid>
+<section class="modulatio-section">
+	<h2>WHAT IS MODULATIO</h2>
+	<blockquote>
+		ῥεῖ πάντα — <em>everything flows.</em>
+	</blockquote>
+	<p>
+		Modulatio is a framework for building multi-agent systems where the hard
+		part — choosing which model does what, when to compress the working
+		context, how to recover from a failed step — happens structurally instead
+		of by prompt-engineering accident.
+	</p>
+	<p>
+		It externalizes the deliberation-and-acting dialectic across three role
+		tiers: a <strong>Leader</strong> that reasons, <strong>Producers</strong> that
+		collaborate-and-act with skill-routed work, and <strong>QC</strong> that
+		verifies by execution and authors fixes when producers can&apos;t converge.
+	</p>
+</section>
+
+<section class="modulatio-section">
+	<h2>WHO IT&apos;S FOR</h2>
+	<CardGrid>
+		<Card title="Researchers" icon="rocket">
+			Long-horizon work where context-window economics matter. Goal-state
+			compression keeps the system on-task past the point where naive history
+			would saturate the window.
+		</Card>
+		<Card title="Builders" icon="puzzle">
+			Production agent systems where rejected tasks need to be recovered, not
+			left dead. QC-as-fixer turns the verifier into a producer-of-fixes.
+		</Card>
+		<Card title="Pragmatists" icon="approve-check">
+			Model-agnostic by design. Tested across sparse-MoE, dense, and reasoning
+			models with explicit notes on which slots favor which architectures.
+		</Card>
+	</CardGrid>
+</section>
+
+<section class="modulatio-section">
+	<h2>INSTALL</h2>
+	<pre><code><span class="prompt-line">$ pip install modulatio</span><span class="prompt-line">$ modulatio setup</span><span class="prompt-line modulatio-cursor-line">$ <span class="cursor" aria-hidden="true"></span></span></code></pre>
+	<p class="modulatio-hint">
+		Currently shipping as <code>starling</code> on PyPI during the rebrand from
+		Starling. The next release closes the cutover.
+	</p>
+</section>
+
+<section class="modulatio-section modulatio-section--quiet">
+	<p class="modulatio-footer-aphorism">
+		<em>— γνῶθι σαυτόν —</em>
+	</p>
+</section>

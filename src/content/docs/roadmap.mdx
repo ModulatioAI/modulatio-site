@@ -1,0 +1,107 @@
+---
+title: Roadmap
+description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
+---
+
+v0.1.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+
+If you want a one-page summary of v0.1.0 itself (what works, what doesn't), see the [v0.1.0 Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
+
+---
+
+## Current — v0.1.0
+
+The headline of v0.1.0 is **the five-layer working-memory architecture** plus **calibrated honesty** about what the engine is and isn't sized for. See [v0.1.0 Beta calibration](/v0-1-0-beta/) for the full contract; in one paragraph: v0.1.0 is sized for single deliverables (one cohesive output) and multi-piece deliverables (3-7 related outputs in one phase). Production-scale efforts (a 200-page novel, a multi-feature application across many releases) are explicitly Phase-1-only in this release.
+
+v0.1.0 ships:
+
+- Tool-loop summarization (Layer 1) and context-budget gating (Layer 2), wired into production.
+- The repo_map symbol-aware code digest (Layer 3) for Python repos.
+- Team-state continuity (Layer 4) and cross-cutting terse-prose templates (Layer 5).
+- A three-tier over-scope gate: Leader-plan deliverable-shape clarifying question, the planner's hard cap of 6 tasks per sub-objective, and a 70% soft-warn band below the compression band.
+- A context-budget exhaustion route that opens a CRITICAL ticket carrying the conversation checkpoint and routes Leader-reflect to `revise-major`.
+- A `modulatio doctor` engine-calibration banner that surfaces the contract on first contact.
+- The **producer-collapse / skills-first** model: no fixed role identities — an agent is a producer-with-skills, and tasks are skill-routed to whichever producer holds the matching skill.
+- **QC-as-fixer** (ON by default) — when a producer can't clear the bar after exhausting retries, QC patches the artifact from its own findings and the task completes.
+- Provider **thinking on/off** control so you can run producers non-thinking.
+- Honest documentation: the v0.1.0 Beta page names every gap users should expect to hit.
+
+---
+
+## Next — long-running deployments
+
+The next slice's thesis is **make Modulatio viable for long-running deployments** — work that spans weeks or months, that needs cross-phase memory, and that has a recurring identity worth preserving. Two sibling slices ship together because either alone leaves the other half of the gap open.
+
+### Job templates and multi-phase orchestration
+
+This closes the production-scale gap. The shape, in broad strokes:
+
+- **Conversational job-template interview.** The Leader runs a multi-question interview keyed to the deliverable class. The user picks from `artifact_kind` plus a high-level "shape of work" label — fiction, software, research, business-loop, etc. The interview elicits the standards, conventions, and decisions that matter for that shape; the resulting template lives in the vault and seeds every subsequent phase.
+- **Templates that self-extend through research.** When an interview hits a gap the engine doesn't have a question for, Leader spawns a small research task to figure out what the question should be — then folds the new question into the template for next time.
+- **Persistent cross-phase memory.** Templates carry team state across phases — names, conventions, style choices, prior decisions — without the user re-stating them each phase.
+- **Lifecycle-managed templates** with `draft`, `validated`, `stable` stages so users can ship custom templates back to the community as they harden, the same way skills can today.
+
+Production-scale efforts (the 200-page-novel class, the multi-quarter software project) become canonical use cases. v0.1.0's Phase-1-only constraint goes away, replaced by template-driven multi-phase orchestration where each phase gates between sign-offs.
+
+### Persona / identity continuity
+
+A sibling slice to job templates: keep team identity stable across long-running deployments. Job templates carry the *what* across phases; the persona slice carries the *who*. See [the v0.1.0 Beta "Persona / identity continuity" gap section](/v0-1-0-beta/#persona--identity-continuity-across-long-running-deployments) for the user-facing impact.
+
+What this lands:
+
+- **`inject_identity_anchor()` at kickoff and plan-resume start.** A mandatory persona-context injection that re-states "who we are" before any agent decision. Composes with the existing `team_state` and `team_memory` slots — additive, not replacing.
+- **`persona.md` skill always loaded first.** A lightweight, always-on skill that prepends the current identity block to every producer prompt — same shape as the existing `{team_memory_context}` injection, but for self-concept.
+- **Importance-weighted episodic memory.** Replace the flat `EPISODIC_MAX_ENTRIES = 100` with an identity-tagged retention policy that protects persona statements from FIFO pruning. Layer 2's compression learns to skip identity-tagged messages the same way it currently skips system / recent tool turns.
+- **`persona_snapshot` field on `PlanRecord`.** Optional. When set, resumed plans force-inject the snapshot before the first sub-objective fires. Audit-trail-compatible with the existing reflection_log + transitions schema.
+- **Recurring "bottle check" every N turns.** Configurable cadence (every 20 turns suggested). Forces a re-read of standing identity notes from the user's vault, treating them as load-bearing context the same way `team_state` is.
+- **Leader-tier identity bypass for `team_memory`.** Persona writes skip the QC review path (which is designed for facts and skills) so the Leader can self-correct identity drift in real time.
+- **Semantic-router feedback loop.** The router already embeds `agent.identity` for capability matching; the next slice adds a feedback edge so identity changes trigger re-anchoring rather than only cache invalidation.
+
+---
+
+## Later — a different interface
+
+A later release ships with a **different interface** for interacting with the engine. We're keeping the specifics deliberately vague while the design settles. The headline is: the TUI / CLI surface stays, and a new surface joins it. The engine internals stay the same; the change is in how humans engage with it.
+
+What we know now:
+
+- The engine internals (orchestrator, plan model, working-memory layers, skill system) stay stable. No re-architecting under the hood.
+- Existing TUI + CLI workflows keep working. The new release is additive on the human-facing surface.
+- The new surface targets a different deployment shape than the TUI — multi-user collaboration, asynchronous work, longer horizon — without forcing the local-vault contract to bend.
+
+More detail will land once the shape stabilizes.
+
+---
+
+## Pillars under design
+
+The following are tracked as long-horizon design pillars rather than specific releases. They land when they're ready.
+
+- **Build / test feedback loop.** Producers can write code; the next slice lets them run the build, read the test failures, and iterate. Closes the v0.1.0 gap where iterate-on-failure needs human-in-the-loop. Likely lands as a `code_iter` skill composing `run_shell` + `parse_test_output` + redo-with-failure-context.
+- **Multi-language symbol map.** v0.1.0's `repo_map` is Python-only. Extending to JavaScript / TypeScript / Rust / Go via tree-sitter or per-language AST modules. Today's filename-only fallback for non-Python repos goes away.
+- **Embedded LLM defaults.** Setup-wizard offers a curated embedded-LLM bundle for users who want zero external API dependencies. Ships pinned model presets that work end-to-end with the local Ollama defaults.
+- **Cost / token telemetry surfaces.** Already-tracked per-call usage (the `<plan>.usage.jsonl` ledger) gets a first-class TUI tab + CLI subcommand for "where did the budget go" forensics. Ties into the existing comptroller primitives.
+
+---
+
+## What's intentionally *not* on the roadmap
+
+A few things users sometimes ask about that we've deliberately not queued. Not because they're bad ideas — because they don't fit Modulatio's current shape.
+
+- **Hosted / SaaS Modulatio.** Modulatio is open-source software you run on your machine. We don't currently plan a hosted offering. The local-vault contract is load-bearing — the user owns their data, their providers, their models. A hosted version would break that.
+- **Agent-to-agent autonomous protocols.** Agent-to-agent surfaces are interesting but not on the Modulatio roadmap. Modulatio's job is to orchestrate one team of agents on one team's work. Agent-to-agent federation is a different problem and a different product.
+- **Replacing the human in the loop.** Modulatio's gates (plan approval, between-phase reflection, ticket approvals on CRITICAL) are by design. The roadmap doesn't include a "fully-autonomous" mode that bypasses them. Those gates are what makes Modulatio viable for high-stakes work.
+
+---
+
+## How to influence the roadmap
+
+- **File an issue** on [GitHub](https://github.com/ModulatioAI/modulatio/issues) using the **Feature request** template. Tag it with the affected component label so it shows up in the right slice's queue.
+- **Open a discussion** on [Discussions](https://github.com/ModulatioAI/modulatio/discussions) for open-ended threads where the shape isn't yet a concrete feature request.
+- **Audit Modulatio against your use case** and file the gaps.
+
+---
+
+## Project history
+
+Modulatio matured as engine work under the name *Starling* through several pre-1.0 iterations; v0.1.0 is the first release shipped under the Modulatio name. The prior repository is being retired as Modulatio replaces it; this is a clean break, not a parallel project.

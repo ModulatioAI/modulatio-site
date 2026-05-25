@@ -1,0 +1,34 @@
+---
+// Hero typewriter — emits the tagline span + cursor, then on mount
+// types out the tagline letter by letter at 60ms/char with a 420ms
+// pause before starting. After typing completes, the .cursor span
+// next to it continues blinking forever via the theme keyframes.
+//
+// The text comes from the `text` prop so the markup is server-rendered
+// in full for accessibility / SEO; JS just hides it briefly and replays
+// the typing effect for sighted users.
+interface Props {
+	text: string;
+}
+const { text } = Astro.props;
+---
+
+<span class="typewriter" data-typewriter data-text={text}>{text}</span><span class="cursor" aria-hidden="true"></span>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const target = document.querySelector<HTMLElement>('[data-typewriter]');
+		if (!target) return;
+		const full = target.dataset.text ?? target.textContent ?? '';
+		target.textContent = '';
+		target.style.width = 'auto';
+		target.style.opacity = '1';
+		let i = 0;
+		const tick = () => {
+			if (i >= full.length) return;
+			target.textContent = full.slice(0, ++i);
+			setTimeout(tick, 60);
+		};
+		setTimeout(tick, 420);
+	});
+</script>

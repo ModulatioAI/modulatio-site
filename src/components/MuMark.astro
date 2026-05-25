@@ -1,0 +1,38 @@
+---
+// μ — thin-vector amber lowercase mu, drawn in the design language.
+// Two parallel verticals connected by a small u-curve at the baseline,
+// LEFT vertical extends below the baseline as a descender with a small
+// curl. Inherits stroke color via `currentColor` so any wrapper can
+// re-color it (hero gets phosphor primary; future hot CTA could use
+// hot-orange variant).
+//
+// Sized via CSS .modulatio-mu — see modulatio.css. Reusable for the
+// eventual favicon, social-card, and any place we want the brand mark
+// without the wordmark.
+interface Props {
+	class?: string;
+	'aria-label'?: string;
+}
+const { class: className = '', 'aria-label': ariaLabel } = Astro.props;
+const labelled = ariaLabel !== undefined;
+---
+
+<svg
+	class={`modulatio-mu ${className}`.trim()}
+	viewBox="0 0 32 40"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="2.4"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+	role={labelled ? 'img' : 'presentation'}
+	aria-label={ariaLabel}
+	aria-hidden={labelled ? undefined : 'true'}
+>
+	{/* Left vertical with descender + small terminal curl */}
+	<path d="M 7 6 L 7 34 Q 7 37 11 35.5" />
+	{/* Bottom u-curve connecting left to right vertical at the baseline */}
+	<path d="M 7 24 Q 7 26 9 26 L 23 26 Q 25 26 25 24" />
+	{/* Right vertical (no descender) */}
+	<path d="M 25 24 L 25 6" />
+</svg>
