@@ -10,6 +10,11 @@ export default defineConfig({
 			title: 'Modulatio',
 			description:
 				'Multi-model agent framework. Modulate across models, agents, and registers in one coherent line.',
+			// Custom μ-mark favicon (deep navy field, hot phosphor stroke).
+			// The ?v= cache-buster forces browsers that cached the prior
+			// Starlight default sparkle to re-fetch the new icon — without
+			// it, the 7-day max-age sticks visitors on the old icon.
+			favicon: '/favicon.svg?v=2',
 			customCss: ['./src/styles/modulatio.css'],
 			components: {
 				// One theme only — suppress the light/dark toggle entirely.
