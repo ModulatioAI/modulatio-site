@@ -89,13 +89,17 @@ Design choices, each made to kill a confound:
 
 ### Workload design — built to stress, not to flatter
 
-The three workloads are deliberately shaped to stress exactly what compression is supposed to help, and each is **hermetic** (satisfiable from the model's own knowledge, no network/credentials) so the result doesn't depend on web tools being up:
+The live suite is **two** hermetic, long-horizon workloads — a documentation guide (WD1, a five-section operator's manual) and a code library (WD2, a five-module Python package). "Hermetic" means each is satisfiable from the model's own knowledge — no network or credentials — so the result doesn't depend on web tools being up. (A third workload, a hermetic research briefing, was deliberately *dropped* from the suite: research with no oracle is the worst case for QC — there's nothing to verify confident claims against, so the arm churns on retry-noise rather than measuring compression. That exclusion is itself a finding.)
+
+Both workloads are construction tasks deliberately shaped to stress the three problems compression is supposed to solve:
 
 - **Context overflow** — enough sub-objectives that the running team-state document naturally balloons.
 - **Scope creep** — a narrow goal that's tempting to expand.
 - **Disjointed work** — later units must stay consistent with earlier ones.
 
-**The finding:** goal-state compression is net-negative overhead on short workloads and only pays off on genuinely long-horizon plans — a measured break-even, which is why `compression_pressure_threshold` ships at a conservative default. See [Plan lifecycle](/concepts/plan-lifecycle/).
+**What this run measured:** on these two long-horizon construction workloads, the harness validated that compression behaves as intended — the arm comparison ran clean end-to-end through the real Orchestrator. The suite contains no *short* workload, so it does not, on its own, measure the short-horizon side.
+
+**Why the default is still conservative.** The broader design rationale — established across the alpha sequence, not by this two-workload run — is that goal-state compression is net-negative overhead on short workloads and only earns its keep on genuinely long-horizon plans (a break-even that tilts with plan length). That is why `compression_pressure_threshold` ships at a conservative default rather than compacting eagerly. Treat the long-horizon-only guidance as the standing recommendation; this evidence run confirms the long-horizon half directly. See [Plan lifecycle](/concepts/plan-lifecycle/).
 
 ---
 
@@ -119,7 +123,7 @@ This is the load-bearing result behind the whole seating guidance — that appar
 # Cheap live wiring check — 1 workload, N=1:
 .venv/bin/python scripts/eval/compression-evidence/run_evidence.py --validate --fresh
 
-# Full evidence run — all 3 workloads, N=3/arm (long; background it):
+# Full evidence run — both workloads (WD1 + WD2), N=3/arm (long; background it):
 .venv/bin/python scripts/eval/compression-evidence/run_evidence.py --fresh
 ```
 
