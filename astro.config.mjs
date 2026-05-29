@@ -82,6 +82,7 @@ export default defineConfig({
 						{ label: 'CI integration', slug: 'operations/ci-integration' },
 					],
 				},
+				{ label: 'Methodology', slug: 'methodology' },
 				{ label: 'Roadmap', slug: 'roadmap' },
 				{ label: 'Troubleshooting', slug: 'troubleshooting' },
 			],
