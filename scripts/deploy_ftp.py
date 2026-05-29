@@ -4,9 +4,13 @@
 Mirrors the built ``dist/`` tree to the modulatio.ai web root over FTPS.
 Credentials come from the environment — nothing secret lives in this file.
 
+Credentials resolve in this order: env vars first, then ``~/.netrc``
+(machine = the FTP host). The .netrc path means a deploy needs no
+secret on the command line once it's set up (chmod 600).
+
     MODULATIO_FTP_HOST   default ftp.modulatio.ai
-    MODULATIO_FTP_USER   default cknox@modulatio.ai
-    MODULATIO_FTP_PASS   required (no default)
+    MODULATIO_FTP_USER   default from .netrc login, else cknox@modulatio.ai
+    MODULATIO_FTP_PASS   from env, else .netrc password for the host
     MODULATIO_FTP_BASE   remote base dir; default "" (the cknox@ user is
                          chrooted to public_html, so the chroot root IS
                          the web root — do NOT prepend public_html or you
@@ -19,6 +23,7 @@ Usage:
 from __future__ import annotations
 
 import ftplib
+import netrc
 import os
 import sys
 from pathlib import Path
@@ -32,6 +37,29 @@ def env(name: str, default: str | None = None) -> str:
     if val is None:
         sys.exit(f"error: {name} is required (export it before running)")
     return val
+
+
+def netrc_creds(host: str) -> tuple[str | None, str | None]:
+    """Return (login, password) for host from ~/.netrc, or (None, None)."""
+    try:
+        auth = netrc.netrc().authenticators(host)
+    except (FileNotFoundError, netrc.NetrcParseError):
+        return None, None
+    if not auth:
+        return None, None
+    login, _account, password = auth
+    return login, password
+
+
+def resolve_creds(host: str) -> tuple[str, str]:
+    """Env wins; fall back to ~/.netrc for the host."""
+    n_login, n_pass = netrc_creds(host)
+    user = os.environ.get("MODULATIO_FTP_USER") or n_login or "cknox@modulatio.ai"
+    pw = os.environ.get("MODULATIO_FTP_PASS") or n_pass
+    if not pw:
+        sys.exit("error: no FTP password — set MODULATIO_FTP_PASS or add a "
+                 f"machine entry for {host} to ~/.netrc (chmod 600)")
+    return user, pw
 
 
 def ensure_remote_dir(ftp: ftplib.FTP_TLS, remote_dir: str) -> None:
@@ -53,18 +81,21 @@ def main() -> None:
         sys.exit(f"error: {DIST} not found — run `npm run build` first")
 
     host = env("MODULATIO_FTP_HOST", "ftp.modulatio.ai")
-    user = env("MODULATIO_FTP_USER", "cknox@modulatio.ai")
     base = os.environ.get("MODULATIO_FTP_BASE", "").strip("/")
 
     files = sorted(p for p in DIST.rglob("*") if p.is_file())
-    print(f"{'DRY-RUN: ' if dry else ''}deploying {len(files)} files "
-          f"from {DIST} → {host}/{base or '(chroot root)'} as {user}")
     if dry:
+        user = (os.environ.get("MODULATIO_FTP_USER")
+                or netrc_creds(host)[0] or "cknox@modulatio.ai")
+        print(f"DRY-RUN: would deploy {len(files)} files "
+              f"from {DIST} → {host}/{base or '(chroot root)'} as {user}")
         for f in files:
             print(f"  would upload {f.relative_to(DIST)}")
         return
 
-    pw = env("MODULATIO_FTP_PASS")
+    user, pw = resolve_creds(host)
+    print(f"deploying {len(files)} files from {DIST} → "
+          f"{host}/{base or '(chroot root)'} as {user}")
     ftp = ftplib.FTP_TLS(host, timeout=60)
     ftp.login(user, pw)
     ftp.prot_p()  # secure the data channel, not just the control channel
