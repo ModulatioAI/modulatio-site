@@ -546,6 +546,7 @@ body:has(.hero) .site-title {
 	border: 1px solid var(--phosphor-faint);
 	padding: 1.2rem 1.5rem;
 	font-family: var(--font-mono);
+	overflow-x: auto;
 }
 
 .prompt-line {
@@ -570,6 +571,56 @@ body:has(.hero) .site-title {
 
 .modulatio-hint code {
 	color: var(--phosphor-primary);
+}
+
+/* ── Mobile / small-screen landing layout ───────────────────────────
+ * The custom landing (hero + sections) needs phone breakpoints; the
+ * Starlight docs pages are already responsive. Main fixes: the hero
+ * tagline's nowrap (overflows narrow viewports), oversized hero mark +
+ * letter-spacing, and side-by-side CTAs that don't fit. */
+@media (max-width: 640px) {
+	.modulatio-hero {
+		padding: 2.5rem 1rem 2rem;
+	}
+	.modulatio-hero__mark {
+		font-size: clamp(2rem, 11vw, 3rem);
+		letter-spacing: 0.1em;
+	}
+	.modulatio-hero__system-line {
+		letter-spacing: 0.28em;
+		margin-bottom: 2rem;
+	}
+	/* Let the typed tagline wrap rather than overflow the viewport — the
+	   JS typewriter types char-by-char, so wrapping mid-line is fine. */
+	.modulatio-hero__tagline .typewriter,
+	.modulatio-hero__tagline {
+		white-space: normal;
+	}
+	.modulatio-hero__sub {
+		font-size: 1rem;
+	}
+	/* Stack the CTAs full-width instead of side-by-side. */
+	.modulatio-hero__actions {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 1rem;
+	}
+	.modulatio-action {
+		justify-content: center;
+	}
+	.modulatio-section {
+		margin: 3rem auto;
+	}
+	.modulatio-section h2 {
+		font-size: 1.2rem;
+		letter-spacing: 0.12em;
+	}
+	.modulatio-section blockquote {
+		font-size: 1.15rem;
+	}
+	.modulatio-footer-aphorism {
+		font-size: 1.05rem;
+	}
 }
 
 /* ── Reduce motion respectful ────────────────────────────────────── */

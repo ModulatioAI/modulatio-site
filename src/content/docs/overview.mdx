@@ -22,8 +22,8 @@ It's designed for work like:
 
 What makes Modulatio different from "spin up a chat" or single-agent tools:
 
-- **Real multi-model routing per agent.** Drafter on GLM 5.1, QC on Kimi-K2.5, Leader on Sonnet — each role on its own model and its own provider. Native to the architecture, not an afterthought.
-- **Quality control as a first-class subsystem.** Three-layer TQM (universal axes × per-artifact-kind standards × per-team overrides). QC reviews every artifact before it ships; rejects route back to the producer in a structured retry loop.
+- **Real multi-model routing per agent.** Drafter on GLM 5.1, Quality Control on Kimi-K2.5, Leader on Sonnet — each role on its own model and its own provider. Native to the architecture, not an afterthought.
+- **Quality Control as a first-class subsystem.** Modulatio's quality gate is built on **Total Quality Management** (TQM) — the established quality-engineering discipline behind the ISO 9000 family of standards — applied in three layers: universal axes × per-artifact-kind standards × per-team overrides. The Quality Control (QC) agent reviews every artifact before it ships; rejects route back to the producer in a structured retry loop.
 - **Skills over fixed roles.** Agents are compositions of skills, not fixed templates. Skills can be created conversationally and persist to your vault.
 - **Plan-mode end-to-end.** Leader is a conversational partner. Project is the unit being led. Plan is the unit of execution. Long plans run as daemons in the background, with reflection between sub-objectives and Telegram approvals where needed.
 - **Open architecture.** Your data, your vault, your providers, your models. No SaaS, no per-instance subscription, no vendor lock-in.
