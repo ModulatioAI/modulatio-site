@@ -5,7 +5,7 @@ description: How Modulatio's engine was proven sound — the A/B verdict-quality
 
 Modulatio makes a strong claim: the engine is sound, and we know *why* it works — which models belong in which seat, and which configuration changes actually buy quality versus merely looking plausible. This page is how that claim was earned, written so you can reproduce it.
 
-The through-line is one principle: **a change is not "better" until it is measured.** Every alpha in the pre-beta sequence shipped a plausibly-better-than-baseline change — per-role budgets, sparse inboxes, goal-state compression. None of them had been *measured* against a real baseline. The methodology below is how we stopped guessing.
+Every alpha in the pre-beta sequence shipped a plausibly-better-than-baseline change — per-role budgets, sparse inboxes, goal-state compression — yet none had been *measured* against a real baseline. The methodology below is how we stopped guessing: **a change is not "better" until it is measured.**
 
 ---
 
@@ -97,7 +97,7 @@ Both workloads are construction tasks deliberately shaped to stress the three pr
 - **Scope creep** — a narrow goal that's tempting to expand.
 - **Disjointed work** — later units must stay consistent with earlier ones.
 
-**What this run measured:** on these two long-horizon construction workloads, the harness validated that compression behaves as intended — the arm comparison ran clean end-to-end through the real Orchestrator. The suite contains no *short* workload, so it does not, on its own, measure the short-horizon side.
+**What this run measured:** on these two long-horizon construction workloads, the harness validated that compression behaves as intended — the arm comparison ran clean end-to-end through the real Orchestrator.
 
 **Why the default is still conservative.** The broader design rationale — established across the alpha sequence, not by this two-workload run — is that goal-state compression is net-negative overhead on short workloads and only earns its keep on genuinely long-horizon plans (a break-even that tilts with plan length). That is why `compression_pressure_threshold` ships at a conservative default rather than compacting eagerly. Treat the long-horizon-only guidance as the standing recommendation; this evidence run confirms the long-horizon half directly. See [Plan lifecycle](/concepts/plan-lifecycle/).
 
