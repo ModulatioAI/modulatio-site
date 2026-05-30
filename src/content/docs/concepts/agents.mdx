@@ -42,13 +42,15 @@ The Leader is your conversational partner. Everything flows through here.
 - Hold ongoing chat with you about the project — clarify objectives, propose approaches, summarize state
 - Draft plans from your conversational asks
 - Manage the user-approval gate before any plan runs
-- Reflect between sub-objectives ("Verify phase") — read QC verdicts + producer self-claims, render the next state-doc snapshot, flag divergences
+- Reflect between sub-objectives ("Verify phase") — judge **completion and fitness** (did the team produce the right thing, to scope?), read QC verdicts + producer self-claims, render the next state-doc snapshot, flag divergences
+- Write the **[Product Quality Report](/v0-2-0/#the-product-quality-report)** — the honest covering note to you, with any reservations it couldn't resolve inside the team
 - Surface paused / blocked plans for your attention
 - Interface with Telegram for approvals when you're not at the TUI
 
 **What it doesn't do:**
 
-- Produce final artifacts. Leader plans and reflects; Leader does NOT draft. ("Leader must NEVER produce deliverables in chat.")
+- Produce final artifacts. Leader plans and reflects; Leader does NOT draft. ("Leader must NEVER produce deliverables in chat.") Its one written output is the Product Quality Report — its analysis *of* the work, not the work itself.
+- **Verify quality.** That's QC's job, and QC reviews every producing task. The Leader judges *fitness* (right thing, to scope) and confirms; it does not re-run quality checks or mint standalone "verify the deliverable" goals — those get dropped at planning. If it distrusts a source or claim, that goes in the Product Quality Report, never a blocker.
 - Execute code or call tools beyond the planning surface
 
 The Leader also does the **task planning** — decomposing each sub-objective into producer tasks with their required skills.

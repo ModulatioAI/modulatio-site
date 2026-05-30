@@ -3,17 +3,29 @@ title: Roadmap
 description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
 ---
 
-v0.1.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+v0.2.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
 If you want a one-page summary of v0.1.0 itself (what works, what doesn't), see the [v0.1.0 Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
-## Current — v0.1.0
+## Current — v0.2.0
 
-The headline of v0.1.0 is **the five-layer working-memory architecture** plus **calibrated honesty** about what the engine is and isn't sized for. See [v0.1.0 Beta calibration](/v0-1-0-beta/) for the full contract; in one paragraph: v0.1.0 is sized for single deliverables (one cohesive output) and multi-piece deliverables (3-7 related outputs in one phase). Production-scale efforts (a 200-page novel, a multi-feature application across many releases) are explicitly Phase-1-only in this release.
+The headline of v0.2.0 is the **QC-thesis arc**: cheap producers generate the bulk, the smarter QC reviews and patches only the errors, the Leader confirms while QC owns repair, and the lead's unresolvable reservations ship as an advisory **Product Quality Report** beside the work. See the [v0.2.0 release notes](/v0-2-0/) for the full delta.
 
-v0.1.0 ships:
+v0.2.0 adds:
+
+- The **Product Quality Report** — the lead's honest covering note, advisory and never a gate.
+- **Bundled default standards** (research / code / text / marketing) so cold-start QC has a real bar; plus the `rigorous-sourcing` producer skill.
+- The **Leader-confirms / QC-repairs** model — standalone "verify the deliverable" goals are dropped at planning; verification verdicts no longer open tickets.
+- **Context-budget hardening** — capped `http_get` fetches + tool-result truncation close the overflow/storm class; budgets are model-agnostic.
+- **Finished products delivered** as `.docx`, and withheld when a task or goal is genuinely blocked.
+
+### The v0.1.0 foundation
+
+The headline of v0.1.0 is **the five-layer working-memory architecture** plus **calibrated honesty** about what the engine is and isn't sized for. See [v0.1.0 Beta calibration](/v0-1-0-beta/) for the full contract; in one paragraph: the engine is sized for single deliverables (one cohesive output) and multi-piece deliverables (3-7 related outputs in one phase). Production-scale efforts (a 200-page novel, a multi-feature application across many releases) are explicitly Phase-1-only.
+
+The v0.1.0 foundation ships:
 
 - Tool-loop summarization (Layer 1) and context-budget gating (Layer 2), wired into production.
 - The repo_map symbol-aware code digest (Layer 3) for Python repos.

@@ -8,7 +8,7 @@ import { Aside } from '@astrojs/starlight/components';
 **A multi-model agent framework for running long, high-stakes projects with real quality control.**
 
 <Aside type="caution" title="Beta software">
-v0.1.0 is the initial Modulatio Beta. It's the producer-collapse / skills-first engine: agents are producers-with-skills, tasks are skill-routed, QC-as-fixer patches what producers can't clear (on by default), and the concurrent-wave path uses per-task artifact staging with a deterministic merge. The engine was validated end-to-end on a live heterogeneous model lineup and cleared a full multi-reviewer audit. Read the [v0.1.0 Beta calibration page](/v0-1-0-beta/) before kicking off serious work — knowing the engine's real ceilings is the difference between a smooth run and a frustrated one. **Python 3.12+**. Bug reports and discussions welcome at the [issues tab](https://github.com/ModulatioAI/modulatio/issues) and [discussions](https://github.com/ModulatioAI/modulatio/discussions).
+v0.2.0 builds on the producer-collapse / skills-first engine with the **QC-thesis arc**: cheap, fast producers generate the bulk; the smarter QC reviews and patches only the errors (speculative decoding, applied to agents); the Leader confirms while QC owns repair; and reservations the swarm can't resolve ship as an advisory **Product Quality Report** beside the work, never as a blocker. Bundled default standards give QC a real bar from a cold start. Validated end-to-end on a live heterogeneous model lineup and cleared a fresh two-reviewer audit. Read the [v0.2.0 release notes](/v0-2-0/) and the [Beta calibration page](/v0-1-0-beta/) before kicking off serious work — knowing the engine's real ceilings is the difference between a smooth run and a frustrated one. **Python 3.12+**. Bug reports and discussions welcome at the [issues tab](https://github.com/ModulatioAI/modulatio/issues) and [discussions](https://github.com/ModulatioAI/modulatio/discussions).
 </Aside>
 
 Modulatio is a TUI-and-CLI framework for orchestrating teams of LLM agents on projects that take more than one prompt. You define an objective, set the standards, pick the models, and the team plans, executes, reviews, and iterates — with you in the loop at the levels that matter and out of the loop where automation is safe.
@@ -23,7 +23,8 @@ It's designed for work like:
 What makes Modulatio different from "spin up a chat" or single-agent tools:
 
 - **Real multi-model routing per agent.** Drafter on GLM 5.1, Quality Control on Kimi-K2.5, Leader on Sonnet — each role on its own model and its own provider. Native to the architecture, not an afterthought.
-- **Quality Control as a first-class subsystem.** Modulatio's quality gate is built on **Total Quality Management** (TQM) — the established quality-engineering discipline behind the ISO 9000 family of standards — applied in three layers: universal axes × per-artifact-kind standards × per-team overrides. The Quality Control (QC) agent reviews every artifact before it ships; rejects route back to the producer in a structured retry loop.
+- **Quality Control as a first-class subsystem.** Modulatio's quality gate is built on **Total Quality Management** (TQM) — the established quality-engineering discipline behind the ISO 9000 family of standards — applied in three layers: universal axes × per-artifact-kind standards × per-team overrides. The Quality Control (QC) agent reviews every artifact before it ships; rejects route back to the producer, and when the producer can't clear the bar QC patches the artifact itself. The economics are the point: cheap producers generate the bulk, the smarter QC patches only the errors — the cost of a cheap model with the quality of a strong one.
+- **An honest covering note on every product.** When the lead has reservations it can't resolve inside the team — citations it couldn't independently verify, a claim worth double-checking — it ships them to you as an advisory **Product Quality Report** beside the work. Honest caveats, never a gate: they don't block the deliverable or stall the run.
 - **Skills over fixed roles.** Agents are compositions of skills, not fixed templates. Skills can be created conversationally and persist to your vault.
 - **Plan-mode end-to-end.** Leader is a conversational partner. Project is the unit being led. Plan is the unit of execution. Long plans run as daemons in the background, with reflection between sub-objectives and Telegram approvals where needed.
 - **Open architecture.** Your data, your vault, your providers, your models. No SaaS, no per-instance subscription, no vendor lock-in.
@@ -31,6 +32,8 @@ What makes Modulatio different from "spin up a chat" or single-agent tools:
 ---
 
 ## What's in the rest of the docs
+
+**[v0.2.0 release notes](/v0-2-0/)** — what's new in this release: the QC-thesis arc, the Product Quality Report, default standards, and the context-budget hardening.
 
 **[v0.1.0 Beta calibration](/v0-1-0-beta/)** — what the engine does well, what it does NOT do yet, the QC-as-fixer / self-heal scope, and how to report bugs. Read this before serious work.
 

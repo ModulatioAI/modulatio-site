@@ -1,0 +1,58 @@
+---
+title: v0.2.0 release notes
+description: The QC-thesis arc — the Product Quality Report, default standards, surgical QC-as-fixer, and context-budget hardening. What changed since v0.1.0.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.2.0 builds on the v0.1.0 engine with one coherent arc: the **QC thesis**, made mechanical. The headline is an economic one — cheap, fast producers generate the bulk of the work, and the smarter Quality Control reviews it and patches *only the errors*. The cost of a cheap model with the quality of a strong one. This is speculative decoding, applied to a team of agents.
+
+It was driven by a live failure (a research objective that wedged the engine) and traced down through five stacked root causes, fixed one at a time and re-validated end-to-end after each. The arc cleared a fresh two-reviewer audit (hull + coherence) before merge.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.2.0 changes engine *behavior*, not its *ceilings*. The honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/) — single-deliverable sweet spot, the six-task sub-objective cap, production-scale phasing — still hold. Read that page before serious work; this one is the *delta*.
+</Aside>
+
+---
+
+## The model: the Leader confirms, QC repairs
+
+The cleanest way to hold the team in your head:
+
+- **Producers** (cheap, fast, possibly small) do the bulk generation — the lion's share of the tokens.
+- **QC** (the smarter, more expensive seat) reviews the draft cheaply and **patches what it doesn't like** — surgically, a few output tokens, not a full regeneration. It is the producer of last resort: if the cheap draft falls short, QC finishes it.
+- **The Leader** judges *completion and fitness* — did the team produce the right thing? — and confirms. It does **not** re-run quality checks; that is QC's job.
+
+A consequence of drawing that line: the Leader no longer mints standalone "verify the deliverable" goals. Verification is QC's, and QC already reviews every producing task. A separate reviewer that can only *report* — never repair — gets dropped at planning, because in practice it starves the real work, invents gates it can't satisfy, or loops. Quality lives where the work is made.
+
+## The Product Quality Report
+
+When the Leader has reservations it genuinely *can't* resolve inside the team — citations it couldn't independently verify, a fast-moving figure worth re-checking, a claim it wants a human eye on — those no longer block the work or pile up as tickets. They ship as an advisory **Product Quality Report**: a `.docx` that lands beside your deliverables, written in the lead's own voice.
+
+It reads like a competent contractor's covering note: *"My assessment of the delivered work, as the project lead who oversaw it… here are my remaining reservations and the checks I'd run before relying on it. They are advisory — they did not block or hold back your product."* Honest caveats, never a gate. The work ships; you decide what to double-check.
+
+## Default quality standards
+
+QC enforces a standard for each artifact kind — but standards used to be entirely human-curated, so a fresh install had **no bar at all**, and weak work passed its own QC. v0.2.0 ships **bundled baseline standards** for `research`, `code`, `text`, and `marketing` as a seed tier beneath your shared and per-project standards. Cold-start QC now has real rules to enforce and repair against (research demands real citations and a references section; code demands tests, lint, types, and no committed secrets). Your own standards still stack on top and win.
+
+There's also a new **`rigorous-sourcing`** producer skill — fetch real sources, cite them with resolvable locators, never fabricate, and flag what couldn't be verified — assigned per task to fact-bearing work so the rigor is applied only where it's needed.
+
+## Context-budget hardening
+
+Two fixes close the overflow class that started the whole arc:
+
+- **`http_get` is capped and de-marked-up.** A single web fetch used to return the raw page whole — a measured **1.24 million characters** into a 16k-token budget, which wedged the producer. Fetches are now capped and reduced to readable text before they enter context.
+- **Tool results are truncated on arrival.** A producer that fetches several sources could still accumulate past its role budget and trigger a decompose storm. Large tool results are now bounded on the way into context (the full raw is kept on disk and retrievable on demand), so a multi-fetch producer stays within budget.
+
+Context budgets are also **model-agnostic**: an unknown model's window no longer undercuts the tuned per-role budget.
+
+## Also in this release
+
+- **Finished products are delivered** as `.docx`, human-named from the document title, into `~/Documents/Modulatio/<project>/`.
+- Products are **withheld** when any task *or* goal is blocked — so a run that didn't fully succeed doesn't hand you a polished-but-unsupported deliverable.
+- The goal-level **retry budget rose 3 → 7** before escalating.
+- A **producer pool** option in the setup wizard — up to N producers, each its own model and skill set.
+
+---
+
+The full, itemized list is in the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md).
