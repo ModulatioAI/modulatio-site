@@ -1,0 +1,58 @@
+---
+title: v0.2.1 release notes
+description: In-place editing — hand Modulatio an existing file and it improves it surgically (--attach), plus delivery and verify-goal fixes surfaced by the first code-generation tests.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.2.1 teaches Modulatio to **improve a thing that already exists**. Before this release the engine built deliverables from scratch (greenfield). Now you can hand it a working file — `--attach game.py` — and say "raise the jump," and it edits that file *in place* and *surgically*, without rebuilding it or quietly dropping the parts you didn't ask it to touch.
+
+It was driven by Modulatio's first *code* tests: building, then iterating on, a small game. Iterating on real code exposed failures greenfield never could — and the fix for the deepest one is the same principle that runs through the whole engine. The arc cleared a fresh two-reviewer audit (hull + coherence) before merge.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.2.1 adds a capability; it does not move the engine's ceilings. The honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/) — single-deliverable sweet spot, the six-task sub-objective cap, production-scale phasing — still hold. Read that page before serious work; this one is the *delta* on top of [v0.2.0](/v0-2-0/).
+</Aside>
+
+---
+
+## In-place edit: attach a file, improve it
+
+`modulatio kickoff --attach <file> --objective "..."` pins an existing file into the run and switches the pipeline into **in-place edit** — not a separate engine, just the existing pipeline entering a different contract when a file is present:
+
+- **The attached file is the starting point**, not a reference. It's copied into the run's workspace so the producer can actually read it.
+- **The plan stays in that file.** No scattering the change across new orphan modules; no padding the plan with "write a report on the change" tasks. The plan maps to the smallest set of edits that does the job.
+- **The change is surgical** (see below).
+
+The result is one clean, improved file delivered back — replacing the original, not piling up disambiguated copies beside it.
+
+## Surgical patch mode — the engine binds the invariant
+
+The load-bearing piece. Telling a cheap producer "edit in place, preserve everything" is a *request*, and a request bends an LLM rather than binding it — in testing, a cheap model asked to change one constant **regenerated the whole file and silently dropped working controls**. Prose can't guarantee preservation.
+
+So the engine guarantees it instead. In patch mode the producer emits exact `SEARCH` / `REPLACE` blocks, and **Modulatio applies them** — keeping every byte it wasn't told to change. Untouched content can't be dropped, because the producer never re-emits it. A one-line "raise the jump" change is exactly that: one line in the diff, everything else identical.
+
+This is the same principle as the verify-goal **wall** — Modulatio doesn't *ask* the Leader not to mint impossible verify goals; the engine drops them. Stated once, for the canon:
+
+> **Prose bends an LLM; the engine binds the invariant.**
+
+It's also *more* speculative-decoding-shaped, not less: the producer emits a minimal diff (a few output tokens) instead of regenerating the file — the cheapest possible high-fidelity fix.
+
+## A code read-toolkit
+
+To edit a file well, a producer first has to read it. Producers can now navigate with `grep`, `tail`, `wc`, and read-only `sed -n 'A,Bp'` — all confined to the run's artifacts directory, with every escape, write, and exec form rejected. (Reviewed hard on the hull pass; no escape found.)
+
+## Delivery and verify-goal fixes
+
+Two classes of leak the first code runs surfaced, fixed alongside:
+
+- **Code ships as code.** A `game.py` is delivered as runnable source, not pandoc-rendered into a Word document. Markdown companions (a `README.md`) ride *beside* the code in a bundle instead of becoming a stray `.docx` — a coherent, runnable folder.
+- **Delivery stops piling up duplicates.** Many edits to one file deliver it once (the latest); an improved attached file replaces its prior copy.
+- **The verify-goal wall catches "test it" goals.** `test` / `playtest` / `play through` / `smoke test` goals are dropped at planning like other standalone-verify goals — running a finished deliverable is QC's job, and a GUI playthrough is something no agent can do. This closes a path where a "test the game" goal blocked on a capability gap and wedged a finished deliverable behind a CRITICAL ticket.
+
+---
+
+## What it means for you
+
+If your work is *iterative* — improve this script, tighten this draft, adjust this config — you no longer have to regenerate the whole artifact and hope nothing got lost. Attach it, say what to change, and the change is what you get. The capability is artifact-agnostic: it's search/replace on text, so it works for code, prose, config, or data alike.
+
+For the full engine contract and the honest ceilings, the [v0.1.0 Beta calibration](/v0-1-0-beta/) page remains the source of truth. The [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) has the precise commit-level delta.
