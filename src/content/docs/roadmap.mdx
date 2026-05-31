@@ -3,17 +3,28 @@ title: Roadmap
 description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
 ---
 
-v0.2.2 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+v0.3.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
 If you want a one-page summary of v0.1.0 itself (what works, what doesn't), see the [v0.1.0 Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
-## Current — v0.2.2
+## Current — v0.3.0
 
-The headline of v0.2.2 is **web search** and a **redo loop that provably terminates**. Producers can now *discover* current sources by searching the web — instead of only fetching a URL they already know or reciting stale training data — and the loop that redoes a not-good-enough goal can no longer spin forever: it always exits to the Product Quality Report. See the [v0.2.2 release notes](/v0-2-2/) for the full delta.
+The headline of v0.3.0 is the **skill-library keystone**: a producer is now a **model endpoint**, not a holder of a frozen skill list. It checks out whatever a task needs from a shared library at run-time, so *any* producer can run *any* task and the capability gap that used to block a task is dissolved. See the [v0.3.0 release notes](/v0-3-0/) for the full delta.
 
-v0.2.2 adds:
+v0.3.0 brings:
+
+- **Producers as model endpoints.** Setup no longer assigns skills — you give a producer an LLM and tag what it's good at. Skills compose per task from the shared library; the wizard gets simpler and the team composes capability at run-time.
+- **Capability + availability routing that never blocks.** Dispatch picks the least-loaded producer (independent work spreads across idle models), prefers ones that meet a task's capability floor, but runs the best-available model with a Product Quality Report reservation when none do. The only hard gap is "no producer exists at all" — a setup error.
+- **The skill library's first working brick** — `search_skills` / `load_skill` / `drop_skill` over a shared pool with a cheap resident index (names + one-liners, no bodies). The full lazy checkout/drop library + the conversational skill-creation flow land in later bricks.
+- **Self-contained goal decomposition** — a fix the live runs surfaced: goals now name their concrete subject (never "the three topics"), and the project objective is threaded into the producer prompt as a north-star.
+
+### v0.2.2 — web search + a provably-terminating redo loop
+
+The headline of v0.2.2 was **web search** and a **redo loop that provably terminates**. Producers can now *discover* current sources by searching the web — instead of only fetching a URL they already know or reciting stale training data — and the loop that redoes a not-good-enough goal can no longer spin forever: it always exits to the Product Quality Report. See the [v0.2.2 release notes](/v0-2-2/) for the full delta.
+
+v0.2.2 added:
 
 - **`web_search`** (DuckDuckGo, no API key) — a producer searches, reads ranked hits, then `http_get`s the URLs worth reading. Shipped as the **first brick of the skill library**: a separate single-purpose `web-search` skill composed onto a task via a per-task tool union (no fixed roles, no bundling).
 - **Source-credibility flagging** — known content-farm domains are flagged and sunk below credible hits (flag, never drop); extensible via `MODULATIO_LOW_CREDIBILITY_DOMAINS`. Plus an `http_get` User-Agent fix (it was 403'ing courteous sites).

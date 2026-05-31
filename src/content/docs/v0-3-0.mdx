@@ -1,0 +1,102 @@
+---
+title: v0.3.0 release notes
+description: The skill-library keystone — a producer becomes a model endpoint, skills are checked out from a shared library per task, and dispatch routes on capability and availability without ever blocking.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.3.0 is the **skill-library keystone**. It changes what a producer *is*: no
+longer a holder of a frozen skill list, but a **model endpoint** that checks out
+whatever a task needs from a shared library at run-time. The capability gap that
+used to stop a task cold — *"no producer holds the required skill"* — is
+dissolved.
+
+This is the producer-collapse thesis reaching its conclusion. A producer was
+never the skills themselves; it was always the model executing them. The library
+just removes the artificial freeze.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.3.0 changes how producers are configured and how work routes; it does not move
+the engine's ceilings. The honest limits on the [v0.1.0 Beta calibration
+page](/v0-1-0-beta/) still hold. This page is the *delta* on top of
+[v0.2.2](/v0-2-2/).
+</Aside>
+
+---
+
+## A producer is now a model endpoint
+
+You no longer assign skills to producers. In the setup wizard you set up your API
+keys, then add up to eight producers by **assigning an LLM and confirming what
+it's good at** — a quick capability tag, smart-defaulted for known models — and
+that's it. There are no fixed roles and no skill lists to curate.
+
+Skills are composed **per task** from a shared library, not held per producer. So
+**any producer can run any task**: when a task needs a capability the producer
+doesn't already have loaded, it checks it out of the library instead of blocking.
+
+This is the first working brick of the skill library: a producer can discover
+skills it doesn't hold (`search_skills`), check one out to read its guidance
+(`load_skill`), and drop it to reclaim context (`drop_skill`), drawn from a shared
+pool. A cheap resident index (names + one-liners, no bodies) makes discovery
+nearly free. The full lazy checkout/drop library and the conversational
+skill-creation flow are specced and land in later bricks.
+
+---
+
+## Dispatch routes on capability + availability — and never blocks
+
+With skills out of the routing path, dispatch picks a producer on two axes:
+
+- **Availability first.** The least-loaded producer wins, so a wave of independent
+  tasks **spreads across idle models** instead of serializing onto one. You don't
+  pay for eight producers and watch seven sit idle.
+- **Capability floor — soft.** Producers whose model meets a task's capability
+  floor are preferred; but if none do, the task runs on the **best-available**
+  model anyway, and the shortfall ships as a **Product Quality Report
+  reservation** — never a block.
+
+This is the honesty thesis applied one layer down. A goal that can't be perfect
+still ships with an honest caveat; now a task that can't find its *ideal*
+producer still runs on the best available one, with the caveat in the PQR. The
+only hard gap left (`ROSTER_GAP`) fires when *no producer exists at all* — a setup
+error the wizard prevents, not a per-task gap. A skill the plan references that
+isn't in the library yet is advisory, never a blocking ticket.
+
+Capabilities now come from the **model**, not from assigned skills: Modulatio
+infers a model's tier, cost class, and strengths from its id for known families
+(overridable per-model in the wizard), and routing reasons over those.
+
+---
+
+## A fix the live runs flushed out: self-contained goals
+
+Validating the keystone on a live run surfaced a real planning bug. The
+goal-decompose step could write a goal that referred to its subject *symbolically*
+— *"covers all three requested topics"* — without ever naming them. Because each
+task runs in a fresh producer that sees only its own task text (not the objective,
+not sibling goals), that dangling reference was unbuildable; the producer
+correctly refused to fabricate and shipped a gap-note.
+
+Two fixes ride along: decomposition now **names the concrete subject** (never "the
+three topics" / "the above"), and the project objective is threaded into the
+producer prompt as a **north-star** so a producer can resolve anything its task
+left implicit instead of stalling. Re-run with a stronger Leader on the same
+shape, the goals named their parts concretely and the run fetched dozens of real
+sources into a substantive deliverable.
+
+---
+
+## What it means for you
+
+Setup gets simpler: pick your models, tag what each is good at, done — no skill
+bookkeeping. Runs get more robust: a missing capability is a checkout or a
+best-available run with an honest note, never a dead end, and independent work
+spreads across the models you're paying for. Configurations from older versions
+keep working unchanged — a roster that still lists skills per agent parses and
+routes fine; those skills are now advisory.
+
+For the full engine contract and the honest ceilings, the [v0.1.0 Beta
+calibration](/v0-1-0-beta/) page remains the source of truth. The
+[CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) has
+the precise commit-level delta.
