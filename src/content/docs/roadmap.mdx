@@ -3,21 +3,32 @@ title: Roadmap
 description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
 ---
 
-v0.3.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+v0.4.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
 If you want a one-page summary of v0.1.0 itself (what works, what doesn't), see the [v0.1.0 Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
-## Current — v0.3.0
+## Current — v0.4.0
 
-The headline of v0.3.0 is the **skill-library keystone**: a producer is now a **model endpoint**, not a holder of a frozen skill list. It checks out whatever a task needs from a shared library at run-time, so *any* producer can run *any* task and the capability gap that used to block a task is dissolved. See the [v0.3.0 release notes](/v0-3-0/) for the full delta.
+The headline of v0.4.0 is **autonomous skill self-codification**: the team learns from its own repeated failures. At the end of a run the Leader reads QC's recent fail verdicts, judges what recurred enough to be worth remembering, and codifies the correction into durable, git-versioned skill guidance that cheap producers load next time. See the [v0.4.0 release notes](/v0-4-0/) for the full delta.
 
-v0.3.0 brings:
+v0.4.0 brings:
+
+- **Self-codification at end of run.** The Leader judges recurrence over QC's fail verdicts (roughly three of the same defect) and either improves an existing skill (a "Learned" section + a version bump) or creates a new single-purpose one. Recurrence is the model's judgment over the log, not a mechanical counter.
+- **A git-backed skill library.** Every codification is versioned and committed, so a lesson earned at a token cost is never lost and is always revertible. The git layer is best-effort and inert when git is absent — it never raises, never touches global config.
+- **No second review of what the team learned.** QC already voted via the repeated fails the lesson is built from, and a weaker QC gating the strongest seat's judgment would invert the capability floor — so the Leader's call stands, mirroring QC-as-fixer. Runtime QC still reviews the *artifacts* the skill later influences.
+- **Observable + reversible by design.** A silently stalled loop leaves a `skill_codification_skipped` breadcrumb without ever breaking a run; the whole loop is one env var away from off (`MODULATIO_SKILL_CODIFICATION=0`).
+
+### v0.3.0 — the skill-library keystone
+
+The headline of v0.3.0 was the **skill-library keystone**: a producer is now a **model endpoint**, not a holder of a frozen skill list. It checks out whatever a task needs from a shared library at run-time, so *any* producer can run *any* task and the capability gap that used to block a task is dissolved. See the [v0.3.0 release notes](/v0-3-0/) for the full delta.
+
+v0.3.0 brought:
 
 - **Producers as model endpoints.** Setup no longer assigns skills — you give a producer an LLM and tag what it's good at. Skills compose per task from the shared library; the wizard gets simpler and the team composes capability at run-time.
 - **Capability + availability routing that never blocks.** Dispatch picks the least-loaded producer (independent work spreads across idle models), prefers ones that meet a task's capability floor, but runs the best-available model with a Product Quality Report reservation when none do. The only hard gap is "no producer exists at all" — a setup error.
-- **The skill library's first working brick** — `search_skills` / `load_skill` / `drop_skill` over a shared pool with a cheap resident index (names + one-liners, no bodies). The full lazy checkout/drop library + the conversational skill-creation flow land in later bricks.
+- **The skill library's first working brick** — `search_skills` / `load_skill` / `drop_skill` over a shared pool with a cheap resident index (names + one-liners, no bodies). The lazy checkout/drop library + the self-codification flow landed in the bricks that followed.
 - **Self-contained goal decomposition** — a fix the live runs surfaced: goals now name their concrete subject (never "the three topics"), and the project objective is threaded into the producer prompt as a north-star.
 
 ### v0.2.2 — web search + a provably-terminating redo loop

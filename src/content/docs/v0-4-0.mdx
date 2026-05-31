@@ -1,0 +1,106 @@
+---
+title: v0.4.0 release notes
+description: Autonomous skill self-codification — the team learns from its own repeated failures, codifying recurring corrections into durable, git-versioned skill guidance that cheap producers load next time.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.4.0 makes the team **learn from its own failures**. When the same kind of
+defect keeps coming back, the correction stops being re-derived every run at a
+real token cost — Modulatio **codifies** it into durable skill guidance that
+producers load next time. The smart model's repeated fix becomes the rising
+floor for every cheap producer.
+
+This is the [QC-thesis](/v0-2-0/) reaching its natural conclusion. v0.2.0 made
+Quality Control (QC) a *fixer* — the smarter seat reviews cheap work and patches
+only the errors. v0.4.0 makes those fixes **compound**: a correction earned once
+is paid for once, then it's in the library for good.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.4.0 adds a learning loop on top of the engine; it does not move the engine's
+ceilings. The honest limits on the [v0.1.0 Beta calibration
+page](/v0-1-0-beta/) still hold. This page is the *delta* on top of
+[v0.3.0](/v0-3-0/).
+</Aside>
+
+---
+
+## The team learns from its own failures
+
+At the end of a run, the **Leader** reads the team's recent QC **fail
+verdicts** — the defects QC has already caught and rejected — and **judges**
+whether any problem recurred enough to be worth remembering: roughly three or
+more instances of the *same kind* of defect, across tasks. A single mistake is
+not a lesson; a pattern is.
+
+When it finds one, it codifies the lesson into the skill library — either
+**improving** an existing skill (it appends a "Learned" section and bumps the
+skill's version) or **creating** a new single-purpose one. The guidance is
+written as a general rule a producer follows to *avoid* the defect, not a
+recounting of the specific instances, so it applies to any future work of that
+kind.
+
+Recurrence is the model's **judgment over the log**, not a mechanical counter or
+a special tag the engine has to emit. That's deliberate: the seat that *reads*
+the failures is the one that decides what they mean. The loop is on by default
+and runs once per kickoff, at the very end, after the work is done.
+
+---
+
+## Your skill library is now git-backed
+
+Every codification is **versioned and committed** to your skill library, which
+is now a git repository. A lesson the team earned at a real token cost is never
+lost, and it is always **revertible** — if a learned rule overreaches, the run's
+Product Quality Report points you at it, and `git` puts the old version back.
+
+The git layer is best-effort and stays out of the way: it never touches your
+global git config, and on any system without git it simply does nothing rather
+than failing a run. Learning is a feature, never a fragility.
+
+---
+
+## Why nothing re-reviews what the team learned
+
+A natural question: if QC reviews everything else, why doesn't it review the
+*skill the Leader just drafted*?
+
+Because QC **already voted**. The lesson is distilled from the very fail-verdicts
+QC kept issuing — its repeated rejections *are* the signal that this needs
+fixing. Re-checking the drafted skill would just count the same QC opinion
+twice. And the Leader is the strongest seat at the table; having a weaker QC gate
+its judgment would invert the capability floor — the smartest model marking its
+homework against a less capable one.
+
+It's the same shape as QC-as-fixer, where the Leader doesn't re-check the fix QC
+authored. The engine binds the parts that *should* be mechanical — the
+codification is versioned, git-committed, and revertible — while leaving the
+judgment to the model best placed to make it. And runtime QC still reviews every
+*artifact* the new skill later influences, so a bad lesson can't hide: it shows
+up as worse output, downstream, where QC catches it.
+
+If a learning loop ever stalls silently — a bad key, a network blip — it leaves
+a breadcrumb in the activity log (`skill_codification_skipped`) so the silence is
+diagnosable, without the loop ever being able to break a run. You can turn the
+whole thing off with `MODULATIO_SKILL_CODIFICATION=0`.
+
+---
+
+## What it means for you
+
+Your team gets quietly better at the work you actually give it. The corrections
+your strong models make stop evaporating at the end of each run and become
+standing guidance your cheap models load the next time — so over a project's
+life, the same mistakes stop recurring and the cost of quality falls. It's the
+QC thesis closing its own loop: pay for a fix once, keep it forever.
+
+It was proven on a live run — a real Leader read a team's repeated failures on a
+multi-company research brief (one company's section kept shipping as a
+placeholder), recognized the pattern, and improved the research skill with a
+general rule about never leaving a section unfinished. No prompting, no
+bookkeeping; the team taught itself.
+
+For the full engine contract and the honest ceilings, the [v0.1.0 Beta
+calibration](/v0-1-0-beta/) page remains the source of truth. The
+[CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) has
+the precise commit-level delta.
