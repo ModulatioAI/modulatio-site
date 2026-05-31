@@ -1,0 +1,52 @@
+---
+title: v0.2.2 release notes
+description: Web search — producers discover current sources themselves instead of recalling stale training data — plus a redo loop that provably terminates and always exits to the Product Quality Report.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.2.2 gives Modulatio two things it was missing: the ability to **find out what's true now**, and a redo loop that **cannot run forever**.
+
+Before this release a producer could only `http_get` a URL it *already knew* — so when a task's answer depended on current reality (recent events, live data, anything past a model's training cutoff), it quietly fell back on stale memory. Now producers can **search the web**, discover credible sources themselves, and ground the work in them. The release was driven by exactly that failure: a research summary frozen at its 2024 cutoff, which the engine now brings current by searching. The arc cleared a fresh two-reviewer audit (hull + coherence) before merge.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.2.2 adds a capability and closes a bug; it does not move the engine's ceilings. The honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of [v0.2.1](/v0-2-1/).
+</Aside>
+
+---
+
+## Web search — the first brick of the skill library
+
+`modulatio` producers can now **discover** current sources by searching, not just fetch a URL they already know:
+
+- **`web_search`** (DuckDuckGo, no API key) is a separate tool. A producer searches a query, reads the ranked hits, then `http_get`s the URLs worth reading in full. **URLs are found, never hard-coded.**
+- It ships as the **first brick of the skill library**. `web-search` is a *separate, single-purpose skill* — it grants only the search tool, nothing bundled. A producer gets the union of its task's required skills' tools, **composed per task**. There are no fixed roles: a producer that holds `web-search` can search; the planner grants it whenever a task's answer depends on what's true now. (The full skill-library — lazy checkout/drop from a shared pool — is [specced](https://github.com/ModulatioAI/modulatio/blob/main/docs/design/skill-library.md) but not yet built; this is its first brick.)
+
+### Source credibility — flag, never drop
+
+The open web is full of AI-content-farm slop that fabricates plausible-looking "facts." `web_search` **flags** known low-trust domains and sinks them below credible hits — but never hides them. The producer (and the audit trail) see everything, and the producer is told not to cite a flagged hit on its own and to corroborate current-events claims across independent credible sources. Flagging, not censoring — the same honesty discipline as the Product Quality Report. The list is extensible per deployment via `MODULATIO_LOW_CREDIBILITY_DOMAINS`.
+
+A companion fix: **`http_get` now sends a polite, identifying User-Agent.** It sent none, which got it 403'd by Wikipedia and other courteous sites — silently pushing research back onto stale memory.
+
+---
+
+## A redo loop that provably terminates
+
+When the Leader judges a finished goal not-good-enough, it can redo the work. v0.2.2 makes that loop **provably terminating — an infinite redo is not a possibility.**
+
+A real bug let it grind: the per-goal retry budget was keyed to the calendar *date* and refreshed *inside* the loop, so a run that crossed midnight reset its own budget and could spin day after day. Now, within a single run, the budget is **absolute** — it counts up to its cap and is never reset mid-run. (The daily refresh still applies, but only to *resuming a parked goal in a later run*, which is where a fresh budget belongs.)
+
+Two more guarantees ride along:
+
+- **fix-is-final + deadlock bow-out.** When QC has already authored its best fix and the producer keeps hitting the same wall, the goal **bows out early** with a Product Quality Report reservation instead of re-grinding QC's final result.
+- **The goal always exits to the Product Quality Report.** Whatever happens, the work *ships* — current if it can be, with an honest reservation if not — and it never blocks, never tickets, never loops. The PQR is the universal escape hatch. This is the same honesty thesis that runs through the whole engine, extended to the redo loop.
+
+The redo budget is tightened to **4** per goal.
+
+---
+
+## What it means for you
+
+Hand Modulatio work whose answer depends on what's happening *now* — a market summary, a current-events brief, a "what's the latest on X" — and it will go look, weigh the sources, and tell you what it couldn't verify, instead of confidently reciting last year's training data. And whatever you give it, the run is guaranteed to finish and hand you something, with the lead's honest reservations beside it.
+
+For the full engine contract and the honest ceilings, the [v0.1.0 Beta calibration](/v0-1-0-beta/) page remains the source of truth. The [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) has the precise commit-level delta.

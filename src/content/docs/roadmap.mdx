@@ -3,17 +3,28 @@ title: Roadmap
 description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
 ---
 
-v0.2.1 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+v0.2.2 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
 If you want a one-page summary of v0.1.0 itself (what works, what doesn't), see the [v0.1.0 Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
-## Current — v0.2.1
+## Current — v0.2.2
 
-The headline of v0.2.1 is **in-place editing**: hand Modulatio an existing file with `--attach` and it improves it *surgically* rather than rebuilding from scratch. The producer emits exact `SEARCH`/`REPLACE` blocks and the **engine** applies them, keeping every untouched byte — so a cheap producer can't regenerate a file and silently drop working content. Preservation is structural, not a prose request. See the [v0.2.1 release notes](/v0-2-1/) for the full delta.
+The headline of v0.2.2 is **web search** and a **redo loop that provably terminates**. Producers can now *discover* current sources by searching the web — instead of only fetching a URL they already know or reciting stale training data — and the loop that redoes a not-good-enough goal can no longer spin forever: it always exits to the Product Quality Report. See the [v0.2.2 release notes](/v0-2-2/) for the full delta.
 
-v0.2.1 adds:
+v0.2.2 adds:
+
+- **`web_search`** (DuckDuckGo, no API key) — a producer searches, reads ranked hits, then `http_get`s the URLs worth reading. Shipped as the **first brick of the skill library**: a separate single-purpose `web-search` skill composed onto a task via a per-task tool union (no fixed roles, no bundling).
+- **Source-credibility flagging** — known content-farm domains are flagged and sunk below credible hits (flag, never drop); extensible via `MODULATIO_LOW_CREDIBILITY_DOMAINS`. Plus an `http_get` User-Agent fix (it was 403'ing courteous sites).
+- **A provably-terminating redo loop** — the per-run retry budget is now absolute (a midnight roll can't reset it mid-run); fix-is-final + a deadlock bow-out; budget tightened to 4. The goal always ships to the Product Quality Report.
+- A **skill-library design spec** for the brick's generalization (lazy checkout/drop from a shared pool) — design only, not yet built.
+
+### v0.2.1 — in-place editing
+
+The headline of v0.2.1 was **in-place editing**: hand Modulatio an existing file with `--attach` and it improves it *surgically* rather than rebuilding from scratch. The producer emits exact `SEARCH`/`REPLACE` blocks and the **engine** applies them, keeping every untouched byte. See the [v0.2.1 release notes](/v0-2-1/) for that delta.
+
+v0.2.1 added:
 
 - **`kickoff --attach <file>`** — pin an existing file and switch on in-place edit: the attached file is the starting point, the plan stays in it (no scatter), and changes are surgical.
 - **Surgical patch mode** — `SEARCH`/`REPLACE` blocks applied by the engine; untouched content is preserved structurally. Artifact-agnostic (code, prose, config, data).

@@ -8,7 +8,7 @@ import { Aside } from '@astrojs/starlight/components';
 **A multi-model agent framework for running long, high-stakes projects with real quality control.**
 
 <Aside type="caution" title="Beta software">
-v0.2.1 adds **in-place editing**: hand Modulatio an existing file with `--attach` and it improves it *surgically* rather than rebuilding it — the producer emits exact `SEARCH`/`REPLACE` edits and the engine applies them, keeping every untouched byte (preservation is structural, not a prose request). It builds on v0.2.0's **QC-thesis arc**: cheap, fast producers generate the bulk; the smarter QC reviews and patches only the errors (speculative decoding, applied to agents); the Leader confirms while QC owns repair; and reservations the swarm can't resolve ship as an advisory **Product Quality Report** beside the work, never as a blocker. Validated end-to-end on a live heterogeneous model lineup and cleared a fresh two-reviewer audit. Read the [v0.2.1 release notes](/v0-2-1/) and the [Beta calibration page](/v0-1-0-beta/) before kicking off serious work — knowing the engine's real ceilings is the difference between a smooth run and a frustrated one. **Python 3.12+**. Bug reports and discussions welcome at the [issues tab](https://github.com/ModulatioAI/modulatio/issues) and [discussions](https://github.com/ModulatioAI/modulatio/discussions).
+v0.2.2 adds **web search** and a **redo loop that provably terminates**: producers can now *discover* current sources by searching the web (instead of reciting stale training data), credible-sourcing them with a flag-never-drop credibility pass; and the loop that redoes a not-good-enough goal can no longer spin forever — it always exits to the Product Quality Report. It builds on v0.2.1's **in-place editing** (`--attach` + surgical `SEARCH`/`REPLACE` patching) and v0.2.0's **QC-thesis arc**: cheap producers generate the bulk; the smarter QC reviews and patches only the errors (speculative decoding, applied to agents); the Leader confirms while QC owns repair; and reservations the swarm can't resolve ship as an advisory **Product Quality Report** beside the work, never as a blocker. Validated end-to-end on a live heterogeneous model lineup and cleared a fresh two-reviewer audit. Read the [v0.2.2 release notes](/v0-2-2/) and the [Beta calibration page](/v0-1-0-beta/) before kicking off serious work — knowing the engine's real ceilings is the difference between a smooth run and a frustrated one. **Python 3.12+**. Bug reports and discussions welcome at the [issues tab](https://github.com/ModulatioAI/modulatio/issues) and [discussions](https://github.com/ModulatioAI/modulatio/discussions).
 </Aside>
 
 Modulatio is a TUI-and-CLI framework for orchestrating teams of LLM agents on projects that take more than one prompt. You define an objective, set the standards, pick the models, and the team plans, executes, reviews, and iterates — with you in the loop at the levels that matter and out of the loop where automation is safe.
@@ -33,7 +33,9 @@ What makes Modulatio different from "spin up a chat" or single-agent tools:
 
 ## What's in the rest of the docs
 
-**[v0.2.1 release notes](/v0-2-1/)** — what's new in the current release: in-place editing (`--attach`), surgical patch mode, the code read-toolkit, and the delivery / verify-goal fixes.
+**[v0.2.2 release notes](/v0-2-2/)** — what's new in the current release: web search (the first skill-library brick), source-credibility flagging, and a provably-terminating redo loop.
+
+**[v0.2.1 release notes](/v0-2-1/)** — in-place editing (`--attach`), surgical patch mode, the code read-toolkit, and the delivery / verify-goal fixes.
 
 **[v0.2.0 release notes](/v0-2-0/)** — the QC-thesis arc, the Product Quality Report, default standards, and the context-budget hardening.
 
