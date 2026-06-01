@@ -3,17 +3,29 @@ title: Roadmap
 description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
 ---
 
-v0.4.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+v0.5.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
 If you want a one-page summary of v0.1.0 itself (what works, what doesn't), see the [v0.1.0 Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
-## Current — v0.4.0
+## Current — v0.5.0
 
-The headline of v0.4.0 is **autonomous skill self-codification**: the team learns from its own repeated failures. At the end of a run the Leader reads QC's recent fail verdicts, judges what recurred enough to be worth remembering, and codifies the correction into durable, git-versioned skill guidance that cheap producers load next time. See the [v0.4.0 release notes](/v0-4-0/) for the full delta.
+The headline of v0.5.0 is **per-job output folders + Job Templates** — the setup-side of the Alfred loop. Where v0.4.0 codified recurring *failures* into skills, v0.5.0 codifies recurring *setup* into reusable templates, and gives every job its own output folder so runs stop clobbering each other. See the [v0.5.0 release notes](/v0-5-0/) for the full delta.
 
-v0.4.0 brings:
+v0.5.0 brings:
+
+- **Per-job output folders.** Each job's deliverables land in their own named subfolder (`<job> <date>`, hex tiebreaker only on collision), with the Product Quality Report inside, so each run is a self-contained package. Back-compatible: no name → the old flat path, byte-identical.
+- **Job Templates.** The Leader's own self-authored interview + parameter schema + output contract for a *class* of job — domain-agnostic (the engine branches only on output cardinality, never on the job's subject), git-versioned with a name-dedup guard, forked from the skill-library machinery.
+- **An engine-enforced output contract.** A "one deliverable per item over N items" template binds N deterministically — overriding the planner's batching heuristic rather than hoping a prompt sentence holds — and post-validates the plan, reporting any shortfall firmly in the Product Quality Report instead of shipping it quietly.
+- **Cron is a bound template.** `cron add --jt <name> --jt-params <json>` validates the bound params against the schema **at add-time** (never fails at 3am) and runs headless with no interview. Existing template-less crons are unchanged.
+- **Setup-side self-codification.** At end of run the Leader judges recurrence over recent job history (≈3 of a kind, or an operator redo) and judges whether to codify a template — the setup-side mirror of skill self-codification. A self-improvement can never add a hard-required param without a default (which would break a bound cron). One env var from off (`MODULATIO_JT_CODIFICATION=0`).
+
+### v0.4.0 — autonomous skill self-codification
+
+The headline of v0.4.0 was **autonomous skill self-codification**: the team learns from its own repeated failures. At the end of a run the Leader reads QC's recent fail verdicts, judges what recurred enough to be worth remembering, and codifies the correction into durable, git-versioned skill guidance that cheap producers load next time. See the [v0.4.0 release notes](/v0-4-0/) for the full delta.
+
+v0.4.0 brought:
 
 - **Self-codification at end of run.** The Leader judges recurrence over QC's fail verdicts (roughly three of the same defect) and either improves an existing skill (a "Learned" section + a version bump) or creates a new single-purpose one. Recurrence is the model's judgment over the log, not a mechanical counter.
 - **A git-backed skill library.** Every codification is versioned and committed, so a lesson earned at a token cost is never lost and is always revertible. The git layer is best-effort and inert when git is absent — it never raises, never touches global config.
@@ -89,11 +101,11 @@ The v0.1.0 foundation ships:
 
 The next slice's thesis is **make Modulatio viable for long-running deployments** — work that spans weeks or months, that needs cross-phase memory, and that has a recurring identity worth preserving. Two sibling slices ship together because either alone leaves the other half of the gap open.
 
-### Job templates and multi-phase orchestration
+### Multi-phase orchestration on top of Job Templates
 
-This closes the production-scale gap. The shape, in broad strokes:
+[v0.5.0](/v0-5-0/) shipped the **Job Template foundation** — self-authored templates, an engine-enforced output contract, headless cron binding, and setup-side self-codification. What remains closes the rest of the production-scale gap, built on that foundation:
 
-- **Conversational job-template interview.** The Leader runs a multi-question interview keyed to the deliverable class. The user picks from `artifact_kind` plus a high-level "shape of work" label — fiction, software, research, business-loop, etc. The interview elicits the standards, conventions, and decisions that matter for that shape; the resulting template lives in the vault and seeds every subsequent phase.
+- **A conversational, streaming template interview.** v0.5.0's interview binds from defaults or a code-supplied answer set; the next step is the Leader running it as a *conversation* — a multi-question, streamed exchange where you watch the team think and answer back — landing as part of the TUI overhaul. The engine seam is already in place: the interview is driven by an injected ask-callback that falls back to defaults when headless.
 - **Templates that self-extend through research.** When an interview hits a gap the engine doesn't have a question for, Leader spawns a small research task to figure out what the question should be — then folds the new question into the template for next time.
 - **Persistent cross-phase memory.** Templates carry team state across phases — names, conventions, style choices, prior decisions — without the user re-stating them each phase.
 - **Lifecycle-managed templates** with `draft`, `validated`, `stable` stages so users can ship custom templates back to the community as they harden, the same way skills can today.
