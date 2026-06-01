@@ -3,13 +3,23 @@ title: Roadmap
 description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
 ---
 
-v0.5.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+v0.6.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
 If you want a one-page summary of v0.1.0 itself (what works, what doesn't), see the [v0.1.0 Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
-## Current — v0.5.0
+## Current — v0.6.0
+
+The headline of v0.6.0 is the **role-language migration** — three structural fixes the engine needed before its next chapter, each cleared a fresh **hull + coherence** review. See the [v0.6.0 release notes](/v0-6-0/) for the full delta.
+
+v0.6.0 brings:
+
+- **Routing reality on every headless path.** The keystone's capability + availability routing was wired only on the interactive path; the daemon, cron, Job-Templates, plan-mode, and TUI paths silently collapsed all producer work onto one model. v0.6.0 wires the per-agent model pools on every path and both producer channels — proven on real models through the daemon. Research routes by capability too, instead of a hardcoded role call.
+- **No more roles — only producers.** `specialist` and `researcher` are gone; there are only producers that compose skills, and research is a capability a producer holds. Old `defaults.json` keeps working through a read-fallback chain (`producer` → `specialist` → leader) — no migration step.
+- **An operator-presence-aware Leader.** The Leader judges when it runs autonomously (headless — it is the only check past QC) and defers when you're present, replacing a blunt global *"bias toward continue"* with a principled gate. Its between-task self-correction ships on by default when nobody's watching; the defer-to-you channel is the engine seam the coming conversational TUI plugs into.
+
+### v0.5.0 — per-job output folders + Job Templates
 
 The headline of v0.5.0 is **per-job output folders + Job Templates** — the setup-side of the Alfred loop. Where v0.4.0 codified recurring *failures* into skills, v0.5.0 codifies recurring *setup* into reusable templates, and gives every job its own output folder so runs stop clobbering each other. See the [v0.5.0 release notes](/v0-5-0/) for the full delta.
 

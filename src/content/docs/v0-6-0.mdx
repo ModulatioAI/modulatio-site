@@ -1,0 +1,122 @@
+---
+title: v0.6.0 release notes
+description: The role-language migration — routing reality wired on every headless path, the specialist/researcher roles collapsed into producers, and an operator-presence-aware Leader that judges when it runs alone and defers when you're there.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.6.0 is structural plumbing, not a new feature — the three fixes the engine
+needed before its next chapter. None of them change what you ask Modulatio to
+do; all three change how honestly it does it. Each shipped as its own brick,
+each cleared a fresh **hull + coherence** review before it landed.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.6.0 makes the engine's routing and its Leader behavior match what the docs
+already promised; it does not move the engine's ceilings. The honest limits on
+the [v0.1.0 Beta calibration page](/v0-1-0-beta/) still hold. This page is the
+*delta* on top of [v0.5.0](/v0-5-0/).
+</Aside>
+
+---
+
+## Routing reality: the keystone, actually wired everywhere
+
+The [skill-library keystone](/v0-3-0/) promised something specific: *a producer
+is a model endpoint; dispatch routes on capability + availability and never
+blocks; any producer runs any task.* That promise held — on the interactive
+`modulatio kickoff` path. On the **headless** paths — the daemon, cron, and
+[Job Templates](/v0-5-0/) that v0.5.0 just shipped, plus plan-mode
+sub-objectives and the TUI — it was quietly false. Those paths built the
+orchestrator without the per-agent model pool, so dispatch's careful
+capability+availability selection was **cosmetic**: every producer task
+collapsed onto a single role-keyed model regardless of which agent dispatch
+"picked."
+
+It was false on exactly the surface where it matters most — the unattended,
+scheduled work where nobody is watching which model ran. v0.6.0 wires the
+per-agent runner pools on **every** executor path, across *both* producer model
+channels (the plain call and the tool-using skill-loop that is actually the
+primary path). A real-model proof through the daemon now lands two tasks on two
+producers, each running on its **own** model — provably impossible before.
+Research stopped being a hardcoded role call that bypassed dispatch and became a
+normal capability-routed task too.
+
+This is the kind of bug a green test suite cannot catch: the units passed
+because the wiring was *internally* consistent on each path. It took a live
+proof on real models, watching the audit rows, to see that the selected model
+and the *running* model were two different things.
+
+---
+
+## No more roles — only producers
+
+Post-keystone there are no "specialists" and no "researchers." There are only
+**producers** that compose the skills each task needs from the shared library.
+v0.6.0 finishes the rename the keystone implied: the persisted
+`default_models.specialist` key is now `producer`, and the `researcher` role —
+its CLI flag, its defaults key, its default-roster row — is gone. Research is
+just a **capability** a producer holds (a default producer already carries the
+sourcing and web-search skills), and it keeps its larger context budget through
+an explicit budget role rather than a separate seat.
+
+Nothing breaks on upgrade. Old `defaults.json` files keep working: the legacy
+`specialist` and `researcher` keys stay readable through a read-fallback chain
+(`producer` → `specialist` → leader), the same proven shim pattern the
+`coordinator` → `planner` rename used. New setups write the new keys; the old
+deprecated flags remain hidden, accepted aliases. The role language is gone from
+the surface you touch, without a migration step you have to run.
+
+---
+
+## An operator-presence-aware Leader
+
+The Leader over-verified. The old code fought that the only way prose can — with
+a blunt, global *"bias toward continue"* mantra repeated a dozen times, a "don't
+invent verification gates" paragraph, and its two self-correction surfaces
+shipped **off** by default. That damping is exactly backwards for the case it
+most affects: when Modulatio runs **autonomously** — headless, from cron, inside
+a Job Template — the Leader is the *only* judgment past QC. Suppressing it there
+is precisely wrong. The damping is only right when **you** are present, where the
+Leader should surface its reservations to you rather than act on them alone.
+
+So v0.6.0 gates the Leader's judgment on **operator presence** instead of
+damping it globally. It is the same partnership principle Modulatio is built
+around — honor the direction a partner sets, run with your own judgment where
+they've left it to you — applied to the Leader's own verify-and-reflect:
+
+- **On its own** (autonomous): the Leader is the team's last check past QC. It
+  decides and self-corrects as the work genuinely warrants; the engine prevents
+  loops, so it does not soften a real call for fear of churn. Its between-task
+  self-correction now runs **on by default** here.
+- **Collaborating** (an operator is present): it surfaces the calls that matter
+  and its reservations to you and leans toward continuing over driving a redo on
+  its own — you're right there to decide with it.
+
+The load-bearing guardrails stay in **both** modes: never invent a verification
+gate the swarm has no tool for, and reservations always ride out to you in the
+**Product Quality Report** — they never loop the swarm or block a headless run.
+The change is the *framing the Leader reasons within*, not the no-loop machinery
+underneath it, which was already right for the autonomous case and is untouched.
+
+The defer-to-you half is deliberately **forward-looking**: today, with an
+operator marked present, the Leader is *told* to defer, but the live mid-run
+channel to defer *into* — the streaming, conversational exchange where you watch
+the team think and answer back — lands with the TUI overhaul. v0.6.0 builds the
+engine seam that overhaul plugs into; it does not ship a half-built interaction
+that hangs waiting for an answer nothing yet provides.
+
+---
+
+## What it means for you
+
+If you run Modulatio unattended, the model lineup you configured is now the
+lineup that actually runs — work spreads across your idle models instead of
+piling onto one — and the Leader behind that work is sharper, not blunted,
+exactly where no human is watching it. If you run it interactively, nothing
+about your day changes yet; the seam for the conversational Leader is in place
+for what comes next.
+
+For the full engine contract and the honest ceilings, the [v0.1.0 Beta
+calibration](/v0-1-0-beta/) page remains the source of truth. The
+[CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) has
+the precise commit-level delta.
