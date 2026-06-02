@@ -1,0 +1,67 @@
+---
+title: v0.8.0 release notes
+description: Talk to the Leader from your editor — an Agent Client Protocol (ACP) server exposes the conversational Leader over stdio, with client-approved tool calls. Plus the redundant STATUS tab is retired.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.8.0 takes the conversation-first Leader *outside* the TUI: an **Agent Client
+Protocol (ACP) server** lets an external client — a Zed-class editor — drive the
+same conversational Leader over JSON-RPC-on-stdio. Prompt turns, live activity,
+and **client-approved tool calls**. Reviewed fresh by two independent reviewers
+(hull + coherence) and validated live against a real model.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.8.0 adds a new operator surface; it does not move the engine's ceilings. The
+honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/) still hold.
+This page is the *delta* on top of [v0.7.2](/v0-7-2/).
+</Aside>
+
+---
+
+## An ACP server — `modulatio acp`
+
+Point an ACP-speaking editor at `modulatio acp --code <project>` and you get the
+same conversational Leader you'd talk to in the TUI, now in your editor:
+
+- **Prompt turns** — `session/prompt` runs the Leader's `converse()` and returns
+  his full reply.
+- **Live activity** — the Leader's thinking, tool calls, and any kickoff he runs
+  stream back as `session/update` notifications.
+- **Client-approved tool calls** — before the Leader runs *any* tool, the server
+  sends `session/request_permission` and **blocks for your approval**. Reject it
+  and the Leader gets a `DENIED` result and re-plans. It's the operator's call,
+  carried out by the Leader — the same contract as the in-TUI
+  [conversational approval](/v0-7-2/) shipped in 0.7.2. Fail-closed: no tool runs
+  without an explicit allow.
+
+It's the **same Leader and the same memory** as the TUI — the per-project
+conversation thread is shared, so a turn over ACP and a turn in the TUI continue
+one conversation. (Validated live: a fresh ACP session recited back a haiku the
+Leader had written in an earlier turn, verbatim.)
+
+The full setup is in the **[ACP integration guide](/operations/acp/)**.
+
+<Aside type="caution" title="v1 scope">
+v1 is full-reply-per-turn (no token streaming yet), one session per process, and
+cooperative cancel; tool-permission gating covers the Leader's conversational
+tool-loop, not the producer-swarm sub-run a kickoff spins up. stdout carries only
+JSON-RPC frames (all logs go to stderr).
+</Aside>
+
+---
+
+## The STATUS tab is retired
+
+The conversation-first TUI already streams every activity event onto the LEADER /
+MOD SQUAD "TV", so the standalone STATUS dashboard was duplicate surface. It's
+gone; the activity engine is untouched.
+
+---
+
+## Under the hood
+
+A new `permission_callback` seam in the engine (`runners.run_llm_with_tools`,
+threaded through `converse`) gates each tool call — that's the hook the ACP
+server's permission round-trip plugs into. It's off by default, so every existing
+path (the TUI, the CLI, the producer swarm) is unchanged.

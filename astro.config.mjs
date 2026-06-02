@@ -78,6 +78,7 @@ export default defineConfig({
 					label: 'Operations',
 					items: [
 						{ label: 'Daemon operator guide', slug: 'operations/daemon' },
+						{ label: 'ACP — drive from an editor', slug: 'operations/acp' },
 						{ label: 'Multi-user host hardening', slug: 'operations/multi-user-hardening' },
 						{ label: 'Vault backup + restore', slug: 'operations/vault-backup' },
 						{ label: 'CI integration', slug: 'operations/ci-integration' },
