@@ -1,0 +1,86 @@
+---
+title: v0.7.2 release notes
+description: Conversation-first — you resolve work by talking to the Leader. Approvals move into the LEADER chat, the PLANS tab becomes a JT Library, the chat takes attachments, the Leader gets a constitution, and /bug files an issue.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.7.2 leans Modulatio further into its conversation-first shape: the **LEADER**
+tab is where work gets *resolved*, so the dedicated approve/deny surfaces retire
+and the Leader handles approvals in conversation. Plus a Job-Template library, a
+chat that takes attachments, a Leader constitution, and built-in bug reporting.
+Reviewed fresh by two independent reviewers (hull + coherence).
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.7.2 refines operator-facing surface; it does not move the engine's ceilings.
+The honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/) still
+hold. This page is the *delta* on top of [v0.7.1](/v0-7-1/).
+</Aside>
+
+---
+
+## Approvals move into the Leader conversation
+
+You used to approve a paused plan or a budget continuation by clicking a button
+in the Plans/Tickets tab. Now you **tell the Leader** — "approve the budget",
+"yes, go ahead", "no, redo it" — and he carries it out. Pending approvals
+surface in his awareness; he applies your decision and it lands in the audit
+log. The orange **PROBLEM lamp** still lights when something needs your
+attention, and an awaiting ticket's preview points you to the LEADER tab.
+
+The **Tickets tab is now a read-only audit log** — what happened, who decided,
+the transition history. It no longer decides anything itself; that's the
+Leader's conversation. (Telegram and CLI approval — `modulatio project approve`
+— are unchanged.)
+
+This is the point of the conversation-first move: one place to resolve work
+(talk to the Leader), and the tabs become places to browse and audit.
+
+---
+
+## The PLANS tab is now the JT Library
+
+The old read-only Plans tab is retired; its slot now hosts a **Job-Template
+library** browser — search the templates the Leader has codified (the Alfred
+loop) or you've authored, and read each one's parameters, output contract, and
+interview. Plan objects still live in the engine; you watch a running plan on
+the **TEAM** floor and steer it by talking to the Leader.
+
+---
+
+## Attachments in the Leader chat
+
+The LEADER chatbox gains 📎 / 🖼 buttons. Hand the Leader a **document** (it's
+inlined into the conversation so he can read it) or an **image** (he sees it via
+the multimodal path) — the same way the KICK OFF box already took attachments.
+
+---
+
+## A constitution for the conversational Leader
+
+The Leader now carries a **constitution** — a user-editable document of values
+(honesty, diligence, harm-avoidance, respect) that shapes how he talks and
+partners with you. It's injected **only** into his conversational persona, not
+the producer/QC or decompose/verify prompts — the values are about *how the
+Leader works with you*, not about job decomposition rules.
+
+A sensible default ships. Copy it to `<shared>/constitution.md` (or
+`<project>/constitution.md`) and edit it to make it yours — your version wins.
+
+---
+
+## Built-in bug reporting
+
+A new **`/bug`** command opens a form (title, what happened, steps) with an
+"attach diagnostics" toggle. It files a GitHub issue directly when you've set
+`MODULATIO_GITHUB_TOKEN` (your own PAT), or opens a **prefilled new-issue URL**
+when you haven't — so it works with no account. The diagnostics bundle is
+**redacted**: version, runtime, your models with auth-type + availability (never
+a key value), opt-in toggles as set/unset, and recent crash-log filenames. No
+secret ever reaches the issue body.
+
+---
+
+## Also
+
+The dead **QUEUE tab** is removed (the Heartbeat queue engine is untouched).

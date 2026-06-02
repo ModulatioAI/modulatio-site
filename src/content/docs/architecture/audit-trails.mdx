@@ -75,7 +75,7 @@ Tickets are first-class events that survive the run loop. They capture three cla
 
 Tickets carry a `priority` (BLOCKER / CRITICAL / MINOR), an `affected_*` link (task / goal / plan id), an `actor`, the title + body, and `approval_required`. `store.create_ticket(...)` writes them under `<vault>/<project>/tickets/`.
 
-The TUI's Tickets tab is the primary UI for the user side; the CLI exposes `modulatio project tickets` for listing.
+The TUI's Tickets tab is a read-only audit log of these (decisions are made by telling the Leader in the LEADER chat); the CLI exposes `modulatio project tickets` for listing.
 
 ### Ticket priorities and approval semantics
 

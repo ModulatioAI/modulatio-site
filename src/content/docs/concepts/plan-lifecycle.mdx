@@ -102,7 +102,7 @@ The plan is executing. The daemon owns the loop.
 
 You can:
 
-- Watch progress in the TUI's Plans tab
+- Watch progress on the TUI's TEAM floor (the producer swarm streams there)
 - Close the TUI — the daemon keeps running
 - Get pinged on Telegram between sub-objectives if you set that up
 
@@ -125,7 +125,7 @@ The plan stopped mid-flight because of a blocker. It needs your attention.
 - **Tool error** — `run_shell` returned a non-zero exit on a critical task
 - **Budget at 80%** — soft warning; plan continues but flags for review
 
-**What you can do (from the TUI Plans tab or Telegram approval):**
+**What you can do (by telling the Leader in the TUI, or via a Telegram approval):**
 
 - **Resolve and resume** — fix the issue (rotate the auth token, etc.) and tell Leader to continue
 - **Decline** — accept the partial output and end the plan early
@@ -213,7 +213,7 @@ The Verify phase is where the team checks itself. It costs one Leader call per s
 
 There are three places approval can come from:
 
-1. **TUI** — type `yes`/`approve` in the Leader chat panel; or use the Plans tab's Approve button
+1. **TUI** — tell the Leader in the LEADER chat (e.g. type `approve` / `yes`); he carries it out and the decision is logged in the Tickets tab
 2. **Telegram** — if you configured Telegram, plans paused for approval send a message; reply with the prescribed approval phrase
 3. **CLI** — `modulatio project approve <plan-id>` (also useful in scripts / automation)
 
@@ -223,7 +223,7 @@ All three write the same approval record to the audit trail. Source is logged.
 
 Once a plan is running, you can cancel from any of the same surfaces:
 
-- TUI Plans tab → Cancel
+- TUI → tell the Leader to cancel it in the LEADER chat
 - Telegram → reply `cancel <plan-id>`
 - CLI → `modulatio project cancel <plan-id>`
 
@@ -255,7 +255,7 @@ This is your post-hoc visibility into what happened. Useful for:
 
 ### "Plan stuck in awaiting-approval"
 
-You haven't approved or rejected. Check the TUI Plans tab or Telegram for the pending approval. If you ignored it intentionally and want to stop the project, cancel.
+You haven't approved or rejected. Ask the Leader in the LEADER chat (an awaiting approval also shows in the Tickets log), or check Telegram. If you ignored it intentionally and want to stop the project, cancel.
 
 ### "Plan paused but I don't see why"
 
