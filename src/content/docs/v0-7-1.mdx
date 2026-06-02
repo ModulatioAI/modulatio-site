@@ -1,0 +1,82 @@
+---
+title: v0.7.1 release notes
+description: The key model, corrected — your provider keys are a shared pool by default, and pinning is the optional lever for an isolated budget. Plus a batch of Configuration-tab fixes, and the agent team gets a name — The Mod Squad.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.7.1 fixes the shape of something v0.7.0 shipped slightly backwards, cleans up
+the Configuration tab, and gives the agent team a name. The key-model change and
+the config-panel batch cleared a fresh **hull + coherence** review before
+landing.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.7.1 refines operator-facing surface; it does not move the engine's ceilings.
+The honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/) still
+hold. This page is the *delta* on top of [v0.7.0](/v0-7-0/).
+</Aside>
+
+---
+
+## Keys: a shared pool by default, pin to isolate
+
+v0.7.0 shipped the key-pool as an opt-in checkbox, with per-purpose keys you
+pinned by number. In practice that was backwards — it forced a decision on the
+simple path and couldn't isolate a budget cleanly. v0.7.1 flips it:
+
+**Your keys belong to the provider and live in one shared floating pool. By
+default every model on that provider draws from the pool** (rotate for
+throughput, fail over on a `429`). When you want a budget, **pin** a key to a
+model — it then serves only that model and *leaves the pool*, so its spend stays
+isolated. Pin a key to your image model and the vendor's meter on that key *is*
+your image-generation budget, because nothing else ever touches it.
+
+The principle: the simple case needs no thought; pinning is the one advanced
+lever, and you only meet it if you go looking. Adding a model no longer prompts
+for a key when the provider already has one — it just uses the pool.
+
+The full how-and-why is in the **[API key pool deep-dive](/architecture/key-pool/).**
+
+### The metering keel (a review catch)
+
+Hull review found a real hole: with *every* key on a provider pinned, the
+empty-pool fallback could hand a pooled model the pinned base key — spending a
+key that was isolated for another model's budget. Fixed: a pooled model draws
+its key **only** from the shared (unpinned) pool, and **refuses to dispatch**
+with a clear "no unpinned key" error when the pool is empty, rather than
+borrowing a pinned key. A budget can't be silently contaminated.
+
+---
+
+## A standalone Providers & keys manager
+
+Removing a key used to require going through a model. Now the MODELS screen has a
+**PROVIDERS & KEYS** section: pick a provider, drill into its keys (shown by
+number and label, never the value), and **add or remove** a key — no model
+needed. Removing a key purges it from Modulatio entirely (vault `.env` +
+environment + label + pins); if it was pinned to a model, that model is put back
+on the shared pool, so a removal never leaves one dangling.
+
+Pinning lives on a selected model as a **Pin key** lever (pin a key, or put the
+model back on the pool). And every Configuration step — the add-model flow and
+the key manager — now has **Cancel / Back** to bail to the list.
+
+---
+
+## Smaller fixes
+
+- **The CONFIG tab moved next to CONSOLE** (was after ARTIFACTS) — setup sits
+  where you start.
+- **Backing out of the key manager no longer crashes.** A `DuplicateIds` error
+  (a synchronous view swap remounting a shared widget id before the old one
+  finished removing) used to dump you to the CONSOLE tab; the Configuration
+  swaps now await teardown before remounting.
+
+---
+
+## The Mod Squad
+
+The agent team has a name. The factory-floor tab is now **`LEADER` / `MOD
+SQUAD`** — the boss and the crew — and the floor's status copy follows. It's
+flavor; the engine is unchanged. But it's a friendlier way to watch your team
+work.
