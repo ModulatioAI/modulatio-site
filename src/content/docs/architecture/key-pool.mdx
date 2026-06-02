@@ -1,0 +1,131 @@
+---
+title: API key pool
+description: Put several of your own API keys behind one model — rotation for throughput, failover for resilience. How it works, and why it's metered by key instead of in the router.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The **key-pool** lets you put several of your *own* API keys behind a single model. Each request rotates to the next key (so a swarm of producers spreads its load instead of hammering one key), and a rate-limit response fails over to the next key (so one throttled key doesn't stall the run).
+
+It exists to solve a concrete problem: a free or low-tier provider often meters at, say, 40 requests per minute **per key**. Point six producers at one such key and five of them spend the run waiting. Give the model three keys and pool them, and the work spreads across all three — same provider, same account, three times the headroom.
+
+This page is the architectural deep-dive: how the pool works mechanically, and — just as important — *why* it's shaped the way it is. If you just want to turn it on, jump to [Setting it up](#setting-it-up).
+
+---
+
+## The mental model
+
+A pooled model is still one [model entry](/concepts/providers/). What changes is where its API key comes from: instead of one fixed key, the entry references a **base env var**, and the engine keeps several numbered keys behind it.
+
+```
+GEMINI_API_KEY      ← key #1  (label: "text")
+GEMINI_API_KEY_2    ← key #2  (label: "images")
+GEMINI_API_KEY_3    ← key #3  (label: "search")
+```
+
+The keys are numbered environment variables in your vault — `BASE`, `BASE_2`, `BASE_3`, … with no cap. Each can carry an optional human label so you remember what it's for. A pooled preset stores only the **base name** (`GEMINI_API_KEY`) plus a `pool: true` flag; it never stores a key value (see [The security keel](#the-security-keel)).
+
+<Aside type="note">
+The numbered keys are still **your own** keys on **your own** account. Pooling is a way to use the headroom you legitimately have — not a way to manufacture more. See [The ethics line](#the-ethics-line).
+</Aside>
+
+---
+
+## How it works
+
+Two behaviors ride on the same numbered-key foundation.
+
+### Rotation (throughput)
+
+On **every** request, a pooled model picks the next key in round-robin order over the keys that are currently set:
+
+```
+request 1 → GEMINI_API_KEY      (#1)
+request 2 → GEMINI_API_KEY_2    (#2)
+request 3 → GEMINI_API_KEY_3    (#3)
+request 4 → GEMINI_API_KEY      (#1)  ← wraps around
+```
+
+So three keys give a pooled model roughly three times the per-minute budget of any single key. Six producers sharing one pooled preset spread their calls across the keys instead of contending for one.
+
+The rotation happens **per request, at call time** — not once when the model is first wired. This matters because Modulatio builds one runner per model and reuses it for the whole run; if the key were chosen at construction it would be pinned for the life of the runner, and rotation would be a no-op in steady state. The pool cursor advances on each completion call, on both the single-shot path and the tool-using (chat) path.
+
+### Failover (resilience)
+
+If a request comes back with a rate-limit error (`HTTP 429`), the pool **rotates to the next key and retries**, bounded by the number of keys in the pool. If every key in the pool is rate-limited, the original error is re-raised — the pool never swallows a genuine failure or returns an empty "success".
+
+A model with only one key, or a model that isn't pooled, behaves exactly as before: a `429` is raised immediately, with no added retry. Failover is strictly opt-in via the pool flag and only ever engages when there's another key to fail over to.
+
+<Aside type="caution">
+The failover bound is "initial attempt + one retry per key", not "try each distinct key exactly once" — under rotation a retry can land on a key that just failed. The point is a **bounded** retry that spreads across the pool, not an exhaustive scheduler. It cannot loop forever.
+</Aside>
+
+---
+
+## Why it's metered by key, not in the router
+
+The natural question is: why doesn't Modulatio just track token/cost budgets centrally and balance across keys itself? Because the **provider is already the authoritative meter**, and it meters per key.
+
+Building a second accounting system inside the router would mean duplicating — and inevitably disagreeing with — the numbers the vendor bills you on. Instead, Modulatio leans on the meter that already exists and makes the **keys themselves the accounting buckets**:
+
+- one key for text generation,
+- one key for image work,
+- one key for web-search-heavy tasks.
+
+Now your spend splits exactly where the provider already tracks it. You read each bucket's usage in the vendor's own dashboard — no reconciliation, no drift. The router stays thin and honest: it routes and rotates; it does not pretend to be a billing system.
+
+This is the same principle as the rest of Modulatio's design — **don't reimplement what a lower layer already owns**. The provider owns metering; the key-pool just gives you a clean way to use it.
+
+Rotation and failover, then, aren't two features — they're two behaviors of one mechanism (several keys behind one model). Rotation uses the extra keys for throughput; failover uses them for resilience. Both fall out of the same foundation for free.
+
+---
+
+## The ethics line
+
+Pooling is for **your own legitimately obtained keys**. If a provider meters its free tier per key (some do), pooling several of your own keys is using headroom you actually have.
+
+What Modulatio does **not** do — and will not help you do — is multiply throwaway *accounts* to dodge a provider's limits. That violates essentially every provider's terms of service and gets the offending user banned. The product makes legitimate free inference easy and lets you pool your own keys; it ships no account-multiplication tooling, by design.
+
+If you're a student trying to get real work done on a free tier: pool your own keys, label them, and read your usage in the dashboard. That's the supported path.
+
+---
+
+## Setting it up
+
+Everything is in the **Configuration tab** of the TUI (`modulatio-tui`), MODELS side:
+
+1. Pick the provider and choose **API key** auth.
+2. Add your keys one at a time — give each an optional label (`text`, `images`, …). There's no cap on how many.
+3. Check **"Pool all keys — rotate + 429 failover."** (The option appears once a provider has more than one key.)
+4. Pick the model and register it.
+
+The registered preset is now pooled: every agent you assign to it rotates across all the keys you added. To change the set later, add or remove keys for that provider in the same flow — removed keys drop out of the rotation on the next call.
+
+If instead you want to use the keys for **distinct purposes** rather than pooling them, leave the pool box unchecked and pick a specific key (`#1`, `#2`, …) when you register each model. Same numbered keys, two different strategies.
+
+---
+
+## The security keel
+
+A model preset stores a **reference**, never a value:
+
+- the preset carries `auth_config: { env_var: "GEMINI_API_KEY", pool: true }` — a name, not a secret;
+- the key values live in your vault's secret store (`0600`), read from the environment at call time;
+- key **labels** are stored separately (`key_labels.json`) and contain labels only — never values.
+
+`model_presets.add_preset` actively **rejects** any attempt to put a raw secret field (`key`, `api_key`, `token`, `secret`, `password`, …) into a preset's `auth_config`. A key value cannot end up in `model_presets.json`, the provider catalog, the labels file, or a log, by construction.
+
+---
+
+## Honest caveats
+
+- **Rotation under heavy concurrency is approximate.** The round-robin cursor is best-effort and not locked, so under concurrent producers two requests can occasionally pick the same key. That's harmless skew, not corruption — the provider meters each key regardless, and the cursor can never index out of range as the pool grows or shrinks. If you need exact distribution, run fewer producers per pooled key.
+- **The tool-using path rotates but does not yet add 429 *failover*.** Tool-loop producers (the primary producer path) get per-request key rotation; the explicit rotate-and-retry-on-429 loop currently runs on the single-shot completion path. Rotation alone already spreads load so a key is far less likely to hit its limit; dedicated chat-path failover is planned.
+- **Pooling is for one account's keys.** It does not, and is not meant to, aggregate keys across multiple accounts — see [the ethics line](#the-ethics-line).
+
+---
+
+## See also
+
+- [Providers & models](/concepts/providers/) — how model entries and auth work.
+- [Architecture: sandbox + tool execution](/architecture/sandbox/) — where runners sit in the call path.

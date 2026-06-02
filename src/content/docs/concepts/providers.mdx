@@ -9,6 +9,17 @@ Modulatio is provider-agnostic: zero hardcoded providers, zero hardcoded models.
 
 This page covers the providers Modulatio has been tested against, how to authenticate each one, and per-provider gotchas.
 
+## Configuring providers from the TUI
+
+As of v0.7.0 you can wire providers, models, keys, and agents from a menu-driven
+**Configuration tab** in `modulatio-tui` — no config-file editing. Pick a
+provider and a model and the base URL, auth method, and model id auto-fill from a
+built-in catalog of eleven providers; you type only a key. The same tab adds and
+removes models and agents, and manages **multiple keys per provider** — including
+the [key-pool](/architecture/key-pool/), which puts several of your own keys
+behind one model for throughput and rate-limit failover. The CLI commands below
+remain available and edit the same `model_presets.json`.
+
 ## How model entries work
 
 A **model entry** in Modulatio is a self-contained tuple stored in `<vault>/model_presets.json`:

@@ -1,0 +1,128 @@
+---
+title: v0.7.0 release notes
+description: Talk to the Leader, and wire your whole team from the TUI — a conversational Leader, a menu-driven Configuration tab, multiple API keys per provider, and a key-pool that rotates across your own keys and fails over on a rate-limit.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.7.0 is two arcs landing together, both about the surface you touch rather
+than the engine underneath. The **conversational Leader** turns batch kickoffs
+into a dialogue: you talk to the Leader the way you'd talk to any capable agent.
+The **Configuration tab** lets you wire providers, models, API keys, and agents
+without leaving the TUI — and on top of it, the **key-pool** lets you put
+several of your own keys behind one model. The configurator and key-pool cleared
+a fresh **hull + coherence** review before they landed.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.7.0 adds operator-facing surface; it does not move the engine's ceilings. The
+honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/) still hold.
+This page is the *delta* on top of [v0.6.0](/v0-6-0/).
+</Aside>
+
+---
+
+## Talk to the Leader
+
+Until now, the only way to reach the Leader was a batch kickoff: an objective in,
+a run out. v0.7.0 gives the **same** Leader — the one who decomposes, plans, and
+verifies — a second function: `converse()`. You talk to him directly.
+
+He has the full toolset (shell, web fetch, web search, artifacts, the skill
+library) plus his own functions exposed as tools: he can author or improve a
+skill, draft a [Job Template](/v0-5-0/), or **run a job** — switch from
+conversing to orchestrating and command the producer swarm. The big or
+repetitive work still fans out to the cheap producers; the Leader does directly
+what's worth his cycles and hands the rest to the team. It's one Leader with two
+functions, all in one lane, and his replies stream back live.
+
+The conversation persists across turns and sessions, so the thread you build
+with him survives a restart. This is the operator-facing half of Modulatio's
+[core thesis](/methodology/): the smartest model talks to you and reviews
+cheaply; the cheap swarm generates at scale.
+
+---
+
+## Configure everything from the TUI
+
+The new **Configuration tab** replaces config-file editing with a menu-driven
+flow. It has two sides.
+
+**MODELS.** Pick a provider, authenticate, search the model list, register. The
+provider catalog models eleven sources — OpenRouter, Ollama Cloud, xAI,
+Anthropic, OpenAI, NVIDIA, Google, three local backends (Ollama, LM Studio,
+llama.cpp), and a fully-custom option — richly enough that picking a provider and
+a model auto-fills the base URL, API format, auth method, and model id. **You
+type only a key.** Free-tier models are shown with a truthful rate-limit caveat,
+never as "unlimited." You can also remove a registered model.
+
+**AGENTS.** Change a role's model, add a new agent with a role picker, or remove
+any agent — Leader and QC included. Removing the Leader or QC is a deliberate
+two-step confirm, because removing either degrades a kickoff (no Leader, no
+orchestrator; no QC, nothing reviews producer output).
+
+<Aside type="caution" title="xAI OAuth is beta">
+The catalog includes xAI OAuth, built to the standard flow, but it has not been
+exercised against a live account yet — it's flagged **beta** wherever you'd
+encounter it. For xAI, an API key is the proven path.
+</Aside>
+
+---
+
+## Multiple API keys per provider
+
+A provider can now hold **several** of your keys, as numbered environment
+variables (`GEMINI_API_KEY`, `GEMINI_API_KEY_2`, …) with no cap. Each key takes
+an optional human label so you remember its purpose, and a redacted picker shows
+the slots and labels — never the values. The keys live in your vault; the labels
+live separately; a model preset stores only a **reference** to the env var, never
+a secret.
+
+This unlocks two strategies over the same set of keys: give each key a **distinct
+purpose** (one for text, one for images, one for search), or **pool** them.
+
+---
+
+## The key-pool: rotation + failover over your own keys
+
+Flag a model as **pooled** and two behaviors ride on those numbered keys:
+
+- **Rotation (throughput).** Each request picks the next key in round-robin
+  order. Three keys give a model roughly three times the per-minute headroom of
+  one — so six producers on a 40-RPM provider spread out instead of all
+  hammering one key. The rotation happens *per request*, not once when the model
+  is wired.
+- **Failover (resilience).** A rate-limit (`429`) rotates to the next key and
+  retries, bounded by the pool size. If every key is throttled, the real error
+  is re-raised — never swallowed. Single-key and non-pooled models are
+  unchanged: a `429` raises immediately, with no added retry.
+
+**Why this shape.** Modulatio deliberately does *not* meter cost or tokens in the
+router. The provider is already the authoritative meter, and it meters per key —
+so distinct keys become your accounting buckets, and your spend splits exactly
+where the vendor already tracks it. The router stays thin; rotation and failover
+are just two behaviors of one mechanism (several keys behind one model). And the
+ethics line is firm: pool your **own** legitimately obtained keys — Modulatio
+ships no tooling to multiply throwaway accounts, which would violate provider
+terms and get you banned.
+
+The full how-and-why, including the security keel and the honest concurrency
+caveats, is in the **[API key pool architecture deep-dive](/architecture/key-pool/).**
+
+---
+
+## Under the hood — the review fix
+
+The key-pool's first cut had a subtle bug a green test suite missed, caught in
+the hull review: the runners resolved the API key **once at construction** and
+reused it, and since per-model runners are built once and reused, a pooled model
+pinned its first key forever in steady state. The original test asserted the auth
+*resolver* rotated in isolation — the wrong seam. v0.7.0 moves rotation to *per
+request* on both the single-shot and tool-loop paths, proves it at the real
+runner-call seam (one constructed runner, called repeatedly, rotating the actual
+completion key `key-1, key-2, key-3, key-1`), and bounds the 429 failover at the
+same seam. The xAI OAuth token refresh now applies its freshly-refreshed
+in-memory token on retry instead of re-reading a stale credential from disk.
+
+This is the kind of bug units pass and reality fails — the same lesson as
+[v0.6.0's routing reality](/v0-6-0/). The seam the engine actually uses is the
+seam the test has to exercise.
