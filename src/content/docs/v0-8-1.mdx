@@ -1,0 +1,104 @@
+---
+title: v0.8.1 release notes
+description: Assemble the product, not just the document — a family of product-aware assemblers (document/code/data, with a media seam) on a content-addressed review-ledger that lets QC verify the marks instead of re-reading the finished work.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.8.1 generalizes how Modulatio puts a multi-piece deliverable *together*. The old
+mechanical assembly could concatenate a document; now a **family of product-aware
+assemblers** joins the actual product — text, code, or data — each by the operation
+its byte-nature demands. Underneath sits a new **content-addressed review-ledger**
+so QC can pass a large finished deliverable *cheaply* — by verifying the marks, not
+by re-reading every byte. Cleared fresh **hull + coherence** reviews (eight hull
+holes found and sealed across two close-out rounds).
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.8.1 is a hardening + generalization release; it does not move the engine's
+ceilings. The honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/)
+still hold. This page is the *delta* on top of [v0.8.0](/v0-8-0/).
+</Aside>
+
+---
+
+## Familial assemblers — join the *product*, not just the document
+
+A multi-piece run produces units (chapters, modules, records) that have to become
+one deliverable. v0.8.0 and earlier did that one way: concatenate text. That is
+correct for prose and **wrong** for code (you don't `cat` source files into one
+blob) or data (rows want a real merge, not a paste). v0.8.1 splits assembly into a
+**dispatch of families**, chosen by the artifact's kind:
+
+- **`document-assembly`** — ordered text concatenation with framing (title /
+  separator / trailer). Prose, reports, forms, application packets. The original
+  behavior, generalized.
+- **`code-assembly`** — **preserves the file tree** and *generates a wiring index*
+  (title, file list, entry point). The files stay separate on disk, byte-for-byte;
+  the deliverable is the index, not a concatenated megafile.
+- **`data-assembly`** — a real **merge / fold**: JSON arrays concatenated, CSV rows
+  unioned, with strict parsing, dedupe, and a hard output cap.
+- **`media-assembly`** — a registered seam that **fails closed** until its render
+  tool lands (image / audio / video compositing is a later tier).
+
+The family is selected by the product's kind through the **standards file**
+(`assembler_skill` frontmatter) — there's no engine routing table to drift, and the
+planner no longer hard-codes a single assembler. Users can add their own assembler
+families (a Blender assembler, a CAD assembler) without touching the engine.
+
+<Aside type="note" title="Why the engine owns the join">
+The producer emits a small *plan* — a manifest naming the units and the framing —
+and **the engine** does the bulk copy, reading unit bytes from disk. Unit bytes
+never round-trip through the model as output tokens, so a large deliverable can't
+truncate at the model's output cap (the failure where a six-story anthology came
+back as two). It's the [QC / speculative-decoding thesis](/v0-2-0/) applied to the
+gather phase: cheap to emit the plan, mechanical to execute it.
+</Aside>
+
+---
+
+## The review-ledger — verify the marks, not the bytes
+
+Re-reading a finished 50-page deliverable back into QC to "check it" blows the QC
+budget, forces a compressed partial view, and false-rejects complete work. The new
+**content-addressed review-ledger** records *which bytes* a QC pass blessed
+(`qc_passed_checksum`). Assembly QC then verifies **structurally**:
+
+- every named unit was already QC-passed, and its on-disk bytes still match its mark;
+- the manifest's unit set equals the authoritative dependency set (no missing, no
+  extra, no duplicate);
+- the engine-recorded assembly is complete and untampered.
+
+No LLM re-read of the assembled whole — the marks already carry the verdict. A
+complete book now passes its assembly review cheaply instead of being re-litigated
+every retry. (The `code` family is deliberately **not** eligible for this cheap
+pass yet — there's no deterministic wiring validation, so code assemblies always
+get a full review.)
+
+---
+
+## Also in this release
+
+- **No-regress guard** — a drifted retry can no longer clobber a complete,
+  QC-passed deliverable with a smaller or worse one; re-opens build *in place*
+  (edit / revise) rather than full-regenerating, so good work isn't thrown away.
+- **Graceful delivery without a renderer** — if neither pandoc nor pypandoc is
+  installed, products now ship as **Markdown** with a visible note (and a prompt to
+  install pandoc for DOCX/PDF) instead of failing to deliver at all.
+- **Sandbox** — the producer sandbox binds the virtualenv read-only so producer
+  code can actually run `python3` under the standard profile, without unmasking the
+  home tree or exposing secrets.
+- **Codified-skill hygiene** — a stale shared codification can no longer bury a
+  seed-skill improvement, and an explicit `user_override` marker keeps a human edit
+  sacred against re-codification.
+
+---
+
+## Under the hood
+
+A new `assembly` module holds the strategy dispatch (`document` / `code` / `data` /
+`media`); a `review_ledger` module holds the content-addressed marks and the cheap
+structural check. The engine wires an assembler task's inputs from the task graph
+(not the producer's manifest), pre-filters manifest units to the authoritative
+dependency outputs before any read, and records an engine-authored assembly proof —
+so a producer emitting assembled-*looking* text can't bypass review. Every existing
+path is unchanged; document runs assemble exactly as before.
