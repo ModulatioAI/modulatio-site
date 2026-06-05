@@ -195,17 +195,26 @@ For the architectural deep-dive on how skills compose and dispatch, read [Skill 
 
 ---
 
-### `consolidation`
+### Assembler skills (familial)
 
-**Purpose:** Assemble N unit artifacts into ONE consolidated deliverable per the standards' assembly spec for the task's `artifact_kind`. Reads units from `team_canvas` + `repo_map`; emits a single output that aggregates them in the standards-defined order.
+Assembling a multi-piece deliverable — joining N already-produced units into ONE product — is a **family** of skills, one per the *byte-nature* of the product. The shared invariant: the producer emits a small **plan** (a manifest naming the units + framing/options), and **the engine owns the mechanical join** — unit bytes are read from disk and never round-trip through the model as output tokens, so a large deliverable can't truncate at the model's output cap. The family is chosen by the artifact's kind (each `_seed_standards/<kind>.md` declares its `assembler_skill`).
 
-**Capability tags:** `consolidation`, `assembly`, `multi-unit-aggregation`, `structured-output`.
+| Skill | Products | The mechanical join |
+|---|---|---|
+| **`document-assembly`** | prose, reports, forms, packets | ordered text concatenation + framing (title / separator / trailer) |
+| **`code-assembly`** | apps, libraries, multi-file sites | preserve the file tree + **generate a wiring index** (never `cat` sources into one blob) |
+| **`data-assembly`** | datasets, record sets | a real **merge** (JSON arrays concatenated, CSV rows stacked under one header), with strict parsing + dedupe |
+| **`media-assembly`** | image / audio / video / bundle | a **local compositor** — stdlib zip, ffmpeg concat, ImageMagick; fails closed when a tool is absent |
 
-**Tool loadout:** none.
+**Capability tags:** `<family>`, `assembly`, `multi-unit-aggregation`, `structured-output` (plus `media` / `data` for those families).
 
-**Producer mode:** GENERATE.
+**Tool loadout:** `run_shell` (lets the family confirm the real on-disk unit paths before naming them in the manifest).
 
-**Critical contract:** does NOT rewrite unit content — assembly is mechanical preservation. Drift detection is `continuity-check`'s job, not this skill's. Sits in the strict tier of the artifact-class-agnostic drift gate.
+**Producer mode:** GENERATE (emits the manifest; the engine does the join).
+
+**Critical contract:** the assembler **declares** the join — it never re-emits or rewrites unit content. The engine records an **AssemblyRecord** (a content-addressed proof of the mechanical join) so a producer that merely emits assembled-*looking* text can't bypass review. `consolidation` is retained as a back-compat **alias** for `document-assembly`.
+
+**Assembly QC (the [review-ledger](/architecture/assembly/)):** for `document`/`data`, QC verifies the assembly **structurally** — every unit is QC-passed, its bytes are unchanged, and the manifest's unit set equals the task-graph dependency set — *without* re-reading the assembled whole into the model (the cheap pass that killed the false-reject where a complete book blew the QC budget). `code` and `media` are **not** cheap-pass eligible: code gets a full review (no deterministic wiring oracle yet), and a binary `media` composite gets a provenance verdict (engine-composited + intact + non-empty; perceptual content flagged for human spot-check).
 
 ---
 

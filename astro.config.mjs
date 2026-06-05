@@ -60,6 +60,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Working memory (5 layers)', slug: 'architecture/working-memory' },
 						{ label: 'Skill system', slug: 'architecture/skill-system' },
+						{ label: 'Assembly + review-ledger', slug: 'architecture/assembly' },
 						{ label: 'Sandbox + tool execution', slug: 'architecture/sandbox' },
 						{ label: 'API key pool', slug: 'architecture/key-pool' },
 						{ label: 'Audit trails', slug: 'architecture/audit-trails' },

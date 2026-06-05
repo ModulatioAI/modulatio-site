@@ -70,7 +70,9 @@ v0.1.0 ships seventeen seed skills under `src/modulatio/_seed_skills/`:
 | `code-review.md` | QC | Code-specific QC; runs probes via run_shell. |
 | `long-form.md` | Producer | One unit of a multi-unit deliverable. |
 | `continuity-check.md` | QC | Cross-unit verification. |
-| `consolidation.md` | Producer | Assemble N units into one deliverable. |
+| `consolidation.md` | Producer | Assemble N units into one deliverable (now the back-compat alias for `document-assembly`). |
+
+Since v0.8, assembly is a **family** — `document-assembly`, `code-assembly`, `data-assembly`, and `media-assembly` — each declaring a manifest the engine joins mechanically, on a content-addressed review-ledger. See [Assembly + the review-ledger](/architecture/assembly/) for the deep-dive and the [Skill catalog](/reference/skills/) for the family list.
 
 Every seed skill is artifact-class agnostic — drift-gate tests in `tests/test_skills_are_artifact_class_agnostic.py` enforce that no seed skill bakes domain-specific vocabulary (no "chapter," "protagonist," "leitmotif," "slide" in the strict tier; minimal list across all skills).
 
