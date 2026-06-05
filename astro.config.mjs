@@ -91,6 +91,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.8.2 — media-assembly + metered-tool tier', slug: 'v0-8-2' },
 						{ label: 'v0.8.1 — familial assemblers + review-ledger', slug: 'v0-8-1' },
 						{ label: 'v0.8.0 — ACP server', slug: 'v0-8-0' },
 						{ label: 'v0.7.2 — conversation-first', slug: 'v0-7-2' },

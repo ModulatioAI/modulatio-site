@@ -1,0 +1,89 @@
+---
+title: v0.8.2 release notes
+description: The fourth assembler family (media — join image/audio/video/bundle units with a local compositor) and a general, fail-closed metered-tool tier (cost_class + Comptroller gating, narrow params, ledger-pinned inputs).
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.8.2 completes the assembler arc and adds a cost-governed tool tier. The
+**`media`** family makes the four-family set whole — joining binary media units
+the same way the other families join text — and a general, **fail-closed
+metered-tool tier** gives the engine a safe way to use a paid tool, gated before it
+spends. The two were built as *orthogonal* pieces.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.8.2 completes the assembler families and adds an opt-in cost mechanism; it does
+not move the engine's ceilings. The honest limits on the
+[v0.1.0 Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta*
+on top of [v0.8.1](/v0-8-1/).
+</Aside>
+
+---
+
+## `media-assembly` — the fourth family
+
+The assembler families are now complete: `document`, `code`, `data`, and **`media`**.
+Media joins binary units — image, audio, video, or a heterogeneous bundle — with a
+**local compositor**, the same spine as every other family: the producer emits a
+small *plan* (a manifest naming the units + `media_kind`), and the **engine** owns
+the join. The bytes never round-trip through the model.
+
+- **bundle** (heterogeneous units) → one zip archive (stdlib — always available).
+- **video / audio** → ffmpeg's concat demuxer (stream copy, no re-encode). The clips
+  must share a codec/container for a clean concat; a mismatch fails closed (a
+  re-encode is a build step, not a join).
+- **image** → ImageMagick (`montage` grid or `-append` strip).
+
+The family is chosen by the artifact's kind — `image` / `audio` / `video` standards
+declare `assembler_skill: media-assembly`.
+
+<Aside type="caution" title="A missing tool fails closed">
+ffmpeg / ImageMagick are optional. If the needed compositor isn't installed, the
+assembly **fails closed** with a clear note and routes to a normal review — it never
+ships a half- or wrong-composited binary. (The same graceful-degradation discipline
+as the v0.8.1 renderer fallback.)
+</Aside>
+
+Because a media deliverable is **binary**, QC never reads it as text (a zip or mp4
+would crash a text review). Instead it gets a **provenance verdict**: the engine
+confirms the file is the intact mechanical join of QC-passed units (checksum match,
+non-empty), flags that the *perceptual content* is not machine-verifiable (human
+spot-check), and routes an integrity failure to a human. Media is never cheap-passed
+on the input marks alone.
+
+---
+
+## The metered-tool tier — paid tools, gated before they spend
+
+Every built-in tool (ddgs web search, `http_get`, `run_shell`) is **free-local** and
+runs unmetered — that stays the default. A tool that costs real money per call can
+mark itself metered (`cost_class`), and the engine then gates each call **before it
+spends**, modeled on the free-DDG / metered-Tavily pattern:
+
+- **Fail closed.** No declared budget → denied (a missing config is *not*
+  "unlimited"). Unknown cost class → denied. No spend authorizer wired → denied.
+- **Capped.** A per-task call cap (default 1) bounds a runaway tool-loop; a daily cap
+  bounds total spend (refreshes at UTC midnight).
+- **Idempotent.** The same pinned inputs + options, scoped to the task, are
+  authorized once and re-served free — a retry of the identical call isn't charged.
+- **Narrow + pinned.** A metered tool takes pinned artifact references + bounded
+  options — never an LLM-chosen URL or endpoint (rejected recursively, including
+  URL-like values) — and only ever runs on **QC-passed, unchanged** inputs.
+
+<Aside type="note" title="A mechanism, not a vendor binding">
+The tier ships with **zero** provider or key — it's the safe machinery, proven
+end-to-end by a test double. Free-local stays sovereign; the first real paid adapter
+lands only when a genuine need appears. No SaaS lock-in.
+</Aside>
+
+---
+
+## Under the hood
+
+A new `metered` module holds the spend authorizer (the narrow-param + ledger-pinned-
+input contract); `comptroller.authorize_metered_tool` is a separate, fail-closed
+path from agent escalation (which is unchanged). Media assembly is the first
+strategy to produce a binary deliverable — the engine composites it in the vault and
+moves it onto the deliverable, checksumming the file bytes. Both pieces cleared a
+fresh **hull + coherence** review; five hull holes were found and sealed across two
+close-out rounds.
