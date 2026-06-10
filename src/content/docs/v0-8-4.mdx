@@ -1,0 +1,68 @@
+---
+title: v0.8.4 release notes
+description: Verify the WHOLE deliverable against the brief — the DeliverableSpec, an engine-extracted digest + readable twin that give the verifier eyes, a produce-time per-part floor, engine-generated framing (title + TOC), and cross-part numbering, all per-family dispatch and product-agnostic.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.8.4 builds the organ the engine was missing: it verifies the **whole assembled
+deliverable** against the brief, not just the parts. A run could join eight real
+parts into one product and still ship it bare — no title or table of contents, parts
+mis-numbered so eight read like nine, several under the brief's per-part length floor
+— and both QC and the lead's verify would pass it. This release closes that gap end
+to end, and keeps it product- and agent-agnostic.
+
+<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
+v0.8.4 adds a fidelity check over what assembly already produces; it does not move
+the engine's ceilings. The honest limits on the
+[v0.1.0 Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on
+top of [v0.8.2](/v0-8-2/). Full deep-dive:
+[Deliverable fidelity](/architecture/deliverable-fidelity/).
+</Aside>
+
+---
+
+## The verifier gets eyes
+
+The lead can't verify a deliverable it can't read. The engine now extracts, at
+assembly time, a **structural digest** (the parts, their sizes in the family's native
+unit, which structural elements are present) plus a **readable text twin** of any
+bound binary, and feeds *those* to verify — never the opaque bytes a rendered PDF or
+a media file would otherwise present. A binary deliverable the engine can't read can
+no longer ship clean: it forces an `UNVERIFIED` reservation calling for a human check.
+
+## A declared, checkable spec
+
+A **`DeliverableSpec`** — a sibling of `OutputSpec` (checkable facts vs control-flow)
+— carries the per-part floor, required structure, and title from the job template
+into the run. A deterministic check runs the assembled whole against it at verify, in
+the family's own native unit. An empty spec is exactly the prior behavior.
+
+## The floor, bound at produce
+
+The engine **stamps** each unit producer with the per-part floor up front, where QC
+already enforces a size band — so the cheap producer is held to it upstream instead
+of being caught at the end. The stamp targets the **assembler's real part set**,
+never a same-kind front-matter / preface page that shares the artifact kind but isn't
+a part.
+
+## Engine-produced framing + numbering
+
+The engine generates the **framing** the brief declares — title and table of contents
+— from the spec, *per family* (a document gets a text head; a video would get a
+title-card segment; each family renders its own). And it normalizes cross-part
+**numbering** to a clean `1..N`, conservatively: only when every part self-numbers and
+the run is actually inconsistent, never fabricated onto unlabeled or mixed-label
+parts.
+
+---
+
+## Under the hood
+
+Every product-specific move is a per-family dispatch — `_STRATEGIES` (join),
+`_DIGEST_BUILDERS` (eyes), `_HEAD_BUILDERS` (framing), `_CONTINUITY_NORMALIZERS`
+(numbering) — document-first, every other family a graceful no-op, so the engine
+names no family's unit, head, or sequence mechanic. The arc cleared a fresh **hull +
+coherence** review; the hull pass found and blocked a real over-stamp bug (a same-kind
+auxiliary inheriting the part floor) and a false smoke command, both fixed before
+sign-off. **2993 tests pass.**

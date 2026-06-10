@@ -61,6 +61,7 @@ export default defineConfig({
 						{ label: 'Working memory (5 layers)', slug: 'architecture/working-memory' },
 						{ label: 'Skill system', slug: 'architecture/skill-system' },
 						{ label: 'Assembly + review-ledger', slug: 'architecture/assembly' },
+						{ label: 'Deliverable fidelity', slug: 'architecture/deliverable-fidelity' },
 						{ label: 'Sandbox + tool execution', slug: 'architecture/sandbox' },
 						{ label: 'API key pool', slug: 'architecture/key-pool' },
 						{ label: 'Audit trails', slug: 'architecture/audit-trails' },
@@ -92,6 +93,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.8.4 — deliverable fidelity', slug: 'v0-8-4' },
 						{ label: 'v0.8.2 — media-assembly + metered-tool tier', slug: 'v0-8-2' },
 						{ label: 'v0.8.1 — familial assemblers + review-ledger', slug: 'v0-8-1' },
 						{ label: 'v0.8.0 — ACP server', slug: 'v0-8-0' },

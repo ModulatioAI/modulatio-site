@@ -190,6 +190,22 @@ Or add a project standard: `"Plans should not exceed 5 sub-objectives unless exp
 
 ## Daemon & TUI
 
+### Copy/paste between the TUI and other apps doesn't work
+
+The TUI reaches the OS clipboard through a system backend. On Linux, install one:
+
+```bash
+sudo apt install xclip        # Debian/Ubuntu (X11)
+sudo apt install wl-clipboard # Wayland
+```
+
+`modulatio doctor` shows whether a backend is detected, and `modulatio setup`
+offers to install it. macOS and Windows work out of the box. Without a backend,
+`Ctrl+C` still copies via **OSC 52** — but that depends on your terminal honoring
+clipboard writes (many disable it by default, and it often doesn't survive a
+remote desktop), and `Ctrl+V` paste from the OS clipboard is unavailable. A
+backend is the reliable path.
+
 ### Daemon won't start
 
 ```bash

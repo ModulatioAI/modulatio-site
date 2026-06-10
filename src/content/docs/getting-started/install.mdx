@@ -11,6 +11,7 @@ This page walks you through installing Modulatio on a fresh machine. After this 
 - **Git.** For cloning the repo.
 - **`uv`** (recommended) or `pip`. The instructions below show `uv`; substitute `python -m pip` if you prefer pip.
 - **Free disk:** ~1 GB for the dependency tree (LanceDB, fastembed, and pyarrow account for most of it).
+- **Linux only — a clipboard backend** (`xclip` or `wl-clipboard`) for the TUI's copy/paste to reach the OS clipboard. The setup wizard detects it and offers to install it; or run `sudo apt install xclip` (Debian/Ubuntu) / `wl-clipboard` (Wayland). macOS and Windows have a native clipboard. Without one, Ctrl+C still copies via OSC 52 (terminal-dependent) and Ctrl+V paste from the OS clipboard is unavailable.
 - **Optional but recommended:** an Obsidian vault, or any directory you want Modulatio to use as its working store. You'll point Modulatio at this during the wizard.
 
 ## Picking the right Python
