@@ -33,7 +33,7 @@ export default defineConfig({
 					slug: 'overview',
 				},
 				{
-					label: 'v0.1.0 Beta calibration',
+					label: 'Beta calibration',
 					slug: 'v0-1-0-beta',
 				},
 				{
@@ -107,7 +107,7 @@ export default defineConfig({
 						{ label: 'v0.2.2 — web search', slug: 'v0-2-2' },
 						{ label: 'v0.2.1 — in-place editing', slug: 'v0-2-1' },
 						{ label: 'v0.2.0 — QC-thesis arc', slug: 'v0-2-0' },
-						{ label: 'v0.1.0 — Beta calibration', slug: 'v0-1-0-beta' },
+						{ label: 'Beta calibration (current ceilings)', slug: 'v0-1-0-beta' },
 					],
 				},
 			],

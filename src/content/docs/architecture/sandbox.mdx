@@ -120,7 +120,7 @@ These two declarations make every skill's network + env reach auditable: a revie
 - **`http_get`** — HTTP GET that honors the skill's `needs_network` declaration. Refuses POST/PUT/DELETE shapes; bounded body size.
 - **`read_tool_result`** — Layer 1's recovery primitive. Only present when `tool_calls_dir` was passed to `build_registry`.
 
-v0.1.0 ships exactly these four. See [Tool catalog](/reference/tools/) for per-tool schemas, args, and the safety contract per tool. Future releases will likely add more (a build/test feedback primitive, a multi-language symbol-map primitive, a cost-telemetry surface) — see [Roadmap](/roadmap/).
+Modulatio ships exactly these four. See [Tool catalog](/reference/tools/) for per-tool schemas, args, and the safety contract per tool. Future releases will likely add more (a build/test feedback primitive, a multi-language symbol-map primitive, a cost-telemetry surface) — see [Roadmap](/roadmap/).
 
 Skills declare `tool_loadout` to opt in to specific tools; the LLM's function-calling schema only includes tools in the loadout. A skill that didn't declare `run_shell` can't call it even if it's in the registry — the schema doesn't expose it.
 

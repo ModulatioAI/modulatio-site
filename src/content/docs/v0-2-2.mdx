@@ -9,8 +9,8 @@ v0.2.2 gives Modulatio two things it was missing: the ability to **find out what
 
 Before this release a producer could only `http_get` a URL it *already knew* — so when a task's answer depended on current reality (recent events, live data, anything past a model's training cutoff), it quietly fell back on stale memory. Now producers can **search the web**, discover credible sources themselves, and ground the work in them. The release was driven by exactly that failure: a research summary frozen at its 2024 cutoff, which the engine now brings current by searching. The arc cleared a fresh two-reviewer audit (hull + coherence) before merge.
 
-<Aside type="note" title="Still Beta — the v0.1.0 calibration still applies">
-v0.2.2 adds a capability and closes a bug; it does not move the engine's ceilings. The honest limits on the [v0.1.0 Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of [v0.2.1](/v0-2-1/).
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+v0.2.2 adds a capability and closes a bug; it does not move the engine's ceilings. The honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of [v0.2.1](/v0-2-1/).
 </Aside>
 
 ---
@@ -49,4 +49,4 @@ The redo budget is tightened to **4** per goal.
 
 Hand Modulatio work whose answer depends on what's happening *now* — a market summary, a current-events brief, a "what's the latest on X" — and it will go look, weigh the sources, and tell you what it couldn't verify, instead of confidently reciting last year's training data. And whatever you give it, the run is guaranteed to finish and hand you something, with the lead's honest reservations beside it.
 
-For the full engine contract and the honest ceilings, the [v0.1.0 Beta calibration](/v0-1-0-beta/) page remains the source of truth. The [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) has the precise commit-level delta.
+For the full engine contract and the honest ceilings, the [Beta calibration](/v0-1-0-beta/) page remains the source of truth. The [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) has the precise commit-level delta.

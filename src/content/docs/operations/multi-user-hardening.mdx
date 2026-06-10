@@ -5,13 +5,13 @@ description: Operator's checklist for running Modulatio on a shared machine. Har
 
 If you're running Modulatio on a single-user machine (your laptop, your VM), the default permissions are fine — your account owns everything Modulatio writes. On a multi-user host (a shared server, a CI runner, a workstation with multiple OS users), default-umask permissions can leak data between accounts.
 
-v0.1.0 ships hardening for the channels that carry the highest-risk content. This page is the operator's checklist for running on a multi-user host.
+Modulatio ships hardening for the channels that carry the highest-risk content. This page is the operator's checklist for running on a multi-user host.
 
 For the architectural deep-dive on what each channel is and why it matters, see [Sandbox + tool execution](/architecture/sandbox/) and [Audit trails](/architecture/audit-trails/).
 
 ---
 
-## What v0.1.0 hardens by default
+## What Modulatio hardens by default
 
 Three persistence channels carry potentially-sensitive content:
 
@@ -45,11 +45,11 @@ ls -la <vault>/TEST/runs/<run-id>/artifacts/tool_calls/
 # — see "Forcing a checkpoint" below
 ```
 
-If any file is `-rw-r--r--` (mode `0o644`) or `-rw-rw-r--` (mode `0o664`), that's a regression worth filing on GitHub. v0.1.0 should always write `0o600` to these channels.
+If any file is `-rw-r--r--` (mode `0o644`) or `-rw-rw-r--` (mode `0o664`), that's a regression worth filing on GitHub. Modulatio should always write `0o600` to these channels.
 
 ---
 
-## What v0.1.0 does NOT harden by default
+## What Modulatio does NOT harden by default
 
 These are intentionally NOT mode-tightened, because they're either user-readable artifacts or rotationally-rebuilt ephemerals:
 
@@ -100,7 +100,7 @@ chmod g+s /srv/modulatio-vault
 setfacl -d -m g:modulatio:rwx /srv/modulatio-vault
 ```
 
-Caveat: v0.1.0's `0o600` writes mean Modulatio-managed files are owner-only even within the group. To allow group reads, you either set ACLs to override, or accept that Modulatio-tightened files are owner-only and live with the asymmetry.
+Caveat: Modulatio's `0o600` writes mean Modulatio-managed files are owner-only even within the group. To allow group reads, you either set ACLs to override, or accept that Modulatio-tightened files are owner-only and live with the asymmetry.
 
 For most multi-user use cases, Pattern 1 is simpler and safer. Pattern 2 matters when you genuinely have a team workflow where multiple OS users all run kickoffs against the same vault.
 
@@ -136,7 +136,7 @@ Skills declare `needs_network: true` when they legitimately need network. The sa
 grep -A2 "^needs_network:" <vault>/<project>/skills/*.md
 ```
 
-For the seed skills that ship with v0.1.0:
+For the seed skills that ship with Modulatio:
 
 - `researcher` declares `needs_network: true` (it has `http_get` in its loadout — research without network is pointless).
 - All other seed skills declare `needs_network: false` implicitly.
@@ -225,7 +225,7 @@ On a multi-user host, the audit surfaces (transcripts, audit JSONL, ticket store
 ## What's coming
 
 - **Per-user encryption-at-rest.** Optional vault encryption so even root can't read the audit surfaces. Tracked as long-horizon work.
-- **Audit-log redaction policies.** Beyond v0.1.0's role-based redaction in checkpoints, regex-based redaction over assistant + user content.
+- **Audit-log redaction policies.** Beyond Modulatio's role-based redaction in checkpoints, regex-based redaction over assistant + user content.
 - **Tool-call signing.** Cryptographic signatures on transcripts so a multi-user host can prove which user issued which tool call.
 
 See the [Roadmap](/roadmap/) for the current shape.

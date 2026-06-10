@@ -1,9 +1,9 @@
 ---
 title: Skill catalog
-description: Every seed skill that ships with v0.1.0 — what it produces, what it loads, who uses it. Leader-tier, planning, producer, and QC skills.
+description: Every seed skill that ships with Modulatio — what it produces, what it loads, who uses it. Leader-tier, planning, producer, and QC skills.
 ---
 
-Every seed skill that ships with v0.1.0, with its frontmatter shape, what it produces, and who uses it. Skills are loaded from `src/modulatio/_seed_skills/` at runtime; project-level and vault-shared overrides take precedence (see [Skill system](/architecture/skill-system/) for the resolution layers).
+Every seed skill that ships with Modulatio, with its frontmatter shape, what it produces, and who uses it. Skills are loaded from `src/modulatio/_seed_skills/` at runtime; project-level and vault-shared overrides take precedence (see [Skill system](/architecture/skill-system/) for the resolution layers).
 
 For the architectural deep-dive on how skills compose and dispatch, read [Skill system](/architecture/skill-system/). For tools the skills use, see [Tool catalog](/reference/tools/).
 
@@ -37,7 +37,7 @@ For the architectural deep-dive on how skills compose and dispatch, read [Skill 
 
 **When dispatched:** plan-mode entries — a user types a strategic or open-ended objective in chat, Leader engages plan-shape rather than direct kickoff.
 
-**Contract:** lands the deliverable-shape clarifying question (single / multi-piece / production-scale) before planning when the user's intent is artifact-shipping but rough size is ambiguous. Production-scale answers refuse a single-phase plan and produce Phase 1 only — see [the v0.1.0 Beta calibration page](/v0-1-0-beta/) for the gate's full contract.
+**Contract:** lands the deliverable-shape clarifying question (single / multi-piece / production-scale) before planning when the user's intent is artifact-shipping but rough size is ambiguous. Production-scale answers refuse a single-phase plan and produce Phase 1 only — see [the Beta calibration page](/v0-1-0-beta/) for the gate's full contract.
 
 **Output shape:** markdown document with `<!-- modulatio:plan -->` marker, sections for Diagnostic, Judgment, Sub-objectives, Risks, What this plan does NOT do, Open questions for the user.
 
@@ -109,7 +109,7 @@ For the architectural deep-dive on how skills compose and dispatch, read [Skill 
 
 **Outcomes:** `continue` (default — most reflections), `revise-task` (tighten description / artifact_kind / assignee_specialist), `drop-task` (what just shipped already covered it).
 
-**Opt-in:** controlled by `MODULATIO_LEADER_ITERATE=1` env var. Off by default in v0.1.0.
+**Opt-in:** controlled by `MODULATIO_LEADER_ITERATE=1` env var. Off by default in this release.
 
 ---
 
@@ -270,7 +270,7 @@ Assembling a multi-piece deliverable — joining N already-produced units into O
 
 The `freshness_class` frontmatter field signals maturity:
 
-- **`stable`** — battle-tested, the recommended choice. All v0.1.0 seed skills are `stable`.
+- **`stable`** — battle-tested, the recommended choice. All seed skills are `stable`.
 - **`validated`** — passed QC's review path but hasn't seen enough production miles to be `stable`. (Future job-template architecture introduces this lifecycle for user-contributed skills.)
 - **`draft`** — intended for early iteration; not for production runs.
 

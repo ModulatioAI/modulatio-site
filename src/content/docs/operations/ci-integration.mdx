@@ -72,7 +72,7 @@ jobs:
         run: |
           .venv/bin/modulatio kickoff \
             --code CIVAL \
-            --objective "review the docs in this PR for v0.1.0 alignment"
+            --objective "review the docs in this PR for 0.8.4 alignment"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -194,7 +194,7 @@ A kickoff that fires a CRITICAL ticket with `approval_required=True` will pause 
 Three responses:
 
 1. **Treat it as a real failure.** The pause is signal: the work needs human attention. CI fails; the PR author looks at the uploaded `tickets/` directory artifact and decides what to do.
-2. **Configure auto-approval** for specific ticket classes. (Not yet supported in v0.1.0; worth a feature request if you need it.)
+2. **Configure auto-approval** for specific ticket classes. (Not yet supported in this release; worth a feature request if you need it.)
 3. **Re-run after manual approval.** PR author runs the same kickoff locally with the prior vault state, approves the ticket, then re-pushes to trigger CI which now resumes from the approved state.
 
 ---
@@ -215,7 +215,7 @@ modulatio kickoff \
   --no-team-memory          # if your CLI exposes this flag
 ```
 
-(v0.1.0 may not have a CLI flag for this; the equivalent is constructing an `Orchestrator` programmatically with `team_memory_enabled=False, qc_history_embedder=None, semantic_matcher=None`.)
+(the CLI may not have a CLI flag for this; the equivalent is constructing an `Orchestrator` programmatically with `team_memory_enabled=False, qc_history_embedder=None, semantic_matcher=None`.)
 
 ### Runtime budget
 

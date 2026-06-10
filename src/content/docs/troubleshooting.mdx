@@ -297,18 +297,18 @@ For very large models (>50 GB):
 
 For Pascal-era GPUs (Tesla P40, etc.): pin a compatible CUDA runtime; CUDA 12.x has regressed for Pascal in some Ollama versions.
 
-## v0.1.0-specific
+## Version-specific
 
 ### "context-budget exhausted for ... — Decompose it"
 
 Symptom: a CRITICAL ticket fires with the title "context-budget exhausted for `<task-id>` (..., model `<model>`)". The task is BLOCKED.
 
-Cause: v0.1.0's catch — a producer call's prompt + context exceeded the model's window even after Layer 2's compression pass. Re-running with the same prompt would hit the same wall.
+Cause: Modulatio's catch — a producer call's prompt + context exceeded the model's window even after Layer 2's compression pass. Re-running with the same prompt would hit the same wall.
 
 Fix: read the ticket body. It carries the checkpoint path + decompose-required framing. Two paths:
 
 1. **Approve to auto-decompose.** Leader-reflect's `revise-major` outcome splits the offending sub-objective into smaller pieces. Daemon picks up the revised plan on the next tick.
-2. **Decline if the work is genuinely too big for v0.1.0.** Production-scale efforts queue for a later release — see [Roadmap](/roadmap/).
+2. **Decline if the work is genuinely too big for one phase.** Production-scale efforts queue for a later release — see [Roadmap](/roadmap/).
 
 The checkpoint at the path in the ticket body is an audit + decomposition input — NOT a re-input source. Don't try to resume from the checkpoint manually; that's recovery work the engine doesn't yet support.
 
@@ -322,7 +322,7 @@ Fix: usually nothing. If you see soft-warn lines reliably in the same place, tha
 
 If your monitoring parses logs programmatically, filter on `modulatio_event="context_budget_soft_warn"` to ignore them.
 
-### "plan has X tasks — exceeds the v0.1.0 hard cap of 6"
+### "plan has X tasks — exceeds the per-goal task cap"
 
 Symptom: a CRITICAL ticket fires when the daemon claims a plan; the body cites `_PLAN_HARD_CAP`.
 
@@ -334,7 +334,7 @@ Fix: split the sub-objective. If the plan was emitted by Leader and you want to 
 
 Symptom: `modulatio doctor` shows this line in its calibration banner, you're trying to ship a 200-page novel.
 
-Cause: v0.1.0 is honest — multi-phase / long-running work is later-release territory.
+Cause: Modulatio is honest — multi-phase / long-running work is later-release territory.
 
 Fix: ship Phase 1 only via the production-scale shape. See [Example: production-scale Phase 1](/getting-started/example-production-scale/). Queue Phases 2+ for a later release ([Roadmap](/roadmap/)).
 

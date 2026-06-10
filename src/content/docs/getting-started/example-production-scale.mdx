@@ -1,11 +1,11 @@
 ---
 title: 'Example: production-scale, Phase 1 only'
-description: Phase 1 of a 200-page novel — the honest scope for production-scale work in v0.1.0.
+description: Phase 1 of a 200-page novel — the honest scope for production-scale work in this release.
 ---
 
-v0.1.0's honest contract: **production-scale work runs as Phase 1 only in this release**. A 200-page novel, a multi-feature application across many releases, a multi-quarter research program — the engine can ship Phase 1 of any of these. The remaining phases need the job-template + persona-continuity work landing in a later release to run cleanly across cross-phase boundaries.
+Modulatio's honest contract: **production-scale work runs as Phase 1 only in this release**. A 200-page novel, a multi-feature application across many releases, a multi-quarter research program — the engine can ship Phase 1 of any of these. The remaining phases need the job-template + persona-continuity work landing in a later release to run cleanly across cross-phase boundaries.
 
-This page walks through Phase 1 of a production-scale effort end-to-end. The headline is: v0.1.0 does Phase 1 well. Phase 2+ is human-driven across phase boundaries until job templates ship.
+This page walks through Phase 1 of a production-scale effort end-to-end. The headline is: the engine does Phase 1 well. Phase 2+ is human-driven across phase boundaries until job templates ship.
 
 For shapes that fit comfortably in one phase, see [Quickstart](/getting-started/quickstart/) or [Example: multi-piece deliverable](/getting-started/example-multi-piece/).
 
@@ -13,7 +13,7 @@ For shapes that fit comfortably in one phase, see [Quickstart](/getting-started/
 
 ## The objective
 
-We're going to plan + execute Phase 1 of a 200-page novel. Plenty of canonical examples here — fiction-length work is the class job templates target most directly. For v0.1.0, we ship Phase 1 (the first ~5 chapters, ~40 pages) and stop; later phases go on the user's queue.
+We're going to plan + execute Phase 1 of a 200-page novel. Plenty of canonical examples here — fiction-length work is the class job templates target most directly. For now, we ship Phase 1 (the first ~5 chapters, ~40 pages) and stop; later phases go on the user's queue.
 
 Why this is production-scale:
 
@@ -21,7 +21,7 @@ Why this is production-scale:
 - Cross-phase memory matters — character names, voice conventions, plot facts, established settings need to survive across phases.
 - Persona / identity continuity matters — the team's editorial voice should be stable across the whole novel, not just one chapter.
 
-v0.1.0 can't carry that across phases on its own. So we cap to Phase 1 deliberately, ship a self-contained slice the user can review, and queue the rest for the next release.
+The engine can't carry that across phases on its own. So we cap to Phase 1 deliberately, ship a self-contained slice the user can review, and queue the rest for the next release.
 
 ---
 
@@ -36,7 +36,7 @@ modulatio-tui
 > outline but no chapters yet.
 ```
 
-Leader engages plan-mode. The leader-plan skill detects an artifact-shipping intent with a concrete size signal ("200-page novel") that exceeds v0.1.0's single-phase capacity. The deliverable-shape clarifying question fires:
+Leader engages plan-mode. The leader-plan skill detects an artifact-shipping intent with a concrete size signal ("200-page novel") that exceeds Modulatio's single-phase capacity. The deliverable-shape clarifying question fires:
 
 ```
 > Quick check on rough size — about how big is what you have in
@@ -59,13 +59,13 @@ You answer:
 
 ## Step 2 — Leader emits the Phase-1-only plan
 
-Per the v0.1.0 contract for production-scale answers, Leader does NOT produce a plan covering the whole novel. It produces Phase 1 only:
+Per the production-scale contract for production-scale answers, Leader does NOT produce a plan covering the whole novel. It produces Phase 1 only:
 
 ```markdown
 <!-- modulatio:plan -->
 
 ### Diagnostic
-This is production-scale; this plan covers Phase 1 only. v0.1.0
+This is production-scale; this plan covers Phase 1 only. The engine
 lacks the cross-phase memory + persona-continuity primitives
 needed to run a full novel as one plan. Phase 1 ships chapters
 1-5 (~40 pages), the establishing arc. Phases 2-5 queue for the
@@ -139,7 +139,7 @@ continuity-check across all five chapters.
   the job-template architecture in a later release. The Phase 1
   output is self-contained — usable as-is even if the next
   release takes longer than expected — but the original
-  200-page goal won't complete inside v0.1.0.
+  200-page goal won't complete inside one phase.
 
 ### What this plan does NOT do
 - Phases 2-5. Those queue for the next release.
@@ -203,7 +203,7 @@ The daemon's `current_state.md` after sub-objective 5 might read:
 - The vitrified-room provenance is unsolved.
 ```
 
-When job templates land, this state document becomes the seed for the persistent cross-phase memory. For v0.1.0, it's the user's read-out at the end of Phase 1.
+When job templates land, this state document becomes the seed for the persistent cross-phase memory. For now, it's the user's read-out at the end of Phase 1.
 
 ---
 
@@ -244,7 +244,7 @@ The vault state preserves what Phase 1 established. When cross-phase tooling shi
 
 ## What the engine watched for
 
-v0.1.0's safety nets fire harder on production-scale work:
+Modulatio's safety nets fire harder on production-scale work:
 
 - **Layer 2 soft-warn (70%).** Long chapters + cross-chapter context → expect WARNING logs by chapter 4-5 as the team_state + character bible accumulate. Read them; trim `current_state.md` between sub-objectives if needed.
 - **Layer 2 compress (80%).** Chapter 5's producer call could trip this if prior chapters' tool transcripts are still in the conversation. Sliding-window prune kicks in automatically; older tool messages get placeholders.
@@ -262,7 +262,7 @@ When cross-phase tooling ships:
 - **Persona continuity** keeps the team's voice stable across phases — no chapter-3-of-Phase-3 drift problem.
 - **Cross-phase memory** carries established narrative facts forward without the user re-stating them at each phase kickoff.
 
-Until then, v0.1.0's contract is honest: ship Phase 1, queue Phases 2+ for the next release. The work doesn't disappear; it queues.
+Until then, Modulatio's contract is honest: ship Phase 1, queue Phases 2+ for the next release. The work doesn't disappear; it queues.
 
 ---
 
@@ -270,5 +270,5 @@ Until then, v0.1.0's contract is honest: ship Phase 1, queue Phases 2+ for the n
 
 - [Quickstart](/getting-started/quickstart/) — single-deliverable shape.
 - [Example: multi-piece deliverable](/getting-started/example-multi-piece/) — multi-piece shape that fits comfortably in one phase.
-- [v0.1.0 Beta calibration](/v0-1-0-beta/) — the engine's honest scoping for production-scale work.
+- [Beta calibration](/v0-1-0-beta/) — the engine's honest scoping for production-scale work.
 - [Roadmap](/roadmap/) — the job-template + persona-continuity work that closes this gap.

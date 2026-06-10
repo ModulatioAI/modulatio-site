@@ -1,81 +1,102 @@
 ---
-title: v0.1.0 Beta calibration
+title: Beta calibration
 description: What the engine does well, what it does NOT do yet, the QC-as-fixer scope, and how to report bugs. Read this before kicking off serious work.
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
-This page is the calibration sheet for the v0.1.0 Beta release. Read it before kicking off serious work on a project. The shape of what v0.1.0 can and cannot do honestly is the difference between a smooth run and a frustrated one.
+This page is the calibration sheet for the current Beta release. Read it before
+kicking off serious work on a project. Knowing the honest shape of what the engine
+can and cannot do is the difference between a smooth run and a frustrated one.
 
-The headline of v0.1.0 is the **producer-collapse / skills-first** model: there are no fixed role identities — an agent is a **producer-with-skills**, and tasks are **skill-routed** to whichever producer holds the matching skill. Three structural seats remain (Leader plans + decides, producers do the work, **Quality Control** (QC) verifies). The other big features: **QC-as-fixer** (when a producer can't clear the bar after exhausting retries, QC patches the artifact from its own findings and the task completes — on by default), per-task **artifact staging with a deterministic main-thread merge** for the concurrent-wave path, and provider **thinking on/off** control so you can run producers non-thinking. v0.1.0 ships *with* a known-limitations list rather than discovering them mid-run.
+The foundation is the **producer-collapse / skills-first** model: there are no fixed
+role identities — an agent is a **producer-with-skills**, and tasks are
+**skill-routed** to whichever producer holds the matching skill. Three structural
+seats remain (the Leader plans + decides, producers do the work, **Quality Control**
+(QC) verifies). On top of that the engine ships **QC-as-fixer** (when a producer
+can't clear the bar after exhausting retries, QC patches the artifact from its own
+findings and the task completes — on by default), **familial assemblers** that join a
+multi-piece deliverable by the artifact's kind, **deliverable fidelity** that verifies
+the assembled whole against the brief, **Job Templates** for recurring setup, and
+provider **thinking on/off** control. It ships *with* a known-limitations list rather
+than discovering them mid-run.
 
 <Aside type="caution" title="Python 3.12+ required">
-v0.1.0 requires **Python 3.12 or newer**. If your `python3` is 3.11 or older, create the venv with an explicit 3.12 binary — see [Install](/getting-started/install/).
+Modulatio requires **Python 3.12 or newer**. If your `python3` is 3.11 or older,
+create the venv with an explicit 3.12 binary — see [Install](/getting-started/install/).
 </Aside>
 
 ---
 
-## What v0.1.0 Beta does well
+## What the Beta does well
 
-- **Single-deliverable artifact production.** One cohesive output that ships in one or two producer passes. Drafting a contained essay, a small Python module, a focused report section, a tutorial chapter. This is the engine's sweet spot — every layer is sized for it.
-- **Multi-piece deliverables in one phase.** Three to seven related outputs that ship together as one body of work. A multi-section report, a small multi-module library, a sequence of related essays. The planner hard cap (six tasks per sub-objective) and the three-layer Total Quality Management (TQM) gate are both calibrated for this band.
-- **Python repos, end to end.** The `repo_map` extracts a symbol-aware digest (classes, methods, signatures, module docstrings) for any Python project. The team sees the existing shape and edits it coherently.
-- **Plan-mode conversational planning.** The Leader ships with the `leader-plan` skill: it interrogates open-ended requests, asks about deliverable shape (single / multi-piece / production-scale) when the size is ambiguous, and produces a reviewable plan you authorize before any work starts.
-- **Three-tier over-scope guardrails.** Built in — see the next section for what each tier protects against.
-
-## The three-tier over-scope gate
-
-The engine ships a token-aware, production-agnostic safety net so it catches "this is too big" *before* it tries.
-
-- **Tier 1 — Plan-time clarifying question.** When the user's intent is artifact-shipping but the size is ambiguous, the Leader asks one question: *single deliverable, multi-piece deliverable, or production-scale?* Production-scale answers refuse a single-phase plan and produce Phase 1 only — the user knows what they're getting.
-- **Tier 2 — planner hard cap.** Plans that try to put more than six tasks under one sub-objective are rejected with a decompose-required ticket. Leader-reflect routes to `revise-major` instead of accepting a 12-task megaplan that would trip Layer 2 mid-execution.
-- **Tier 3 — Layer 2 70% soft-warn.** Before the 80% compression band, the context-budget primitive emits a structured WARNING when a call's prompt + context lands in the 70-80% range. Early signal, no compression yet — gives the orchestrator (and the user reading logs) a heads-up that work is trending toward the cap.
-
-The thread tying all three together: **production-agnostic.** None of these gates parse strings like "page" / "chapter" / "module". They gate on token count and plan shape. Whatever you're producing — fiction, code, business writing, research — the gates fire on the same signals.
+- **Single-deliverable artifact production.** One cohesive output that ships in one or
+  two producer passes — a contained essay, a small Python module, a focused report
+  section, a tutorial chapter. This is the engine's sweet spot; every layer is sized
+  for it.
+- **Multi-piece deliverables, assembled by the engine.** A set of related outputs
+  (chapters, modules, records, clips) is joined by a **family of assemblers** chosen
+  by the artifact's kind — `document` / `code` / `data` / `media` — and the engine
+  verifies the **whole product** against the brief (the [deliverable-fidelity](/architecture/deliverable-fidelity/)
+  check: declared per-part floor, engine-generated framing, consistent numbering).
+  Wide independent fan-outs run as a parallel wave.
+- **Python repos, end to end.** The `repo_map` extracts a symbol-aware digest
+  (classes, methods, signatures, module docstrings) for any Python project; the team
+  sees the existing shape and edits it coherently.
+- **Code that the team can run + verify.** Producers can execute `run_shell` and QC
+  verifies code by *running* it (e.g. `py_compile` / a script smoke), not just reading
+  it — so a code deliverable is checked against execution, not eyeballed.
+- **Recurring work, codified.** A **Job Template** captures the interview + parameter
+  schema + output contract for a *class* of job, runs headless on a schedule, and the
+  team offers to template a job you keep repeating. Recurring *failures* get codified
+  back into the skill library so cheap producers improve over time.
+- **Plan-mode conversational planning.** The Leader interrogates open-ended requests,
+  asks about deliverable shape when the size is ambiguous, and produces a reviewable
+  plan you authorize before any work starts.
 
 ---
 
-## What v0.1.0 Beta does NOT do (yet)
+## What the Beta does NOT do (yet)
 
 Be honest with yourself about whether your project hits any of these.
 
-### Production-scale, multi-phase efforts
+### Fully-autonomous production-scale, multi-phase efforts
 
-Things like **a 200-page novel**, a **full application built across many feature releases**, or a **multi-month research program with dozens of deliverables** are out of scope for one v0.1.0 plan. The engine is happy to produce **Phase 1** of any of these, with you gating between phases. What v0.1.0 does not have is automatic cross-phase memory, persistent job templates, or a way to keep team state stable across many human-in-the-loop checkpoints. See [Roadmap](/roadmap/).
-
-If you give Leader a request that smells production-scale, the clarifying question will surface it. Answer "production-scale" and the engine will scope to a Phase 1 you can ship and review.
+A **200-page novel**, a **full application across many feature releases**, or a
+**multi-month research program with dozens of deliverables** is still **phased work**:
+the engine is happy to produce a reviewable **Phase 1** with you gating between phases.
+Job Templates + multi-file output close part of the old gap (recurring setup persists;
+a deliverable that exceeds per-artifact ceilings decomposes at logical boundaries), but
+there is no fully-automatic cross-phase planner that runs the whole multi-month program
+unattended. If a request smells production-scale, the Leader's clarifying question
+surfaces it; answer "production-scale" and you'll get a Phase 1 you can ship and review.
+See the [Roadmap](/roadmap/).
 
 ### Multi-language repos with full symbol awareness
 
-`repo_map` is **Python-only**. For other languages, the team falls back to a filename-only listing — they can see *that* a file exists, but not its symbols, signatures, or types. JavaScript / TypeScript / Rust / Go projects work, but the team is blinder than in a Python repo, and consistency across files leans more on team_canvas digests and your standards file than on automatic symbol extraction.
+`repo_map`'s symbol extraction is **richest for Python**. For other languages the team
+leans on a filename listing + `team_canvas` digests + your standards file rather than
+automatic symbol/signature extraction — JS / TS / Rust / Go projects work, but the team
+is blinder than in a Python repo. `modulatio doctor` surfaces this calibration.
 
-`modulatio doctor` surfaces this calibration in its output.
+### Deep iterate-until-green autonomy
 
-### Build / test feedback loops
-
-v0.1.0 producers can write code; they cannot yet run the build, read the test failures, and iterate against them. The plan-mode `run_shell` capability exists for verification skills but is not wired into the producer redo loop. If your work needs *iterate-on-failure* — fixing a bug by running the test, reading the trace, and patching — you'll be doing the run / read part by hand and feeding results back into the plan.
-
-### Automatic self-heal beyond a single QC patch
-
-When a producer can't clear QC after exhausting its retries, the **QC-as-fixer** path (ON by default; opt out with `MODULATIO_QC_FIXER=0`) has QC author **one** last-resort patch from its own findings, and the task completes (flagged `qc_authored_fix`). That single patch is the whole ladder in this build. The fuller self-heal sequence — **salvage → re-decompose → escalate** (re-plan the task, re-route to a different producer, escalate to a stronger model automatically) — is on the roadmap and is **NOT here yet**. A task with nothing salvageable to patch (e.g. a no-commit storm) settles as a flagged failure rather than re-planning itself. Don't over-expect rescue beyond the single QC patch on hard tasks.
-
-### Persistent job templates
-
-A "job template" — a reusable interview script that knows what questions to ask for, e.g., a novel or a research report — does not exist in v0.1.0. Each plan starts from scratch. A later release's job-template architecture will close this gap.
+Producers can run code and QC verifies by executing it, and a task that can't clear the
+bar routes through the self-heal ladder (a last-resort QC patch → re-decompose on
+overflow → automatic escalation to a stronger model). What's still maturing is the
+*tight* iterate-on-failure loop — run the failing test, read the trace, patch, re-run,
+repeat autonomously until green — across many rounds on a large codebase. For
+deep debugging marathons, expect to stay in the loop between rounds.
 
 ### Persona / identity continuity across long-running deployments
 
-v0.1.0 treats each kickoff and each plan-resumption as a fresh team. The agents read their seed-skill prompts and the team_state doc, but there is no enforced "who are we?" anchor that survives context-window resets, long idle gaps, or Layer 2 compression. If you run Modulatio in a long-lived deployment with a recurring character or crew identity (a named editorial voice, a sustained project mascot, a domain-specific role), expect identity to drift across sessions — you'll see the team forget recurring conventions, persona-statements, and voice cues that weren't explicitly re-stated in the kickoff prompt.
-
-What's missing under the hood:
-
-- **No identity-anchor injection at kickoff or resume.** Static seed-skill prompts exist but aren't re-applied with current persona context on every kickoff.
-- **`agent_memory.EPISODIC_MAX_ENTRIES = 100`** with no importance-weighted retention — old persona-statements get pruned alongside ordinary turns.
-- **Plans persist excellent audit trails** (reflection log, transitions, budget) but no `persona_snapshot` field, so resumed plans have no forced reminder of the originating crew identity.
-- **Team memory writes are gated to QC/Leader** for facts and skills, not optimized for persona reinforcement.
-- **No recurring "bottle check"** that forces a re-read of standing identity notes every N turns.
-
-A future release will close this gap as a sibling slice to job templates — see the [Roadmap](/roadmap/).
+Each kickoff and plan-resumption is treated as a fresh team that reads its seed-skill
+prompts + the team-state doc; there is no enforced "who are we?" anchor that survives
+context-window resets, long idle gaps, or Layer 2 compression. In a long-lived
+deployment with a recurring crew identity (a named editorial voice, a sustained
+mascot, a domain role), expect some identity drift across sessions unless the
+convention is re-stated in the kickoff. A future release closes this gap as a sibling
+to Job Templates — see the [Roadmap](/roadmap/).
 
 ---
 
@@ -83,21 +104,25 @@ A future release will close this gap as a sibling slice to job templates — see
 
 When something doesn't behave the way this page describes, that's a bug. We want to know.
 
-- **Crash-class bugs:** the engine writes a redacted log and points you at the issue template. Open the bug at [github.com/ModulatioAI/modulatio/issues](https://github.com/ModulatioAI/modulatio/issues) using the **Bug report** template — it asks for the redacted log, your `modulatio doctor` output, and the plan ID. Those three give us enough to triage without further round-trips.
-- **Regression-class issues:** use the **Regression** issue template. We treat regressions as higher-priority than equivalent-severity new bugs.
-- **Feature requests:** use the **Feature request** template, or [Discussions](https://github.com/ModulatioAI/modulatio/discussions) for open-ended threads.
-
-Issue labels (severity / component / status / regression) are queryable.
+- **Crash-class bugs:** the engine writes a redacted log and points you at the issue
+  template. Open the bug at [github.com/ModulatioAI/modulatio/issues](https://github.com/ModulatioAI/modulatio/issues)
+  using the **Bug report** template — it asks for the redacted log, your
+  `modulatio doctor` output, and the plan ID.
+- **Regression-class issues:** use the **Regression** template (we treat regressions as
+  higher-priority than equivalent-severity new bugs).
+- **Feature requests:** use the **Feature request** template, or
+  [Discussions](https://github.com/ModulatioAI/modulatio/discussions) for open-ended threads.
 
 ---
 
-## Quick reference — v0.1.0 Beta sizing rules of thumb
+## Quick reference — sizing rules of thumb
 
-| Deliverable shape | Sub-objectives | Tasks per sub-objective | v0.1.0 Beta verdict |
-| --- | --- | --- | --- |
-| Single deliverable | 1-3 | 1-4 | Sweet spot |
-| Multi-piece deliverable | 3-7 | up to 6 (hard cap) | Comfortable |
-| Production-scale, Phase 1 only | 3-7 | up to 6 | Supported via Tier 1 |
-| Production-scale, all phases at once | — | — | Refused; queues for later release |
+| Deliverable shape | Verdict |
+| --- | --- |
+| Single deliverable (1-2 passes) | Sweet spot |
+| Multi-piece deliverable (assembled + fidelity-checked) | Comfortable |
+| Production-scale, Phase 1 only (you gate between phases) | Supported |
+| Production-scale, fully autonomous across all phases | Not yet — produce + review phase by phase |
 
-When in doubt, smaller. Phase plans grow when execution reveals real work; over-decomposed plans lock the team into churn before it discovers anything.
+When in doubt, smaller. Phase plans grow when execution reveals real work;
+over-decomposed plans lock the team into churn before it discovers anything.

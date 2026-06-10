@@ -1,13 +1,13 @@
 ---
 title: Tool catalog
-description: Every tool the v0.1.0 engine exposes to LLM skills — http_get, run_shell, write_artifact, read_tool_result. Schemas, profile contracts, sandbox interaction.
+description: Every tool the engine exposes to LLM skills — http_get, run_shell, write_artifact, read_tool_result. Schemas, profile contracts, sandbox interaction.
 ---
 
-Every tool the v0.1.0 engine exposes to LLM skills. Tools live in the registry built by `tools.build_registry(artifacts_root, tool_calls_dir=None)`. Skills opt in to specific tools via the `tool_loadout` field in their frontmatter; the LLM's function-calling schema only includes tools the skill explicitly declared.
+Every tool the engine exposes to LLM skills. Tools live in the registry built by `tools.build_registry(artifacts_root, tool_calls_dir=None)`. Skills opt in to specific tools via the `tool_loadout` field in their frontmatter; the LLM's function-calling schema only includes tools the skill explicitly declared.
 
 For the architectural deep-dive on how tool calls are confined, read [Sandbox + tool execution](/architecture/sandbox/). For the skills that use these tools, see [Skill catalog](/reference/skills/).
 
-The four v0.1.0 tools:
+The core tools:
 
 | Tool | Always available? | Used by |
 | --- | --- | --- |

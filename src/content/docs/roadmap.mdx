@@ -5,7 +5,7 @@ description: What's shipping next, what's planned beyond, and the long-horizon p
 
 v0.6.0 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
-If you want a one-page summary of v0.1.0 itself (what works, what doesn't), see the [v0.1.0 Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
+If you want a one-page summary of the engine's current ceilings (what works, what doesn't), see the [Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
@@ -94,7 +94,7 @@ v0.2.0 added:
 
 ### The v0.1.0 foundation
 
-The headline of v0.1.0 is **the five-layer working-memory architecture** plus **calibrated honesty** about what the engine is and isn't sized for. See [v0.1.0 Beta calibration](/v0-1-0-beta/) for the full contract; in one paragraph: the engine is sized for single deliverables (one cohesive output) and multi-piece deliverables (3-7 related outputs in one phase). Production-scale efforts (a 200-page novel, a multi-feature application across many releases) are explicitly Phase-1-only.
+The headline of v0.1.0 is **the five-layer working-memory architecture** plus **calibrated honesty** about what the engine is and isn't sized for. See [Beta calibration](/v0-1-0-beta/) for the full contract; in one paragraph: the engine is sized for single deliverables (one cohesive output) and multi-piece deliverables (3-7 related outputs in one phase). Production-scale efforts (a 200-page novel, a multi-feature application across many releases) are explicitly Phase-1-only.
 
 The v0.1.0 foundation ships:
 
@@ -107,7 +107,7 @@ The v0.1.0 foundation ships:
 - The **producer-collapse / skills-first** model: no fixed role identities — an agent is a producer-with-skills, and tasks are skill-routed to whichever producer holds the matching skill.
 - **QC-as-fixer** (ON by default) — when a producer can't clear the bar after exhausting retries, QC patches the artifact from its own findings and the task completes.
 - Provider **thinking on/off** control so you can run producers non-thinking.
-- Honest documentation: the v0.1.0 Beta page names every gap users should expect to hit.
+- Honest documentation: the Beta calibration page names every gap users should expect to hit.
 
 ---
 
@@ -124,11 +124,11 @@ The next slice's thesis is **make Modulatio viable for long-running deployments*
 - **Persistent cross-phase memory.** Templates carry team state across phases — names, conventions, style choices, prior decisions — without the user re-stating them each phase.
 - **Lifecycle-managed templates** with `draft`, `validated`, `stable` stages so users can ship custom templates back to the community as they harden, the same way skills can today.
 
-Production-scale efforts (the 200-page-novel class, the multi-quarter software project) become canonical use cases. v0.1.0's Phase-1-only constraint goes away, replaced by template-driven multi-phase orchestration where each phase gates between sign-offs.
+Production-scale efforts (the 200-page-novel class, the multi-quarter software project) become canonical use cases. Modulatio's Phase-1-only constraint goes away, replaced by template-driven multi-phase orchestration where each phase gates between sign-offs.
 
 ### Persona / identity continuity
 
-A sibling slice to job templates: keep team identity stable across long-running deployments. Job templates carry the *what* across phases; the persona slice carries the *who*. See [the v0.1.0 Beta "Persona / identity continuity" gap section](/v0-1-0-beta/#persona--identity-continuity-across-long-running-deployments) for the user-facing impact.
+A sibling slice to job templates: keep team identity stable across long-running deployments. Job templates carry the *what* across phases; the persona slice carries the *who*. See [the Beta calibration "Persona / identity continuity" gap section](/v0-1-0-beta/#persona--identity-continuity-across-long-running-deployments) for the user-facing impact.
 
 What this lands:
 
@@ -160,8 +160,8 @@ More detail will land once the shape stabilizes.
 
 The following are tracked as long-horizon design pillars rather than specific releases. They land when they're ready.
 
-- **Build / test feedback loop.** Producers can write code; the next slice lets them run the build, read the test failures, and iterate. Closes the v0.1.0 gap where iterate-on-failure needs human-in-the-loop. Likely lands as a `code_iter` skill composing `run_shell` + `parse_test_output` + redo-with-failure-context.
-- **Multi-language symbol map.** v0.1.0's `repo_map` is Python-only. Extending to JavaScript / TypeScript / Rust / Go via tree-sitter or per-language AST modules. Today's filename-only fallback for non-Python repos goes away.
+- **Build / test feedback loop.** Producers can write code; the next slice lets them run the build, read the test failures, and iterate. Closes the gap where iterate-on-failure needs human-in-the-loop. Likely lands as a `code_iter` skill composing `run_shell` + `parse_test_output` + redo-with-failure-context.
+- **Multi-language symbol map.** Modulatio's `repo_map` is Python-only. Extending to JavaScript / TypeScript / Rust / Go via tree-sitter or per-language AST modules. Today's filename-only fallback for non-Python repos goes away.
 - **Embedded LLM defaults.** Setup-wizard offers a curated embedded-LLM bundle for users who want zero external API dependencies. Ships pinned model presets that work end-to-end with the local Ollama defaults.
 - **Cost / token telemetry surfaces.** Already-tracked per-call usage (the `<plan>.usage.jsonl` ledger) gets a first-class TUI tab + CLI subcommand for "where did the budget go" forensics. Ties into the existing comptroller primitives.
 

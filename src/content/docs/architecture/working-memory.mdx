@@ -3,7 +3,7 @@ title: Working memory — the five-layer architecture
 description: How Modulatio handles work that exceeds a single LLM context window. Tool summarization, context-budget gates, repo digests, team-state continuity, and template discipline composed into one coherent story.
 ---
 
-v0.1.0 lands the **five-layer working-memory architecture**, the core of the engine's ability to handle work that exceeds a single LLM context window. This page is a deep-dive: what each layer solves, what it sees, what it doesn't, and how they compose.
+Modulatio lands the **five-layer working-memory architecture**, the core of the engine's ability to handle work that exceeds a single LLM context window. This page is a deep-dive: what each layer solves, what it sees, what it doesn't, and how they compose.
 
 If you want the executive summary first: context-bound work doesn't fail silently. Tool loops summarize their inflow (Layer 1), every call boundary is gated against the model's window (Layer 2), code repos get a symbol-aware digest instead of filename listings (Layer 3), team continuity survives across sub-objectives (Layer 4), and prompt templates pull their weight without prose bloat (Layer 5). When work *still* outgrows the engine's ceiling — which it can for production-scale efforts — the engine refuses gracefully with a checkpoint and a decompose-required ticket, rather than burning iterations on a deterministic failure.
 
@@ -131,7 +131,7 @@ When the planner decomposes a sub-objective for a code repo, the producers need 
 
 ### Coverage and limits
 
-v0.1.0's `repo_map` is **Python-only**. JavaScript / TypeScript / Rust / Go projects fall back to a filename listing. `modulatio doctor` surfaces this calibration on first contact. Multi-language symbol awareness is on the long-horizon [Roadmap](/roadmap/).
+Modulatio's `repo_map` is **Python-only**. JavaScript / TypeScript / Rust / Go projects fall back to a filename listing. `modulatio doctor` surfaces this calibration on first contact. Multi-language symbol awareness is on the long-horizon [Roadmap](/roadmap/).
 
 ### What goes into the digest
 

@@ -3,7 +3,7 @@ title: 'Example: multi-piece deliverable'
 description: A worked example of a four-section technical report — the multi-piece deliverable shape, end to end.
 ---
 
-Modulatio v0.1.0 is well-sized for "a handful of related outputs that ship together as one body of work" — what the leader-plan skill calls a **multi-piece deliverable**. This page walks through one end-to-end: a four-section technical report.
+Modulatio is well-sized for "a handful of related outputs that ship together as one body of work" — what the leader-plan skill calls a **multi-piece deliverable**. This page walks through one end-to-end: a four-section technical report.
 
 If you want the simpler shape (one cohesive output), see [Quickstart](/getting-started/quickstart/). If you want the larger shape (production-scale, Phase 1 only), see [Example: production-scale Phase 1](/getting-started/example-production-scale/).
 
@@ -17,7 +17,7 @@ Why this is multi-piece:
 
 - Four distinct outputs (one per section) — not one cohesive document.
 - Sections share conventions (terminology, examples, voice) but are independently useful.
-- Total scope fits comfortably in v0.1.0's 6-task hard cap per sub-objective: one task per section + one consolidation task at the end.
+- Total scope fits comfortably in Modulatio's 6-task hard cap per sub-objective: one task per section + one consolidation task at the end.
 
 ---
 
@@ -47,7 +47,7 @@ Expected plan shape:
 The user wants a 4-section technical report on container
 orchestration, ~8-10 pages total, developer audience. Concrete
 scope; multi-piece deliverable shape; fits comfortably in
-v0.1.0's per-sub-objective task cap.
+Modulatio's per-sub-objective task cap.
 
 ### Judgment
 The four sections benefit from a shared outline pass before
@@ -197,7 +197,7 @@ Plus the audit surfaces:
 
 ## What the engine watched for
 
-While the plan ran, v0.1.0's safety net was active:
+While the plan ran, Modulatio's safety net was active:
 
 - **Layer 1** (tool summarization) — irrelevant for this plan (no long tool loops).
 - **Layer 2** (context budget) — every call boundary checked. Sections 1-5 individually fit comfortably; the consolidation call (which sees all four sections + outline + terms) was the largest prompt. Likely landed in the 70-80% band on a middling-window model; a soft-warn log fires the first time, no compression triggered.
@@ -205,7 +205,7 @@ While the plan ran, v0.1.0's safety net was active:
 - **Layer 4** (team_state) — actively used. Each section's producer read the prior state; Leader-reflect updated state after each sub-objective.
 - **Layer 5** (terse-prose templates) — passive but load-bearing; the slimmer templates left more headroom for the runtime slots.
 
-If the consolidation call had overflowed, v0.1.0's catch would have landed a CRITICAL ticket with the checkpoint path and decompose-required framing. Leader-reflect would route to `revise-major` and you'd get an approval ticket to either split the report into two consolidated halves OR upgrade to a larger-window model.
+If the consolidation call had overflowed, Modulatio's catch would have landed a CRITICAL ticket with the checkpoint path and decompose-required framing. Leader-reflect would route to `revise-major` and you'd get an approval ticket to either split the report into two consolidated halves OR upgrade to a larger-window model.
 
 ---
 
@@ -221,7 +221,7 @@ If the consolidation call had overflowed, v0.1.0's catch would have landed a CRI
 
 ## When to escalate to production-scale
 
-If your plan needs more than 6-7 sub-objectives, more than 6 tasks per sub-objective, or genuinely cross-phase persistent memory — escalate to production-scale shape. See [Example: production-scale Phase 1](/getting-started/example-production-scale/). v0.1.0's contract is honest about this: production-scale is Phase-1-only in this release, with cross-phase work landing in a later version.
+If your plan needs more than 6-7 sub-objectives, more than 6 tasks per sub-objective, or genuinely cross-phase persistent memory — escalate to production-scale shape. See [Example: production-scale Phase 1](/getting-started/example-production-scale/). Modulatio's contract is honest about this: production-scale is Phase-1-only in this release, with cross-phase work landing in a later version.
 
 ---
 
@@ -229,5 +229,5 @@ If your plan needs more than 6-7 sub-objectives, more than 6 tasks per sub-objec
 
 - [Quickstart](/getting-started/quickstart/) — single-deliverable shape (the simpler case).
 - [Example: production-scale Phase 1](/getting-started/example-production-scale/) — the Phase-1-only contract for genuinely-large work.
-- [v0.1.0 Beta calibration](/v0-1-0-beta/) — the engine's sizing rules of thumb.
+- [Beta calibration](/v0-1-0-beta/) — the engine's sizing rules of thumb.
 - [Skill catalog](/reference/skills/) — `long-form`, `continuity-check`, `consolidation` are the skills this example relies on.

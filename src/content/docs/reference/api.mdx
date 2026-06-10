@@ -3,7 +3,7 @@ title: Python API reference
 description: The public Python API for callers embedding Modulatio in their own code. Core types, orchestrator, runners, vault primitives, tool registry, skill loader.
 ---
 
-The public Python API for callers embedding Modulatio in their own code. v0.1.0's surface area is intentionally narrow — most users interact through the CLI / TUI, not Python — but the engine core is importable for users who need to embed.
+The public Python API for callers embedding Modulatio in their own code. Modulatio's surface area is intentionally narrow — most users interact through the CLI / TUI, not Python — but the engine core is importable for users who need to embed.
 
 Stability contract: types and functions documented on this page are public. Anything in `src/modulatio/` not listed here is internal and may change between releases without a deprecation cycle. If you find yourself reaching for an internal symbol, file an issue — promoting it to public is usually possible.
 
@@ -51,7 +51,7 @@ class Project(BaseModel):
     created_at: datetime
 ```
 
-The unit of work in v0.1.0. Created by the wizard or the `modulatio project create` CLI; lives at `<vault>/<code>/`.
+The unit of work in this release. Created by the wizard or the `modulatio project create` CLI; lives at `<vault>/<code>/`.
 
 ### `Goal`
 
