@@ -1,0 +1,102 @@
+---
+title: v0.8.6 release notes
+description: Two arcs on one principle — the Leader remediates fixable concerns in place (typed gate, engine-owned fix window, HARD-violation withhold, access invariant), and the engine refuses to run a job template a job can't fill (a mechanical-fit gate, a guided derive, and cron skip-the-slot).
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.8.6 lands two arcs that share one principle: **the engine binds the hard
+invariant; prose only bends the judgment.** The first makes the Leader's verify loop
+*fix what it can* instead of filing a ticket and walking away. The second stops a job
+from being wedged into a saved template it doesn't fit — and makes deriving a fitting
+one a first-class, guided action.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+Both arcs harden how the engine handles correctness and reuse; neither moves the
+engine's ceilings. The honest limits on the
+[Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of
+[v0.8.4](/v0-8-4/).
+</Aside>
+
+---
+
+## Leader self-remediation — fix it, don't punt it (#80)
+
+When the Leader's verify pass finds a problem that is **fixable and in scope**, it now
+remediates in place rather than punting to a human ticket. The judgment is the
+Leader's; the safety rails are the engine's, and they're real — not hoped:
+
+- **A typed declare-validate gate.** The Leader declares the remediation (what it will
+  fix, and where) and the engine validates that declared shape *before* any redo runs.
+  A malformed or out-of-scope remediation is rejected, fail-closed.
+- **A bounded, engine-owned fix window.** The redo runs under a hard timeout the engine
+  owns on its own thread — a wedged fix can't hang the run, and the window can't be
+  talked past with prose.
+- **HARD violations withhold, and the withhold survives delivery.** A measured HARD
+  goal-spec violation at exhaustion *withholds* the deliverable — it is never delivered
+  downstream of unresolved work — and that decision can't be quietly undone when
+  products are rendered.
+- **A redo never widens its reach.** The access invariant holds across a remediation: a
+  redo runs with the same or a narrower tool loadout than the original. A fix can't
+  grant itself new powers.
+
+A prompt-engine coherence guard keeps the prose and the engine telling the operator the
+same story, and activity events now carry a structured `detail` payload so a surface can
+explain *why*, not just *what*.
+
+---
+
+## JT generativity — derive, don't wedge (#97)
+
+A **Job Template** is a saved, reusable form for a job — its setup questions, its
+parameters, its output shape — run as a one-off or scheduled as a cron (and one cron can
+run several templates in a set order, looping non-stop). The matcher used to pick a
+template by word-overlap and never check whether the job could actually **fill the
+template's required blanks**, so a wrong form could be bound — and a bound form is
+high-reuse, so it would *mis-run every cycle* until a human noticed.
+
+### A mechanical-fit gate (engine-bound, no fuzzy score)
+
+Before an explicit or cron bind runs, a pure boolean check asks only what it can verify
+from the template plus the supplied params — no similarity scalar, no inference from the
+objective's prose:
+
+- every **required** blank is filled, *strictly* — an empty string or an empty list is
+  not "filled";
+- every supplied value is **within its declared `enum`**;
+- a per-item template's fan-out driver is a present, non-empty list.
+
+A bind that fails is **refused**, fail-closed. The engine never runs a form it can't
+fill — refusing only a mechanism that literally couldn't run, while honoring the goal.
+
+### Refuse the broken form, derive a fitting one
+
+A refused explicit bind isn't a dead end. The conversational surface offers to **derive
+a fitting template** through a guided create-template interview that captures the right
+parameters — which are required, their type / enum / default — and the output shape,
+then saves the new template **alongside** the old one (never overwriting a template the
+operator still relies on). The create-template tool now captures a `param_schema`, so a
+template the engine itself creates declares its required blanks and the fit gate has
+something to check.
+
+### Cron skip-the-slot
+
+A refused bind on a **headless cron** doesn't improvise. Because a refused cron bind is a
+persistent configuration error — it would refuse every cycle — the engine **skips that
+slot** rather than substituting unsupervised, possibly wrong-shaped content into an
+ordered pipeline. It records the *reason* in the result every cycle (the single most
+useful string for the operator who finds it later), and the pipeline continues to its
+next slot — never crashing, never gating. A per-cron `on_refused: greenfield` override
+exists for the cases where output continuity is wanted over fidelity.
+
+---
+
+## Under the hood
+
+Both arcs follow the engine-binds / prose-bends cut: the fit gate is a pure boolean and
+the remediation gate is a typed validator (engine-bound invariants), while *which*
+fitting template to use, or *whether* to derive, stays the model's judgment in prose.
+Both cleared independent **hull** (Captain Nemo) and **coherence** (Lovecraft) reviews
+plus an architecture pass (Hero); every BLOCK — a malformed-params state-loss, a cron
+policy fork, an undone HARD withhold, a refusal that didn't explain itself — was
+remediated to sign-off before merge. **3046 tests pass.**
