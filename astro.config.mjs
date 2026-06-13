@@ -93,6 +93,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.8.8 — deterministic assembly validation + codify-the-win', slug: 'v0-8-8' },
 						{ label: 'v0.8.6 — self-remediation + JT generativity', slug: 'v0-8-6' },
 						{ label: 'v0.8.4 — deliverable fidelity', slug: 'v0-8-4' },
 						{ label: 'v0.8.2 — media-assembly + metered-tool tier', slug: 'v0-8-2' },

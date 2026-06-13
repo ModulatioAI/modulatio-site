@@ -47,11 +47,13 @@ When QC passes an artifact, the engine records *which bytes* it blessed (`Task.q
 3. every unit is QC-passed and its bytes are unchanged (each unit's mark still matches);
 4. the manifest's unit **set** equals the task-graph dependency set — no missing, no extra, no duplicate (the authoritative set is the dependency graph, never the producer's own manifest).
 
-Anything not provably correct **falls through to a normal full review** (fail-closed). The families differ in eligibility:
+Anything not provably correct **falls through to a normal full review** (fail-closed). Every family now has a **deterministic containment oracle** — one that proves the composite *contains the declared units*, not merely that it has their shape — so a provably-correct assembly cheap-passes regardless of kind, and the bytes never re-enter the model:
 
-- **`document` / `data`** are cheap-pass eligible — a complete book or dataset passes its review without a budget-blowing re-read.
-- **`code`** always gets a full review — there's no deterministic wiring/integration oracle the marks can stand in for.
-- **`media`** is binary, so QC never reads it as text. It gets a **provenance verdict**: the engine-composited file is verified intact (checksum) and non-empty, the *perceptual* content is flagged not-machine-verifiable (human spot-check), and an integrity failure routes to a human rather than a blind re-composite.
+- **`document` / `data`** pass structurally — a complete book or dataset passes its review without a budget-blowing re-read.
+- **`code`** passes when its *wiring* is statically checkable: a non-trivial entry point, every unit parses (Python-first; an unparseable language falls back rather than false-passes), and intra-package references resolve. External / SaaS / API-key'd imports (`stripe`, `openai`, …) are **expected** — an app *using* the user's keys is using a tool, not a wiring hole — so they are never a false failure; only a provable *intra-package* dangling reference fails.
+- **`media`** is binary, so QC never reads it as text — but a **`bundle`** (a lossless stdlib-`zipfile` archive) is verified by an exact member-name-set plus per-member **byte equality**, so a corrupt or wrong-content archive can't cheap-pass. Lossy **`video` / `audio` / `image`** composites have no exact *post-hoc* containment proof (their only exact cheap oracle is an assembler-emitted sidecar at composition time), so they **honestly fall back** to the binary-aware review rather than claim a proof they can't back.
+
+A delegated oracle (a user-configured metered validation tool) authorizes through the Comptroller before it spends and falls back to the free-local oracle on denial; the verify mark records **which oracle vouched** (`stdlib-zipfile-bytes` vs `external:<tool>@<version>`), so a cheap pass always names its authority. The scope stays honest: this is a structural / composite-shape oracle, **not** a "does it fulfil the brief" check — that remains the full review's (and [deliverable fidelity](/architecture/deliverable-fidelity/)'s) job.
 
 A companion **no-regress guard** checkpoints the QC-passed version so a drifted retry can't clobber a complete deliverable with a stub.
 

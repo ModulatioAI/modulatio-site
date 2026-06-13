@@ -1,0 +1,95 @@
+---
+title: v0.8.8 release notes
+description: Two arcs on one north star — QC can pass a code or media assembly cheaply when it can prove the composite contains the declared units, and the self-codification loop now learns techniques from the QC's own rescues, not just from repeated failures.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.8.8 lands two arcs that share one north star: **cheap producers generate, the smart
+QC reviews cheaply and patches only the errors, and the cost curve bends toward the
+cheap model over time.** The first lets QC *skip* re-reading an assembly it can prove
+correct. The second lets the team *learn* the techniques its smart reviewer keeps having
+to apply — so the cheap producer stops needing the rescue.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+Both arcs sharpen how the engine handles correctness and learning; neither moves the
+engine's ceilings. The honest limits on the
+[Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of
+[v0.8.6](/v0-8-6/).
+</Aside>
+
+---
+
+## Code + media deterministic assembly validation (#100)
+
+QC can pass an assembled deliverable **cheaply** — without re-reading the assembled
+bytes back into the model — when it is *provably* correct. The `document` and `data`
+families already had that structural oracle; `code` and `media` did not, so they paid
+for a full smart-model review every time. They now have one, under a single rule from
+the hull review:
+
+> **An oracle proves the composite CONTAINS the declared units — not merely that it has
+> their shape.** A cheap pass is granted only where containment is provably attainable;
+> everywhere else the engine honestly falls back to the full review.
+
+- **Code — wiring is statically checkable.** A non-trivial entry point (not an
+  empty/import-only shell), every unit parses (Python-first; an unparseable language
+  falls back rather than false-passes), and intra-package references resolve. Crucially,
+  **external / SaaS / API-key'd imports are EXPECTED** — an app *using* the user's keys
+  is using a tool, not a wiring hole — so a `stripe` or `openai` import is never a false
+  failure. Only a provable *intra-package* dangling reference fails.
+- **Media — prove containment where it's provable.** A `bundle` (stdlib `zipfile`, which
+  is byte-preserving) is verified by an exact member-name-set plus per-member **byte
+  equality**, so a corrupt or wrong-content archive can never cheap-pass. Lossy
+  `video` / `audio` / `image` composites have no exact *post-hoc* containment proof —
+  their only exact cheap oracle is an assembler-emitted sidecar at composition time — so
+  they **honestly fall back** to the full review rather than claim a proof they can't
+  back.
+- **Tool-delegated, fail-closed, witnessed.** If a user has configured a metered
+  validation tool, the oracle authorizes it through the Comptroller before it spends;
+  denial falls back to the free-local oracle, never an unmetered call. The verify mark
+  records *which* oracle vouched (`stdlib-zipfile-bytes` vs `external:<tool>@<version>`),
+  so a cheap pass always names its authority. The scope stays honest throughout: this is
+  a structural / composite-shape oracle, **not** a "does it fulfil the brief" check —
+  that remains the full review's job.
+
+## Codify-the-win — learn from QC recoveries, not just repeated fails (#81)
+
+The self-codification loop only ever learned from **failures** — repeated QC rejections
+the Leader distils into durable skill guidance. But when the smart QC *rescues* a cheap
+producer — writing the patch the producer couldn't — that patch encodes a **technique
+the producer lacked**, and the loop threw it away. Codify-the-win closes the other half:
+failures teach *what-not-to-do*; recoveries teach *how-to-do-it*.
+
+- **Witness the recovery.** The before / defects / after triple of a QC-authored fix is
+  captured (bounded, truncated at write time), recorded *after* the task already
+  completed and guarded at the call site — a logging failure can never reverse a
+  completion.
+- **The engine binds recurrence; the Leader judges coherence.** Recoveries cluster by a
+  deterministic, **false-merge-resistant** signature — artifact kind + defect class + a
+  normalized rationale key + an artifact-kind-aware *change-shape* fingerprint of the
+  before→after delta. Only a cluster that genuinely recurs (≥ a floor, default 3) is
+  surfaced to the Leader, who then judges whether it is *one* teachable technique — and
+  may codify a subset, or nothing. The engine never claims a one-off is a technique.
+- **Honest about a non-independent source.** A QC recovery is the same mind that judged
+  the work also writing the fix — so a win-codification writes **project-local** (not the
+  shared library; graduating to shared needs cross-project recurrence), carries
+  `provenance: win`, and surfaces a *louder* operator recommendation: **learned a
+  technique from a non-independent QC fix — the change most worth a spot-check.** It is
+  idempotent across a partial-failure replay, via a durable applied-signature guard on
+  the skill itself.
+
+<Aside type="tip" title="The win loop is the inverse of the fail loop">
+A fail-codification is validated by *independent rejection* (QC voted "no" as a
+reviewer, repeatedly). A win-codification is the same mind approving its own fix — so it
+is deliberately scoped tighter (project-local, loudly flagged) and its independent
+check — *did rescues on this technique actually drop afterward?* — is named as the next
+piece of work, not assumed.
+</Aside>
+
+---
+
+Both arcs cleared independent **hull** (Captain Nemo) and **coherence** (Lovecraft)
+reviews plus an **architecture** pass (Hero); every BLOCK was remediated to sign-off
+before merge — including a live-proven containment leak and a regression the full test
+suite caught that a narrower run had missed. **3118 tests pass.**
