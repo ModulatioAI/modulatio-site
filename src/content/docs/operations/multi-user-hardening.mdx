@@ -122,7 +122,15 @@ which bwrap
 modulatio doctor    # should show bubblewrap as active
 ```
 
-Without bwrap, `run_shell` falls back to a plain `subprocess.run(...)` — the allowlist + path-safety + no-shell-expansion layers still apply, but the namespace confinement is lost. The fallback is acceptable for single-user hosts but worth fixing on multi-user.
+Without bwrap, `run_shell` falls back to a plain `subprocess.run(...)` — the allowlist + path-safety + no-shell-expansion layers still apply, but the namespace confinement is lost. The fallback is acceptable for a single-user host.
+
+**On a multi-user host, make it fail-closed.** As of **v0.8.9**, set `MODULATIO_REQUIRE_SANDBOX=1` so `run_shell` *refuses* to run when bwrap is missing or non-functional, rather than silently falling back to unsandboxed execution:
+
+```bash
+export MODULATIO_REQUIRE_SANDBOX=1   # multi-user / daemon hosts: no sandbox = no shell
+```
+
+An explicit `MODULATIO_RUN_SHELL_UNSAFE=1` (or `MODULATIO_SANDBOX_PROFILE=off`) still overrides it — that's a knowing, operator-chosen opt-out, distinct from the *silent* fallback this closes. v0.8.9 also bounds each `run_shell` child with resource limits (address space / file size / core dumps) and reaps the whole process group on a timeout, so a runaway or an orphaned background process can't outlive the call.
 
 `modulatio doctor` reports bwrap availability inline.
 
@@ -156,6 +164,8 @@ grep "^pass_env:" <vault>/<project>/skills/*.md
 ```
 
 A skill that declares `pass_env: ()` (or omits the field) sees **no** environment in the subprocess. That's the safe default. A skill that declares `pass_env: ("PATH", "HOME")` is over-permissioned (those are usually injected by the sandbox itself) — review the declaration.
+
+As of **v0.8.9** the deny-list is categorical: any secret-shaped name — `*_KEY`, `*_TOKEN`, `*_SECRET`, `PASSWORD`, `DATABASE_URL`, `GH_PAT`, `SSH_*`, AWS / Stripe credentials, a known provider prefix — is **stripped even if a skill lists it in `pass_env`**. `pass_env` is for *configuration* (a config path, a feature flag), never credentials; a tool that genuinely needs a secret belongs behind its own registered tool.
 
 For real secrets that need to flow into a tool subprocess, the preferred path is per-provider auth profiles managed by `modulatio auth`, not raw `pass_env` declarations. Auth profiles go through litellm's auth resolution and don't need to be exposed to the subprocess directly.
 

@@ -3,15 +3,19 @@ title: Roadmap
 description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
 ---
 
-v0.8.8 is the current Beta release. This page consolidates what's shipping next and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+v0.8.9 is the current Beta release — a **security hardening** release. This page consolidates what's shipping next (the **0.9.0** and **1.0** lines) and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
 If you want a one-page summary of the engine's current ceilings (what works, what doesn't), see the [Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
-## Current — v0.8.8
+## Current — v0.8.9 (security hardening)
 
-The current release is **v0.8.8 — deterministic assembly validation + codify-the-win** ([release notes](/v0-8-8/)). Two arcs on one north star (cheap producers generate; the smart QC reviews cheaply and patches only the errors; the cost curve bends toward the cheap model): QC can now **cheap-pass a `code` or `media` assembly it can prove correct** — the engine proves the composite *contains* the declared units (code wiring statically checked, SaaS imports expected not failures; a `bundle` by exact byte equality; lossy media falls back honestly), so the assembled bytes never re-enter the model; and the self-codification loop now **learns from QC recoveries**, not just repeated fails — a rescue the smart QC keeps having to write is a *technique* the producer lacked, codified project-local with a non-independent spot-check flag. It builds on **v0.8.6 — Leader self-remediation + JT generativity** (the lead fixes fixable concerns in place under a typed gate + engine-owned fix window; the engine refuses a saved template a job can't fill, derives a fitting one, and skips a drifted cron slot — [release notes](/v0-8-6/)) and **v0.8.4 — deliverable fidelity** (the engine verifies the *whole* assembled deliverable against the brief: a `DeliverableSpec`, an engine-extracted digest + readable twin, a produce-bound per-part floor, generated framing, normalized numbering — [release notes](/v0-8-4/)). The full release history is in the **Releases** menu.
+The current release is **v0.8.9 — security hardening** ([release notes](/v0-8-9/)). A full-codebase security audit of the agent engine, then **two independent mirror-audits** — an adversarial *hull* pass and a *coherence* pass, each a different model reviewing the whole tree fresh — to catch what one pass would miss. **Nine findings confirmed and closed**, the keystone (a tool-call authorization bypass that let a skill reach a tool outside its declared loadout) found by the *independent* pass, not the first. **No functional change for a normal run** — this is defense-in-depth on the surfaces a prompt-injected model could otherwise reach, every fix an engine-bound invariant rather than prompt guidance. The guiding rule: *a permission is a key to a door inside the ship; it never opens the sea valves.* See the [v0.8.9 release notes](/v0-8-9/) for the per-finding delta.
+
+### Prior — v0.8.8 (deterministic assembly validation + codify-the-win)
+
+**v0.8.8 — deterministic assembly validation + codify-the-win** ([release notes](/v0-8-8/)). Two arcs on one north star (cheap producers generate; the smart QC reviews cheaply and patches only the errors; the cost curve bends toward the cheap model): QC can now **cheap-pass a `code` or `media` assembly it can prove correct** — the engine proves the composite *contains* the declared units (code wiring statically checked, SaaS imports expected not failures; a `bundle` by exact byte equality; lossy media falls back honestly), so the assembled bytes never re-enter the model; and the self-codification loop now **learns from QC recoveries**, not just repeated fails — a rescue the smart QC keeps having to write is a *technique* the producer lacked, codified project-local with a non-independent spot-check flag. It builds on **v0.8.6 — Leader self-remediation + JT generativity** (the lead fixes fixable concerns in place under a typed gate + engine-owned fix window; the engine refuses a saved template a job can't fill, derives a fitting one, and skips a drifted cron slot — [release notes](/v0-8-6/)) and **v0.8.4 — deliverable fidelity** (the engine verifies the *whole* assembled deliverable against the brief: a `DeliverableSpec`, an engine-extracted digest + readable twin, a produce-bound per-part floor, generated framing, normalized numbering — [release notes](/v0-8-4/)). The full release history is in the **Releases** menu.
 
 ### v0.6.0 — role-language migration
 
@@ -111,48 +115,27 @@ The v0.1.0 foundation ships:
 
 ---
 
-## Next — long-running deployments
+## Next — v0.9.0 (stability + reporting)
 
-The next slice's thesis is **make Modulatio viable for long-running deployments** — work that spans weeks or months, that needs cross-phase memory, and that has a recurring identity worth preserving. Two sibling slices ship together because either alone leaves the other half of the gap open.
+The 0.9.0 thesis is **harden what's here, not grow the surface** — bug fixes and performance work, plus exactly one net-new feature: a built-in **bug + crash reporting tool**.
 
-### Multi-phase orchestration on top of Job Templates
-
-[v0.5.0](/v0-5-0/) shipped the **Job Template foundation** — self-authored templates, an engine-enforced output contract, headless cron binding, and setup-side self-codification. What remains closes the rest of the production-scale gap, built on that foundation:
-
-- **A conversational, streaming template interview.** v0.5.0's interview binds from defaults or a code-supplied answer set; the next step is the Leader running it as a *conversation* — a multi-question, streamed exchange where you watch the team think and answer back — landing as part of the TUI overhaul. The engine seam is already in place: the interview is driven by an injected ask-callback that falls back to defaults when headless.
-- **Templates that self-extend through research.** When an interview hits a gap the engine doesn't have a question for, Leader spawns a small research task to figure out what the question should be — then folds the new question into the template for next time.
-- **Persistent cross-phase memory.** Templates carry team state across phases — names, conventions, style choices, prior decisions — without the user re-stating them each phase.
-- **Lifecycle-managed templates** with `draft`, `validated`, `stable` stages so users can ship custom templates back to the community as they harden, the same way skills can today.
-
-Production-scale efforts (the 200-page-novel class, the multi-quarter software project) become canonical use cases. Modulatio's Phase-1-only constraint goes away, replaced by template-driven multi-phase orchestration where each phase gates between sign-offs.
-
-### Persona / identity continuity
-
-A sibling slice to job templates: keep team identity stable across long-running deployments. Job templates carry the *what* across phases; the persona slice carries the *who*. See [the Beta calibration "Persona / identity continuity" gap section](/v0-1-0-beta/#persona--identity-continuity-across-long-running-deployments) for the user-facing impact.
-
-What this lands:
-
-- **`inject_identity_anchor()` at kickoff and plan-resume start.** A mandatory persona-context injection that re-states "who we are" before any agent decision. Composes with the existing `team_state` and `team_memory` slots — additive, not replacing.
-- **`persona.md` skill always loaded first.** A lightweight, always-on skill that prepends the current identity block to every producer prompt — same shape as the existing `{team_memory_context}` injection, but for self-concept.
-- **Importance-weighted episodic memory.** Replace the flat `EPISODIC_MAX_ENTRIES = 100` with an identity-tagged retention policy that protects persona statements from FIFO pruning. Layer 2's compression learns to skip identity-tagged messages the same way it currently skips system / recent tool turns.
-- **`persona_snapshot` field on `PlanRecord`.** Optional. When set, resumed plans force-inject the snapshot before the first sub-objective fires. Audit-trail-compatible with the existing reflection_log + transitions schema.
-- **Recurring "bottle check" every N turns.** Configurable cadence (every 20 turns suggested). Forces a re-read of standing identity notes from the user's vault, treating them as load-bearing context the same way `team_state` is.
-- **Leader-tier identity bypass for `team_memory`.** Persona writes skip the QC review path (which is designed for facts and skills) so the Leader can self-correct identity drift in real time.
-- **Semantic-router feedback loop.** The router already embeds `agent.identity` for capability matching; the next slice adds a feedback edge so identity changes trigger re-anchoring rather than only cache invalidation.
+- **Bug + crash reporting to the repo.** When a run hits an unhandled error — or you hit a bug worth reporting — Modulatio packages the relevant context (redacted) into a structured report and files it straight to the project's [GitHub issue tracker](https://github.com/ModulatioAI/modulatio/issues), so a problem you hit becomes something the project can act on without you hand-writing a repro. The one new feature in this line.
+- **Bug fixes.** The accumulated backlog from real runs — the rough edges that don't warrant a feature but do warrant a fix.
+- **Performance improvements.** Throughput, context-budget efficiency, and routing — making the current capabilities faster and cheaper rather than adding new ones.
 
 ---
 
-## Later — a different interface
+## Then — v1.0 (a new way to use it)
 
-A later release ships with a **different interface** for interacting with the engine. We're keeping the specifics deliberately vague while the design settles. The headline is: the TUI / CLI surface stays, and a new surface joins it. The engine internals stay the same; the change is in how humans engage with it.
+1.0 is the **interface** chapter: the engine internals (orchestrator, plan model, working-memory layers, skill system) stay stable — the change is in *how humans engage with it*, and how much you hand over.
 
-What we know now:
+- **A new TUI.** The conversation-first overhaul — the Leader as a streaming partner you talk to (not an admin dashboard), agents addressed by the names you gave them, producer + QC activity streamed live.
+- **A web-based UI.** Drive the same engine from the browser — a different deployment shape (multi-user collaboration, asynchronous work, longer horizon) without bending the local-vault contract.
+- **Remote access via the web UI.** Run Modulatio on a box and reach it from anywhere, so a long-horizon deployment isn't tied to the terminal it launched in.
+- **Operator permission modes — `/yolo`, `/goal`, `/yolo-goal`.** The *humane padded room*: when the sandbox blocks a capability (run a command, reach the internet, use a secret), the team asks you in plain words — **just this once / this whole session / always / no** — and remembers your answer. Three modes hand over judgment and/or access at your discretion: `/yolo` auto-grants the access asks (the sandbox stays **on**), `/goal` lets the Leader decide *how* without stopping to ask, `/yolo-goal` does both. Job Templates record the grants + mode so a headless cron run carries its own authorization. (The security-critical core is already built and independently reviewed.)
 
-- The engine internals (orchestrator, plan model, working-memory layers, skill system) stay stable. No re-architecting under the hood.
-- Existing TUI + CLI workflows keep working. The new release is additive on the human-facing surface.
-- The new surface targets a different deployment shape than the TUI — multi-user collaboration, asynchronous work, longer horizon — without forcing the local-vault contract to bend.
-
-More detail will land once the shape stabilizes.
+- **Cross-phase memory + persona continuity.** Long-running deployments that span weeks or months — templates that carry team state, conventions, and prior decisions across phases, and a stable team identity that survives a resume — lifting today's Phase-1-only constraint.
+- **Various minor features and improvements.** Smaller upgrades that ride along — not enumerated here.
 
 ---
 

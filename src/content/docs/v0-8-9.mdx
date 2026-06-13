@@ -1,0 +1,87 @@
+---
+title: v0.8.9 release notes
+description: Security hardening — a full-codebase audit plus two independent mirror-audits closed nine findings, the keystone a tool-call authorization bypass found by the independent pass.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.8.9 is a **security hardening** release. No new capability, no behavior change for a normal
+run — this is defense-in-depth on the surfaces a hostile model (prompt-injected via a fetched page
+or a poisoned source artifact) could otherwise reach. The work was a full-codebase security audit
+of the agent engine, followed by **two independent mirror-audits** — a different model on each,
+reviewing the whole tree fresh — because the value of a second pair of eyes is exactly the finding
+the first pass talks itself past.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release sharpens the engine's security posture; it doesn't move the engine's ceilings. The
+honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on
+top of [v0.8.8](/v0-8-8/).
+</Aside>
+
+The governing rule throughout — **a permission is a key to a door inside the ship; it never opens
+the sea valves** — means every fix is an *engine-bound invariant*, not a prompt instruction. (Prose
+bends a probabilistic model; the engine binds it.)
+
+---
+
+## The keystone — tool-call authorization (SEC-01)
+
+The most important finding wasn't in the first audit; the **independent hull pass** caught it. The
+tool-dispatch loop gated on *registry* membership — so a model could call a privileged tool
+(`run_shell`, `write_artifact`) that happened to be in the registry **even when that tool wasn't in
+the running skill's declared `tool_loadout`**. The schema only *hid* the other tools from a
+well-behaved model; a prompt-injected one could name them anyway. Dispatch now refuses any call
+outside the skill's loadout — a web-only skill can no longer reach the shell. This is the framework's
+least-authority boundary, and it's the bypass that *reached* the very `run_shell` the rest of this
+release hardens.
+
+## The rest of the nine
+
+- **Skill / job-template names can't escape their registry (H1).** A model-supplied name carrying a
+  path separator, `..`, or an absolute prefix is rejected at every write and resolves to a safe
+  not-found at every read — closing a cross-project library-poisoning write and an out-of-root read.
+- **Front-matter can't forge a privilege (H2).** A newline-injected `description` could otherwise
+  forge `needs_network: true` / `pass_env: <secret>` into a created skill; scalar fields are now
+  newline-collapsed at the single point where the file is serialized.
+- **`run_shell` is contained (H3).** Child resource limits (address space / file size / core dumps),
+  process-group reaping so a wall-clock timeout can't leave orphaned background processes, and an
+  opt-in **fail-closed sandbox** (`MODULATIO_REQUIRE_SANDBOX=1`) for multi-user / daemon hosts that
+  refuses to run unsandboxed rather than silently falling open when bubblewrap is missing.
+- **The sandbox env deny-list is broader (M1).** It now strips the generic secret shapes it missed —
+  `*_KEY`, `DATABASE_URL`, `GH_PAT`, `SSH_*`, AWS credentials, and more. `pass_env` is for
+  configuration, never credentials.
+- **Secrets are redacted before they surface (M2 + SEC-03).** Provider auth-error alerts, context
+  checkpoints, and the Leader↔operator conversation log are swept for token-shaped secrets
+  (OpenAI / Anthropic / xAI / GitHub / Google / Slack / AWS / Stripe) before they're written or
+  shown; durable logs are created owner-only (`0600`).
+- **ACP attachments are confined (SEC-02).** A client-supplied attachment path is restricted to an
+  allowed root (the working directory by default, `MODULATIO_ACP_ATTACHMENT_ROOTS` to widen) and
+  dotfiles / secret files are refused — a malicious editor plugin can't read arbitrary local files
+  into the model context.
+- **Tool timeouts are clamped (SEC-04).** Caller-supplied `run_shell` / `http_get` timeouts are
+  bounded (and `NaN` / `inf` rejected) so a hostile value can't tie up a worker.
+
+---
+
+## The method — two independent mirror-audits
+
+After the first audit and fixes, the whole tree was reviewed again **twice, independently** — an
+adversarial *hull* pass (does the engine actually bind the invariant, or just ask nicely?) and a
+*coherence* pass (do the fixes fit the system, or paper over it?), each on a different model, each
+unanchored to the first. The hull pass corroborated every first-pass fix with its own exploit probes
+**and** found the four it had missed (SEC-01..04); it then re-verified each remediation and signed
+every finding closed. That's the point of the cadence: a finding one reviewer talks past, another
+catches.
+
+<Aside type="tip" title="What's next">
+**v0.9.0** is a stability line — bug fixes, performance, and one new feature: a built-in bug + crash
+reporting tool that files structured reports to the repo. **v1.0** is the interface chapter — a new
+TUI, a web UI, remote access, and the operator permission modes (`/yolo` / `/goal` / `/yolo-goal`).
+See the [roadmap](/roadmap/).
+</Aside>
+
+---
+
+**3211 tests pass.** ruff clean. See the
+[CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the full
+per-finding delta.
