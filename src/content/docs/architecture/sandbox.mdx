@@ -94,10 +94,11 @@ When `bwrap` is available on the host (`bubblewrap` package), `run_shell` runs t
 - **No network by default.** The sandbox is constructed with no network namespace unless the active skill declared `needs_network: true`.
 - **Stripped environment.** The subprocess sees only the env vars the active skill explicitly listed in `pass_env`. Secrets in `~/.bashrc`, AWS credentials, OAuth tokens — all stripped.
 - **Confined by user namespace.** `bwrap --unshare-all` plus `--die-with-parent` so an orphaned subprocess can't outlive its parent.
+- **Resource-bounded (v0.8.9).** Each `run_shell` child runs under address-space / file-size / core-dump rlimits, and the whole process *group* is reaped on a wall-clock timeout — so a memory or disk bomb is capped, and a background process the command spawned can't survive past the timeout (the belt to `--die-with-parent`'s suspenders).
 
 The `sandbox.skill_context(needs_network=..., pass_env=...)` context manager binds those declarations to ContextVars that `run_shell` reads when building the bwrap argv. Skills that don't declare `needs_network` (the default) get the no-network path.
 
-When `bwrap` is **not** available — the install-smoke matrix includes hosts that lack it — `run_shell` falls back to a plain `subprocess.run(...)` without namespace confinement. The allowlist + path-safety + no-shell layers still apply, but Layer 4 is a no-op. `modulatio doctor` surfaces the bwrap-availability status so users know which surface is active.
+When `bwrap` is **not** available — the install-smoke matrix includes hosts that lack it — `run_shell` falls back to a plain `subprocess.run(...)` without namespace confinement. The allowlist + path-safety + no-shell layers (and the rlimits + process-group reaping above) still apply, but Layer 4's namespace confinement is a no-op. This soft fallback keeps single-user dev + CI working; on a **multi-user or daemon host, set `MODULATIO_REQUIRE_SANDBOX=1` (v0.8.9)** so `run_shell` *refuses* to run rather than silently falling open. An explicit `MODULATIO_RUN_SHELL_UNSAFE=1` (or `MODULATIO_SANDBOX_PROFILE=off`) is still a knowing operator opt-out, distinct from the silent fallback. `modulatio doctor` surfaces the bwrap-availability status so users know which surface is active.
 
 ---
 
@@ -105,7 +106,7 @@ When `bwrap` is **not** available — the install-smoke matrix includes hosts th
 
 A skill that wants network reach declares `needs_network: true` in its frontmatter. Without that declaration, the bwrap sandbox runs in a namespace with no network interfaces — a `urllib.request.urlopen(...)` from inside fails as `Network is unreachable`.
 
-`pass_env` is a tuple of environment variable names the skill explicitly needs the subprocess to see. The default — empty tuple — means the subprocess inherits *no* environment from the orchestrator. Skills that legitimately need to read a token (an HTTP-using research skill that needs `OPENROUTER_API_KEY`, say) declare it in `pass_env`. The orchestrator's environment binds those values into the subprocess; everything else is stripped.
+`pass_env` is a tuple of environment variable names the skill explicitly needs the subprocess to see. The default — empty tuple — means the subprocess inherits *no* environment from the orchestrator. Skills declare *configuration* names in `pass_env` (a config path, a feature flag); the orchestrator's environment binds those values into the subprocess and everything else is stripped. As of **v0.8.9** the strip is **categorical**: a secret-shaped name (`*_KEY`, `*_TOKEN`, `*_SECRET`, `PASSWORD`, `DATABASE_URL`, `GH_PAT`, `SSH_*`, AWS / Stripe credentials, a known provider prefix) is dropped *even if a skill lists it in `pass_env`* — `pass_env` is for configuration, never credentials. A tool that genuinely needs a secret belongs behind its own registered tool, not a `pass_env` passthrough.
 
 These two declarations make every skill's network + env reach auditable: a reviewer reading the skill's frontmatter sees exactly what surface area the skill claims, and the sandbox enforces no more.
 
@@ -122,7 +123,7 @@ These two declarations make every skill's network + env reach auditable: a revie
 
 Modulatio ships exactly these four. See [Tool catalog](/reference/tools/) for per-tool schemas, args, and the safety contract per tool. Future releases will likely add more (a build/test feedback primitive, a multi-language symbol-map primitive, a cost-telemetry surface) — see [Roadmap](/roadmap/).
 
-Skills declare `tool_loadout` to opt in to specific tools; the LLM's function-calling schema only includes tools in the loadout. A skill that didn't declare `run_shell` can't call it even if it's in the registry — the schema doesn't expose it.
+Skills declare `tool_loadout` to opt in to specific tools, and the loadout is the **authority boundary**, enforced two ways (v0.8.9 / SEC-01): the LLM's function-calling schema only includes tools in the loadout (a well-behaved model never sees the others), **and dispatch refuses any tool call whose name isn't in the loadout**. So a prompt-injected model that emits a `run_shell` call a web-only skill never declared is denied at *execution*, not merely hidden from the menu. Hiding alone is prose; the dispatch check is the engine binding it — the same principle as the rest of the security model.
 
 ---
 
