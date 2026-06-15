@@ -1,0 +1,77 @@
+---
+title: v0.9.0 release notes
+description: Stability + reporting — two full-codebase debug passes hardened the engine (no behavior change for a normal run), plus a built-in crash / error / doctor log system you can review and send to the team.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.0 is a **stability + reporting** release. Two full-codebase **debug passes** — an exhaustive
+primary sweep, then an independent re-debug — each adversarially verified and reviewed by a
+multi-model cadre, hardened the whole engine: hundreds of edge-case, error-path, concurrency, and
+cost fixes, with **no behavior change for a normal run**. On top of that, one net-new operator
+feature: a built-in **crash / error / doctor log** system — a `LOGS` tab in the TUI and
+`modulatio logs` on the CLI — that captures failures locally and lets you review and send them to
+the team.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release makes the engine harder to wedge and easier to report on; it doesn't move the engine's
+ceilings. The honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold. This page is
+the *delta* on top of [v0.8.9](/v0-8-9/).
+</Aside>
+
+---
+
+## Reporting — diagnostics you can send in one step
+
+Three kinds of log, each named in its filename and labelled in plain English:
+
+- **Crash log** — an uncaught exception that ended a process (already captured before this release).
+- **Error log** — a *handled*, non-fatal failure the engine survived: a task, QC, or dispatch
+  terminal, or a setup-wizard step that failed and the wizard continued degraded. The install-time
+  and run-time pain you'd otherwise have to describe from memory.
+- **Doctor report** — `modulatio doctor` now writes its read to a report and bundles the most recent
+  crash/error logs, so a "here's what my setup looks like" snapshot is one command.
+
+You work with them two ways:
+
+- a **`LOGS` tab** in the TUI — list every captured log, preview it, **send** it to GitHub, or
+  **delete** it (with a confirmation); and
+- **`modulatio logs list | send | rm`** on the CLI, for headless and remote hosts — and a crashed
+  CLI now prints exactly how to file the crash it just caught.
+
+The contract is **capture-always, submit-on-consent**. Nothing is ever auto-filed. Every log that
+could reach a public issue is **auto-redacted** — secrets, API keys, `Authorization: Bearer` /
+`Basic` headers, in both the body *and* the issue title — and shown to you to review and edit before
+it's sent. With a `MODULATIO_GITHUB_TOKEN` it files directly; without one, it opens a prefilled
+new-issue URL, so the feature works with no account.
+
+## Stability — two full-codebase debug passes
+
+A stability release can't ship a known could-break path, so the engine got two independent
+end-to-end debug passes — an exhaustive primary sweep, then a fresh re-debug — each followed by
+adversarial verification and a multi-model cadre review (an independent *hull* pass and a
+*coherence* pass), plus a producer/product/output **agnostic audit**. The result is hundreds of
+fixes that are invisible on a normal run:
+
+- **Concurrency.** The QC-history index is serialized across wave workers; wave worker-state is never
+  lost on the parallel path; `run_shell` resource limits are applied without a fork-from-thread
+  deadlock; concurrent log writes can't overwrite each other.
+- **Resilience.** Store reads survive binary / non-UTF-8 / BOM / CRLF input instead of throwing; a
+  goal is never stranded on a zero-completed redo/resume lane.
+- **Agnostic correctness.** Size gates are token-native (the unit is the TOKEN, never words / chars /
+  pages); deliverable routing is family-aware (a media deliverable is no longer rewritten to a
+  document source); shared logic carries no fixed-role assumptions.
+
+Every one of these came with a regression test, and the same multi-model cadre that signed the
+security release signed this one — including, on the reporting feature, two complementary hull passes
+that between them caught a secret-leak surface and a concurrency surface neither found alone.
+
+<Aside type="tip" title="What's next">
+**v1.0** is the interface chapter — a new TUI, a web UI, remote access, and the operator permission
+modes (`/yolo` / `/goal` / `/yolo-goal`). See the [roadmap](/roadmap/).
+</Aside>
+
+---
+
+**4325 tests pass.** ruff clean. See the
+[CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the full delta.
