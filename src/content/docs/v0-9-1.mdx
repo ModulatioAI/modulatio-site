@@ -1,0 +1,58 @@
+---
+title: v0.9.1 release notes
+description: Agent role refinement — producers, the Leader, and QC now work to a per-operation standard, so each deliverable is judged against the definition of "done" its kind of work actually demands.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.1 is an **agent role refinement** release. Producers, the Leader, and QC now work to a
+**per-operation** standard. Every task is classified by the **kind of work** it is — building,
+improving, fixing, measuring, explaining, researching, assessing, operating — and that
+classification selects three things: the **definition of "done"** the work is judged against, the
+**approach guidance** handed to the producer, and the **bar** the Leader and QC verify against.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release sharpens *how the team is held to standard*; it doesn't move the engine's ceilings. The
+honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on
+top of [v0.9.0](/v0-9-0/).
+</Aside>
+
+---
+
+## One bar per kind of work, not one bar for everything
+
+A single generic standard can't tell whether a *fix* worked, whether a *research* task is grounded,
+or whether an *assessment* is earned. So the engine now commits the **right** standard for the work:
+
+- a **fix** is judged on the reported problem actually being **gone** on a fresh check — not on
+  surrounding work merely passing;
+- a **research** task on its sources being **real and synthesized**, not fabricated or merely
+  collected;
+- an **assessment** on every judgment tying to **specific evidence**, not generic opinion;
+- a **build** on doing what was asked, correctly and completely.
+
+The classification is orthogonal to the artifact kind — you can *fix* code **or** data **or** a
+document — so it stays product-agnostic.
+
+## How it holds the team
+
+- **Triage → bar.** The engine stamps each task's class of work and derives, deterministically, the
+  definition of "done" the verifier judges against.
+- **Producer conformity.** Each producer's brief carries a terse, product-agnostic **approach card**
+  for that class of work — so a team of producers works to a consistent discipline regardless of
+  model strength.
+- **Leader & QC.** Both judge the deliverable against the standard its operation demands.
+
+## Safe by default
+
+An un-classified task defaults to a **strict** general standard — never a loose one. There is no
+soft "generic" path a producer can fall into; the default is chosen by the engine, not the producer.
+Work that declares no operation behaves exactly as before.
+
+---
+
+Fully reviewed across **coherence**, **hull**, and **code** passes. **4374 tests pass.** Builds on
+[v0.9.0](/v0-9-0/) — stability + reporting. Read the [Beta calibration page](/v0-1-0-beta/) before
+serious work. Bug reports and discussions welcome at the
+[issues tab](https://github.com/ModulatioAI/modulatio/issues) and
+[discussions](https://github.com/ModulatioAI/modulatio/discussions).

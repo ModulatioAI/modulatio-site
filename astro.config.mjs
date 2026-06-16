@@ -93,6 +93,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.9.1 — agent role refinement', slug: 'v0-9-1' },
 						{ label: 'v0.9.0 — stability + reporting', slug: 'v0-9-0' },
 						{ label: 'v0.8.9 — security hardening', slug: 'v0-8-9' },
 						{ label: 'v0.8.8 — deterministic assembly validation + codify-the-win', slug: 'v0-8-8' },
