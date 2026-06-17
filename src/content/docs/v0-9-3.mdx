@@ -1,0 +1,65 @@
+---
+title: v0.9.3 release notes
+description: Feng-Tui — a full phosphor-terminal reskin of the TUI. Pure black, thin frames, three live-cycling monochrome variants (amber / green / cyan), glyph+WORD state, a boot splash, and a shared master-detail layout. Layout-only — no backend change.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.3 is **Feng-Tui — the harmonious terminal interface**: a full phosphor-terminal reskin of the
+TUI. A pure-black ground, thin single-line frames, and a single monochrome accent in one of three
+**live-cycling variants** — amber / green / cyan. Press **F2** and the whole interface re-tints at
+once; the TUI **remembers the variant you last used** and reopens on it next launch.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release changes *how the interface looks and reads*, not what the engine does. The reskin is
+**layout-only — no backend wiring changed** — so the honest limits on the
+[Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of
+[v0.9.1](/v0-9-1/).
+</Aside>
+
+---
+
+## A look that reads in one hue
+
+The old interface leaned on colour to carry meaning. Feng-Tui is monochrome by design, so state is
+read as **glyph + WORD**, never colour alone — it survives a single-hue palette and a colour-blind
+operator. A lit/idle lamp, a priority, a status, a log kind: each shows a shape *and* a word.
+
+- **Three variants, switched live.** `feng-amber` (default), `feng-green`, `feng-cyan` are registered
+  as native themes, so one **F2** press re-resolves the palette across every mounted screen at once —
+  no restart, no per-screen redraw glitch.
+- **It remembers.** The variant you leave on is saved to your machine-local preferences and restored
+  on the next launch.
+- **A boot splash.** A low-res 1980s frame loads the dithered `MODULATIO` wordmark, the tagline, and
+  "powered by Feng-Tui" on launch — any key begins, **F2** re-tints it live (it doubles as the theme
+  demo).
+
+## One layout, shared across the list tabs
+
+The LOGS, TICKETS, ARTIFACTS, JT LIBRARY, and SKILLS tabs now share a single **full-height-divider
+master-detail** layout — a list on the left, a detail pane on the right, one thin divider down the
+middle — instead of five tabs each re-declaring their own split. Behaviour is unchanged; the
+existing surface keeps working exactly as before.
+
+- **A read-only SKILLS preview** surfaces a skill's routing — tags, requires, tool loadout, executor,
+  freshness, version — and its body, so you can read what a skill *is* without editing it. (Skills
+  are just-in-time pool members, not agent-bound; the old add-to-agent bind is retired.)
+- **App-wide copy & paste** (OSC 52) — copy a detail entry to the host clipboard and paste into
+  composers, search boxes, and wizards, including to and from outside apps.
+- **Uniform delete guards.** Every destructive delete — a model preset, a provider key, an agent, a
+  cron job — routes through one confirmation modal that states the consequence, instead of a
+  bespoke two-step flash.
+
+## Safe by default
+
+The reskin is **layout-only**: every backend path, every `query_one` selector, every test of the
+tab surface is unchanged. Memory still persists at the **project** level, never under a run folder —
+a guard test now pins that invariant. Work behaves exactly as it did on v0.9.1.
+
+---
+
+Fully reviewed across **coherence**, **hull**, and **hooks/regression** passes. **4382 tests
+pass.** Builds on [v0.9.1](/v0-9-1/) — agent role refinement — and [v0.9.0](/v0-9-0/) — stability +
+reporting. Read the [Beta calibration page](/v0-1-0-beta/) before serious work. Bug reports and
+discussions welcome at the [issues tab](https://github.com/ModulatioAI/modulatio/issues) and
+[discussions](https://github.com/ModulatioAI/modulatio/discussions).

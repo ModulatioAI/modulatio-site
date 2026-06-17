@@ -3,15 +3,23 @@ title: Roadmap
 description: What's shipping next, what's planned beyond, and the long-horizon pillars under design.
 ---
 
-v0.9.0 is the current Beta release — a **stability + reporting** release. This page consolidates what's shipping next (the **1.0** line) and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
+v0.9.3 is the current Beta release — **Feng-Tui**, a full terminal-interface reskin. This page consolidates what's shipping next (the **1.0** line) and the long-horizon pillars under design. Sections are intentionally light on dates — Modulatio ships when it's ready, not on a calendar — and heavy on what each direction is *for*.
 
 If you want a one-page summary of the engine's current ceilings (what works, what doesn't), see the [Beta calibration page](/v0-1-0-beta/). If you want to know what's already merged but not yet released, the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) `[Unreleased]` section is the source of truth.
 
 ---
 
-## Current — v0.9.0 (stability + reporting)
+## Current — v0.9.3 (Feng-Tui terminal reskin)
 
-The current release is **v0.9.0 — stability + reporting** ([release notes](/v0-9-0/)). Two full-codebase **debug passes** — an exhaustive primary sweep, then an independent re-debug — each adversarially verified and reviewed by a multi-model cadre (an independent *hull* pass and a *coherence* pass), plus a producer/product/output **agnostic audit**: hundreds of edge-case, error-path, concurrency, and cost fixes, with **no behavior change for a normal run** — the engine is simply harder to wedge. Plus one net-new operator feature — a built-in **crash / error / doctor log** system (a `LOGS` tab in the TUI and `modulatio logs` on the CLI) that captures failures locally and lets you review and send them to the team, **capture-always, submit-on-consent**, auto-redacted (secrets, tokens, `Authorization` headers — titles as well as bodies) before anything reaches a public issue. See the [v0.9.0 release notes](/v0-9-0/) for the full delta.
+The current release is **v0.9.3 — Feng-Tui, the harmonious terminal interface** ([release notes](/v0-9-3/)). A full phosphor-terminal reskin of the TUI: a pure-black ground, thin frames, and a single monochrome accent in one of three **live-cycling variants** — amber / green / cyan, switched with **F2** and remembered across launches — with state read as **glyph + WORD** rather than colour alone, a low-res **boot splash** that loads the dithered `MODULATIO` wordmark on launch, a shared full-height-divider **master-detail** layout across the list tabs, a read-only skills preview, app-wide copy/paste, and uniform delete-confirmation guards. The reskin is **layout-only — no backend wiring changed** — and the whole port was reviewed across a coherence pass, an independent hull pass, and a hooks/regression pass before merge. It is the visual foundation the conversation-first TUI overhaul (below, in the 1.0 line) builds on.
+
+### Prior — v0.9.1 (agent role refinement)
+
+**v0.9.1 — agent role refinement** ([release notes](/v0-9-1/)). Producers, the Leader, and QC work to a **per-operation** standard — every task is classified by the **kind of work** it is and that selects the **definition of "done"** the work is judged against, the **approach guidance** the producer gets, and the **bar** the Leader and QC verify against, so a *fix* is judged on the reported problem actually being **gone** and a *research* task on its sources being real and synthesized. **No behavior change** for work that declares no operation — it defaults to a strict general standard, never a loose one.
+
+### Prior — v0.9.0 (stability + reporting)
+
+**v0.9.0 — stability + reporting** ([release notes](/v0-9-0/)). Two full-codebase **debug passes** — an exhaustive primary sweep, then an independent re-debug — each adversarially verified and reviewed by a multi-model cadre (an independent *hull* pass and a *coherence* pass), plus a producer/product/output **agnostic audit**: hundreds of edge-case, error-path, concurrency, and cost fixes, with **no behavior change for a normal run** — the engine is simply harder to wedge. Plus one net-new operator feature — a built-in **crash / error / doctor log** system (a `LOGS` tab in the TUI and `modulatio logs` on the CLI) that captures failures locally and lets you review and send them to the team, **capture-always, submit-on-consent**, auto-redacted (secrets, tokens, `Authorization` headers — titles as well as bodies) before anything reaches a public issue.
 
 ### Prior — v0.8.9 (security hardening)
 
@@ -123,7 +131,7 @@ The v0.1.0 foundation ships:
 
 1.0 is the **interface** chapter: the engine internals (orchestrator, plan model, working-memory layers, skill system) stay stable — the change is in *how humans engage with it*, and how much you hand over.
 
-- **A new TUI.** The conversation-first overhaul — the Leader as a streaming partner you talk to (not an admin dashboard), agents addressed by the names you gave them, producer + QC activity streamed live.
+- **A new TUI.** The conversation-first overhaul — the Leader as a streaming partner you talk to (not an admin dashboard), agents addressed by the names you gave them, producer + QC activity streamed live. The **Feng-Tui** reskin ([v0.9.3](/v0-9-3/)) landed the visual foundation — pure-black phosphor look, live-cycling variants, glyph+WORD state, the shared master-detail layout; the conversation-first streaming surface builds on it.
 - **A web-based UI.** Drive the same engine from the browser — a different deployment shape (multi-user collaboration, asynchronous work, longer horizon) without bending the local-vault contract.
 - **Remote access via the web UI.** Run Modulatio on a box and reach it from anywhere, so a long-horizon deployment isn't tied to the terminal it launched in.
 - **Operator permission modes — `/yolo`, `/goal`, `/yolo-goal`.** The *humane padded room*: when the sandbox blocks a capability (run a command, reach the internet, use a secret), the team asks you in plain words — **just this once / this whole session / always / no** — and remembers your answer. Three modes hand over judgment and/or access at your discretion: `/yolo` auto-grants the access asks (the sandbox stays **on**), `/goal` lets the Leader decide *how* without stopping to ask, `/yolo-goal` does both. Job Templates record the grants + mode so a headless cron run carries its own authorization. (The security-critical core is already built and independently reviewed.)
