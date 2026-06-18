@@ -1,0 +1,97 @@
+---
+title: v0.9.4 release notes
+description: The two-lane Leader — a standalone coding agent you can pair with directly (read / edit / run in a folder you grant), plus three autonomy modes (/yolo, /goal, /yolo-goal). One fence holds through all of them — running free outside your own yard always needs permission.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.4 gives the **Leader a second lane**. The same agent that orchestrates the team can now also work
+on its own — a standalone coding agent you pair with directly, reading, editing, and running files in a
+folder you point it at — and three **autonomy modes** let you turn it loose within bounds. One invariant
+holds through all of it: **you can be turned loose, but running free outside your own yard needs
+permission.**
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release adds a new way to *work with* the Leader and the controls to scope it; the engine's honest
+limits on the [Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of
+[v0.9.3](/v0-9-3/).
+</Aside>
+
+---
+
+## The Leader works on its own
+
+Until now the Leader commanded the swarm: you delegated a job and the team produced it. v0.9.4 adds the
+other half. When you'd rather **pair with the Leader directly** — the way you would with a terminal
+coding agent — it has hands of its own. It can read, edit, write, and **run** files: `pytest`, a build,
+`git`, whatever the work needs.
+
+By default those hands are confined to the Leader's **own per-project workspace**. This is a *structural*
+guard, not a promise in a prompt: the Leader literally cannot reach the team's deliverables, because the
+sandbox root **is** the boundary. The coding know-how stays a just-in-time library skill — there is no
+private Leader silo; tools come from the registry, skills from the shared library.
+
+## Point it at a real folder — by your approval
+
+To work on an actual project, you widen it:
+
+```
+/work /path/to/your/project
+```
+
+That raises a single approval, in the Leader's voice, asking how far the grant goes: **once**, **this
+session**, **always** (it persists across restarts), or **deny**. `/rp` revokes everything at any time.
+The approval is **engine-rendered** — the wording, the canonical path, and the scope come from the engine,
+never narrated by the model, so the Leader can't talk you into a grant. Grants are pinned to the real path
+at the moment you give them, and a **secret-floor** keeps dotfiles (`.env`, `.ssh`, …) refused **even
+inside a folder you granted**. A **cheat-guard** refuses any folder that overlaps the team's run, artifact,
+or delivery trees — so widening can never hand the Leader the swarm's own deliverables.
+
+Running commands in a widened folder is **sandbox-required and fail-closed**: a widened command will not
+run without a working sandbox, *regardless of any global bypass flag*, so it can never leak the parent
+environment or your provider keys.
+
+## Turn it loose — within bounds
+
+Three modes set how much the Leader checks with you, typed as the first word of a message:
+
+- **`/yolo`** — auto-grant capabilities. The Leader stops asking before it reaches for the network or the
+  shell; the sandbox stays on.
+- **`/goal`** — delegate judgment. The Leader decides *how* to proceed without stopping to ask which
+  approach you'd prefer; it still asks before a new capability.
+- **`/yolo-goal`** — both.
+
+When the Leader does ask for a capability, the question reaches you with the same four options
+(once / session / always / deny). A two-row status — **Access** and **Sandbox** — is always visible, so a
+mode can **never hide** that the sandbox is off: `/yolo` will plainly show `Sandbox: UNAVAILABLE — shell
+will be refused` rather than quietly auto-granting into nothing.
+
+And the line that holds through every mode:
+
+> You can be turned loose, but if you want to run free **outside your own yard**, you need permission.
+
+No autonomy mode opens the folder fence. `/yolo`, `/goal`, and `/yolo-goal` change what the Leader does
+*inside* its yard — they never auto-open a new one. Crossing into a folder you haven't granted is always a
+deliberate `/work` approval. Under the hood, the capability controls (network / shell / spend) and the
+filesystem fence (path / exec) are **independent gates that compose**: a tool runs only if *both* pass, the
+fence is checked first and regardless of mode, and either failure fails closed.
+
+## A runbook the Leader carries
+
+So it stays rigorous when it works alone, the Leader carries an **embedded runbook** — a short
+working-discipline spine injected at the head of every turn: *name the operation, then commit the right
+definition of "done" for it.* Built something? Run it — don't trust that it compiled. Fixed a bug? Confirm
+the symptom is actually gone. Reviewed something? Tie every claim to a real line. It's the discipline a
+good engineer brings, made unmissable rather than optional.
+
+## Reviewed, end to end
+
+Every arc in this release cleared **full design and code cadre review** — coherence, hull/security,
+bypass-surface, and contract — with each BLOCK remediated to sign-off before merge, and the whole release
+green at **4538 tests**. The headline security property — *no mode opens the folder fence* — is enforced
+in the engine and proven at the live tool-call path, not asserted in a prompt.
+
+---
+
+See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the full delta,
+and the [roadmap](/roadmap/) for what's next.
