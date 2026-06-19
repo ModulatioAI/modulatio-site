@@ -41,28 +41,32 @@ The rest of this page uses `python3` for brevity. If your `python3` is too old, 
 
 ## Install
 
-### Clone the repo
+### Quick install (recommended)
+
+Modulatio is on PyPI. In a Python 3.12+ environment:
+
+```bash
+pip install modulatio
+modulatio setup
+```
+
+That puts the `modulatio` CLI (and `modulatio-tui`, `modulatio doctor`, `modulatio logs`) on your PATH and runs the first-run wizard. To keep Modulatio isolated from your system Python, install it with [pipx](https://pipx.pypa.io/) instead:
+
+```bash
+pipx install modulatio
+modulatio setup
+```
+
+To upgrade in place when a new version ships: `pip install -U modulatio` (or `pipx upgrade modulatio`).
+
+### From source (for development)
+
+If you want to hack on Modulatio itself, install it editable from a clone:
 
 ```bash
 git clone https://github.com/ModulatioAI/modulatio.git ~/modulatio
 cd ~/modulatio
-```
-
-### Create a virtualenv and install
-
-With `uv` (recommended — faster, handles lockfiles cleanly):
-
-```bash
-uv venv
-uv pip install -e ".[dev]"
-```
-
-With plain `pip`:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
+uv venv && uv pip install -e ".[dev]"   # or: python3 -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
 ```
 
 The `[dev]` extra adds `pytest`, `pytest-asyncio`, and `ruff`. Skip it (`pip install -e .`) if you only want to *use* Modulatio and not develop it.
