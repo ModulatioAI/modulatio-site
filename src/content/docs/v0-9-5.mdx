@@ -1,0 +1,87 @@
+---
+title: v0.9.5 release notes
+description: Subscription seats — bring your own Claude and GPT-5.5 to the team. Clay runs any seat through your Claude Code subscription; GPT-5.5 runs through your OpenAI Codex subscription. Plus per-seat model fallbacks, so a down provider never stalls a run.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.5 lets you **bring subscriptions you already pay for to the team.** Two new seat types reach a
+model through its vendor's own harness instead of a metered API key: **Clay** runs any seat on your
+**Claude Code** subscription, and **GPT-5.5** runs on your **OpenAI Codex** subscription. And each seat
+can now carry **fallback models**, so a rate-limited or down provider no longer stalls a run.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release adds new model sources and per-seat resilience; the engine's honest limits on the
+[Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of [v0.9.4](/v0-9-4/).
+</Aside>
+
+---
+
+## Clay — a Claude avatar seat
+
+Clay puts **Claude on your team through the subscription you already have.** It's a model seat backed
+by `claude -p` — the Claude Code CLI — running headless: assign Clay as your Leader, your QC, or any
+producer, hand it a task, and it works the task with Claude's own hands (read, edit, run) and hands back
+the result.
+
+The point is the *path* it takes to Claude. Clay reaches the model through the **official Claude Code
+harness** — your logged-in subscription — never a metered API key and never `api.anthropic.com`. So a
+Clay seat spends the Claude subscription you're already paying for, not per-token billing.
+
+Clay is **treated like any other agent in the role it's given.** It isn't a privileged back door and it
+isn't a special case: it inherits the same confinement and the same rules as every other seat. By default
+it works confined to its own folder (a working sandbox is required), and when a task needs a real project
+path it raises the **same operator approval** as the rest of the team. The Claude binary's own sign-in is
+the only thing involved — Modulatio never reads or stores your token.
+
+Set it up in **Config → Models**: add the **"Clay — Claude avatar"** provider, install Claude Code and
+run `claude` to sign in, then pick a model. It's **purely additive** — your existing Anthropic API-key
+path is untouched, so you can run both.
+
+## GPT-5.5 through your Codex subscription
+
+The same idea for OpenAI. A model on your **Codex (ChatGPT) subscription** now works as any seat, tool
+use included — reached through the ChatGPT backend's Responses API where the subscription is valid,
+instead of the metered `api.openai.com` (which rejects a subscription token outright). Add the
+**"OpenAI Codex (subscription)"** provider, sign in with `codex login`, and pick `gpt-5.5`.
+
+## Per-seat model fallbacks
+
+Every seat — Leader, QC, each producer — can carry its own ordered list of **backup models.** If a
+seat's model is unavailable for a provider reason (a rate limit, an auth failure, a 5xx), the engine
+**warns you and restarts the whole task on the next backup** — never a mid-task model switch that would
+degrade the result, and the primary is tried first on every new task so it auto-resumes the moment it
+recovers. A down provider stops stalling the team. Configure it in **Config → Agents**: pick a seat, open
+**Fallbacks**, and list the backups in priority order. Direct-subscription models (Grok via xAI, GPT-5.5
+via Codex) can never be given an OpenRouter fallback — enforced in the engine.
+
+## Quiet hours for seat alerts
+
+**Config → Agents** gains a **Quiet hours** window: during the hours you set, a seat's model-fallback
+notices — and the optional Telegram auth pings — are held back and rolled into a single digest at the end
+of the window, so an overnight run that trips a transient `429` doesn't buzz you at 3am. Off by default,
+set per project.
+
+## Also fixed
+
+- **The boot splash holds long enough to read.** The Feng-Tui boot frame could be skipped in a blink —
+  the Enter that launches `modulatio` leaked into the new screen and dismissed it before the tagline
+  registered. It now holds for a readable beat (up to ten seconds, or any key), with a short opening guard
+  so a stray launch keystroke can't skip it.
+- **Widened-exec sandbox hardening (security).** When the solo Leader is granted exec in a real folder, a
+  command that *named* a file there (rather than `cd`-ing into it) could, under the global dev/test
+  sandbox bypass, run unsandboxed with the parent environment. Widening is now derived from the whole
+  command, and the global bypass never reaches a widened run.
+
+## Reviewed, end to end
+
+Clay cleared **full code cadre review** — coherence, hull/wiring, bypass-surface, and contract — with its
+one real finding (a sandbox bind that could have re-exposed your home directory) caught, remediated, and
+re-verified on a live `claude -p` round-trip before merge. The whole release is green at **4611 tests**.
+Clay's confinement is enforced in the engine and proven at the real subprocess path, not asserted in a
+prompt.
+
+---
+
+See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the full delta,
+and the [roadmap](/roadmap/) for what's next.
