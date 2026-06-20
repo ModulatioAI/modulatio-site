@@ -97,15 +97,20 @@ Three auth paths:
 
 LiteLLM handles the request shape; you don't need to think about Anthropic's specific API quirks.
 
-#### `oauth_anthropic` — Pro/Max OAuth
+#### Claude Pro / Max subscription → use **Clay**
 
-If you have Claude Pro or Max and want to use that tier:
+If you have Claude Pro or Max and want that subscription on the team, add **Clay**
+(the `claude_cli` provider) — it runs through the official `claude -p` binary and
+spends your subscription the TOS-safe way. Passing a Pro/Max OAuth token straight
+to `api.anthropic.com` is **not** supported and returns a `401
+authentication_error`, so setup no longer offers it. See
+[Clay — a Claude avatar seat](/v0-9-5/#clay--a-claude-avatar-seat).
 
-1. Run the Claude CLI auth flow (`claude auth login`) at least once to populate `~/.config/anthropic/`
-2. In the wizard step 3, the OAuth probe should detect the credentials and offer a quick-add row
-3. Or add manually: auth type `oauth_anthropic`, URL `https://api.anthropic.com/v1`, model id same as api_key
+1. Install Claude Code and run `claude` once to sign in.
+2. In setup, pick the **"Clay — Claude avatar"** quick-add (it appears when
+   `claude` is on PATH), then choose a model.
 
-Tokens refresh automatically. **Caveat:** TOS gray area for non-Claude-Code attribution; prefer `api_key` for unattended runs.
+`api_key` with an `sk-ant-...` key remains the metered path for unattended runs.
 
 #### `cli_subprocess` — Claude CLI passthrough
 
@@ -144,7 +149,7 @@ Auth: `api_key` only.
 
 API URL: `https://api.openai.com/v1`
 
-Auth: `api_key` or `oauth_openai`.
+Auth: `api_key` for the metered API.
 
 1. Generate at https://platform.openai.com/api-keys
 2. Add entry:
@@ -152,7 +157,10 @@ Auth: `api_key` or `oauth_openai`.
     - Auth: `api_key`, value `OPENAI_API_KEY`
     - Model ID: `openai/gpt-4o-mini` (cheap, fast) or `openai/gpt-4o` (capable)
 
-OAuth path mirrors Anthropic's — same TOS gray-area caveat.
+For a **ChatGPT/Codex subscription**, add the dedicated **OpenAI Codex
+(subscription)** provider instead — it reaches GPT-5.5 through the ChatGPT
+backend where the subscription is valid. Passing a subscription OAuth token
+straight to `api.openai.com` returns a `401`, so setup no longer offers it.
 
 ### OpenRouter
 

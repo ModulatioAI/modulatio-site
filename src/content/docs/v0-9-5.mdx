@@ -15,6 +15,16 @@ This release adds new model sources and per-seat resilience; the engine's honest
 [Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of [v0.9.4](/v0-9-4/).
 </Aside>
 
+<Aside type="tip" title="Patched in v0.9.5.1 (2026-06-20)">
+Two fresh-install fixes. **Setup now offers Clay** to put a Claude subscription on the team — the old
+"Anthropic OAuth" quick-add pointed at the metered `api.anthropic.com` and 401'd a subscription token,
+and never surfaced Clay; that path is gone, replaced by the **Clay** quick-add (and the Codex quick-add
+now targets the ChatGPT subscription backend, not the metered OpenAI API). And the **boot splash now
+appears on launch** — it had been enabled only on the `modulatio-tui` entry point, so the plain
+`modulatio` launch skipped it. Already have a stale OAuth preset from 0.9.5? Clear it with
+`modulatio models remove <key>` then `modulatio auth clear-all`.
+</Aside>
+
 ---
 
 ## Clay — a Claude avatar seat

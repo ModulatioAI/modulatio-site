@@ -47,15 +47,15 @@ This is the step where most setup time is spent. You'll add one or more **model 
 
 The step probes for credentials you might already have:
 
-- **Anthropic Claude CLI OAuth** — if `claude` is on PATH and authed, offers to wire it in via subprocess. Pro/Max attribution status is gray-area; see [Providers & models](/concepts/providers/#anthropic) for the trade-off.
-- **OAuth tokens for Anthropic / OpenAI** found in `~/.config/anthropic/` or `~/.config/openai/`
+- **Clay — Claude avatar** — if `claude` (Claude Code) is on PATH, offers a quick-add row that runs a Claude seat through your Claude Code subscription (`claude -p`), the TOS-safe way. This replaces the old raw-OAuth Anthropic row, which 401'd a subscription token.
+- **OpenAI Codex (subscription)** — if `~/.codex/auth.json` is present, offers a quick-add for GPT-5.5 through the ChatGPT/Codex backend.
 - **Local services on standard ports** — Ollama (11434), LM Studio (1234), llama.cpp servers — auto-detected and offered as quick-add rows
 
 For each entry you confirm:
 
 - A short label (`grok-fast`, `claude-haiku`, `local-qwen`)
 - The provider's API endpoint URL
-- Auth method: `api_key`, `oauth_anthropic`, `oauth_openai`, `cli_subprocess`, or `none` (for unauthenticated local services)
+- Auth method: `api_key`, `claude_cli` (Clay), `oauth_openai` (Codex subscription), or `none` (for unauthenticated local services)
 - The model ID as the provider names it (e.g. `xai/grok-4-1-fast`, `openrouter/anthropic/claude-haiku-4-5`, `ollama/qwen3.6-35b-a3b:q8`)
 
 You need **at least one** model entry to proceed. Most setups have 3–5: a fast/cheap model for chat, a capable model for production work, a local model as fallback.
