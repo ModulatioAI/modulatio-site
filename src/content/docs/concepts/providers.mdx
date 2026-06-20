@@ -14,8 +14,11 @@ This page covers the providers Modulatio has been tested against, how to authent
 You can wire providers, models, keys, and agents from a menu-driven
 **Configuration tab** in `modulatio-tui` — no config-file editing. Pick a
 provider and a model and the base URL, auth method, and model id auto-fill from a
-built-in catalog of eleven providers; you type only a key. The same tab adds and
-removes models and agents.
+built-in catalog of thirteen providers — including two **subscription seats**
+that reach a model through the vendor's own harness instead of a metered key:
+**Clay** (any seat on your Claude Code subscription, via `claude -p`) and
+**GPT-5.5** (your OpenAI Codex subscription). You type only a key. The same tab
+adds and removes models and agents.
 
 Keys are managed per provider: a **PROVIDERS & KEYS** section lists each
 provider's keys (by label, never the value) to add or remove. By default a
@@ -59,18 +62,19 @@ The setup wizard's step 3 calls the same surface — adding entries through the 
 
 ## Auth types
 
-Five auth types, picked per entry:
+Six auth types, picked per entry:
 
 - **`api_key`** — standard bearer key. Stored in `<vault>/.env` under a key you name (e.g. `XAI_API_KEY`); the model entry references it by name.
 - **`oauth_anthropic`** — Anthropic OAuth tokens. Refreshes automatically via `modulatio.oauth_refresh`. Pulls Pro/Max tier if your account has it.
-- **`oauth_openai`** — OpenAI OAuth tokens. Same refresh model.
-- **`cli_subprocess`** — invoke a CLI binary as a subprocess (e.g., `claude` for Anthropic Claude CLI). Works with whatever auth the CLI already has.
+- **`oauth_openai`** — OpenAI OAuth tokens. The **"OpenAI Codex (subscription)"** provider uses this to reach **GPT-5.5** through the ChatGPT/Codex backend's Responses API (where a subscription token is valid), instead of the metered `api.openai.com`.
+- **`oauth_xai`** — xAI (Grok) OAuth tokens, read from the official Grok CLI's credentials.
+- **`claude_cli`** — the **Clay** avatar seat: Modulatio invokes the Claude Code CLI (`claude -p`) as a subprocess and reaches Claude through the official harness using your logged-in subscription — it never reads or stores the token. The TOS-safe path for subscription-tier access; Clay is treated like any other seat (confined to its folder, additive to the existing Anthropic API-key path).
 - **`none`** — unauthenticated (only used for local services like Ollama / LM Studio that don't require auth on localhost).
 
 OAuth providers (`oauth_anthropic`, `oauth_openai`) trigger background-refresh alerts to your configured channels (Telegram, log) when tokens are nearing expiry.
 
-<Aside type="caution" title="OAuth attribution gray area">
-`oauth_anthropic` and `oauth_openai` pass Pro/Max tokens directly without the first-party CLI's attribution headers. Whether that's compatible with each provider's terms for automated/unattended workloads is unverified — vendor TOS language is unsettled. For cron jobs and long-running plans, prefer `api_key`: clearly on-spec and avoids relying on a posture vendors may tighten without notice. `cli_subprocess` auth (a backlog item) routes through the official CLI binary so attribution headers are preserved; that's the planned TOS-safe path for OAuth-tier access.
+<Aside type="caution" title="OAuth attribution — and the subscription seats that sidestep it">
+Passing Pro/Max OAuth tokens *directly* to a metered API (`oauth_anthropic`, or `oauth_openai` against `api.openai.com`) skips the first-party CLI's attribution headers, and whether that's on-spec for automated workloads is unsettled vendor-TOS territory — for cron jobs and long-running plans, plain `api_key` is clearly on-spec. As of v0.9.5 the **TOS-safe subscription paths ship**: **Clay** (`claude_cli`) routes through the official `claude -p` binary, and the **OpenAI Codex** provider reaches GPT-5.5 through the ChatGPT backend's own Responses API — both spend the subscription through the vendor's own harness rather than against the metered API.
 </Aside>
 
 ## Per-provider details
