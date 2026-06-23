@@ -1,0 +1,89 @@
+---
+title: v0.9.6 release notes
+description: The team always finishes the job — a per-task quality backstop that recovers a wedged run instead of dropping it. Plus a leaner team, lifecycle tooling (uninstall / repair), a more conversational Leader, and fail-closed confinement for subscription seats.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.6 is a **reliability** release. The headline: **the team always finishes the job.** A producer's
+attempts are now budgeted **per task**, and when that budget is spent the **quality check finishes the
+work itself** — so a run lands a real deliverable instead of getting stuck. Around that: a **leaner team**
+(the Leader is the only required role), **lifecycle tooling** to keep an install tidy, a more
+**conversational Leader**, and **fail-closed confinement** for subscription seats.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release hardens how a run recovers and tightens security; the engine's honest limits on the
+[Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of [v0.9.5](/v0-9-5/).
+</Aside>
+
+---
+
+## The team always finishes the job
+
+**The purpose:** a multi-agent run should never wedge. Before, a producer could keep retrying the same
+task forever, or — on a subscription seat — quietly re-launch the model to work around its retry budget,
+and a stubborn task could end blocked with nothing to show.
+
+**What changed:** a producer's attempts are now **tied to the task**, not the call. The budget counts
+across every retry, hand-off, re-assignment, and re-run, and it **never resets** — so no model earns a
+fresh budget by being re-dispatched. When the budget is spent, **QC steps in and finishes the work
+itself**: it **patches** the existing draft in place, or **writes the artifact from the task's brief**
+when there's nothing to patch. Either way the task completes, the producer is freed, and the run moves
+on. There's nothing to configure — it's the default. In practice you'll see a task that a producer
+couldn't land come back **completed**, authored by QC, with the run continuing past it.
+
+## Clearer signals when something's off
+
+**See that QC checked the work.** Each QC review now appears in the activity feed **against the task it
+reviewed**, so you can tell at a glance that a producer's output was actually verified — not just that
+the producer "wrapped up."
+
+**A plain message when the Leader's model is down.** If the model you picked for the Leader is
+unavailable when you start a job (an overloaded provider, say), Modulatio now tells you plainly to
+**switch the Leader's primary model and try again** — instead of failing with a stack trace.
+
+## Producers stay on contract
+
+The producer brief now directs each model to do **exactly what the task asks, and stop** — no
+re-planning the problem, no over-gathering, no padding. This keeps reasoning-heavy models from drifting
+off the brief and inflating the work, which in turn keeps them inside their budget and on-spec for the
+quality check.
+
+## A leaner team
+
+**The Leader is the only required role.** Team formation now treats **QC and producers as optional**:
+stand up a solo Leader, add a QC verifier if you want one, and add producers (1–10) as the work needs
+them — instead of a forced minimum team.
+
+## Lifecycle tooling
+
+- **`modulatio uninstall`** — remove the install with tiered, clearly-named choices (settings, project
+  folders, finished deliverables, pandoc). Every removal of your own data is **backed up first**; a
+  `--pristine` flag does a full never-installed reset; a standalone `uninstall.sh` can clean up even when
+  the package itself is too broken to import. **A vault Modulatio didn't create is never auto-deleted.**
+- **`modulatio repair`** — fix broken model presets and agents, recreate a missing vault or default
+  project, and clear configuration in tiers (each gated behind its own confirmation, backed up first).
+  Setup now opens with an **Install / Repair** choice when it detects an existing configuration.
+
+## Talk to the Leader
+
+`/models` opens the model picker, `/new` archives the current conversation aside (kept, never deleted)
+and starts fresh, and `/editor` composes a message in your `$EDITOR`. You can stop the Leader
+mid-thought with **ESC** in the conversational / solo-coding lane — cooperative, so an in-flight call
+finishes first and the stopped turn is recorded as a first-class interrupt.
+
+## Fail-closed confinement for Clay seats
+
+A **producer / QC / planning** seat run through your Claude Code subscription (`claude -p`) is now
+restricted to a fixed set of non-process built-in tools, runs with customizations disabled (no
+project/user `CLAUDE.md`, skills, plugins, hooks, or MCP servers), and explicitly bars the shell and the
+sub-agent spawners. A confined seat can no longer spawn a hidden crew or re-launch the CLI to work
+around its retry budget. The **interactive Leader** (converse / solo-coding) lane is unaffected and
+keeps its full tool loadout.
+
+## Reviewed, end to end
+
+Every change cleared a **four-lens cadre review** before it shipped: a security pass (confinement +
+the budget state machine, verified at the command-line level), a hull pass (terminal-state correctness
+and concurrency), a code-quality pass, and a coherence pass. Findings were remediated and re-verified by
+a reviewer who **ran the code**, not just read it.
