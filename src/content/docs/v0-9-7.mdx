@@ -1,0 +1,70 @@
+---
+title: v0.9.7 release notes
+description: Work across many projects from one install — switch, create, and delete projects from the CLI and a new PROJECTS tab, with the team carried install-wide and every project's work kept separate. Plus path-safety hardening across backups and the roster.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.7 is a **project management** release. One Modulatio install can hold many projects; this release
+lets you **move between them, create new ones, and delete old ones** — from the command line and a new
+**PROJECTS** tab — without editing config or reinstalling. Your **team carries install-wide** (the same
+agents and models everywhere), while each project keeps **its own** memory, deliverables, tickets, and
+history. Around that: **path-safety hardening** across backups and the agent roster.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release adds project-management surfaces and tightens path safety; the engine's honest limits on the
+[Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of [v0.9.6](/v0-9-6/).
+</Aside>
+
+---
+
+## Switch between projects
+
+**The purpose:** a single install is meant to run more than one line of work. Before, changing which
+project was active meant editing a config file and relaunching.
+
+**What changed:** `modulatio project list` shows every project (the current one marked), and
+`modulatio project use <code>` switches the active one. In the TUI, a new **PROJECTS** tab (under CONFIG,
+or `/project`) lets you browse the list and **switch** with a button — a live, in-place switch: the
+header and every data view (memory, tickets, artifacts) re-bind to the new project on the spot. Because
+the **team is install-level**, switching never changes your agents or models — only the work you're
+looking at. Switching is **disabled while a job is running**, so a live run can never be re-pointed
+underneath itself.
+
+## Create a new project
+
+**The purpose:** start a fresh line of work without leaving the app.
+
+**What changed:** the PROJECTS tab's **New** button opens a small form — name the project (its folder)
+and, optionally, an objective — and Modulatio creates the folder **and seeds your install team into it**,
+so the new project is immediately ready to work in (the same setup the wizard and `modulatio kickoff`
+already do, now one click). If something goes wrong mid-setup, a half-made project is rolled back rather
+than left stranded.
+
+## Delete a project — backed up first
+
+**The purpose:** remove a finished or mistaken project, safely.
+
+**What changed:** the PROJECTS tab's **Delete** button removes a project — but **backs it up first** to a
+shareable `.modulatio` file, and only after a confirmation. It's guarded against the obvious accidents:
+you can't delete the project you're currently in (switch away first), you can't delete while a job is
+running, and only a real Modulatio project — never a stray folder that happens to sit in your vault — can
+be removed.
+
+## Path-safety hardening
+
+**The purpose:** an identifier that becomes a file path should never be able to point outside where it
+belongs.
+
+**What changed:** a backup no longer follows symlinks out of a project's tree (so a snapshot can't pull
+in outside-the-project files), and every place an **agent id** becomes a file path — saving, adding,
+removing, and seeding agents — now validates the id, so a malformed roster entry can't read, write, or
+delete outside the project's `agents/` directory.
+
+## Reviewed, end to end
+
+Every change cleared a **multi-lens cadre review** before it shipped — a security pass (verified by
+running the destructive paths, not just reading them), a hull pass (terminal-state correctness and
+concurrency), a contract pass (the seams generalize cleanly), and a coherence pass. The path-safety work
+in particular came directly out of the security pass's adversarial probing; findings were remediated and
+re-verified by a reviewer who **ran the attacks**, not just read the diff.

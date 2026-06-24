@@ -377,6 +377,25 @@ Send a test message to confirm token + chat ID work.
 
 Manage projects and their plans.
 
+### `project list`
+
+```
+modulatio project list
+```
+
+List every project under the vault, with the current default marked `*`. (Switch
+between projects live inside the TUI from the **PROJECTS** tab, or `/project`.)
+
+### `project use <CODE>`
+
+```
+modulatio project use essays
+```
+
+Switch the active project — the one a bare `modulatio` / the TUI launches on. Errors
+if the project doesn't exist; the team (agents + models) is install-level and unchanged,
+only the active work switches.
+
 ### `project show [CODE]`
 
 ```
