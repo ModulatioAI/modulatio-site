@@ -1,0 +1,77 @@
+---
+title: v0.9.8 release notes
+description: The Feng-Tui interface, finished — the phosphor theme shipped in v0.9.3; this release lands the layouts across every screen, rebuilds the CONSOLE into a two-column command floor, and replaces the attach buttons with paste-to-attach. No engine changes.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.8 is an **interface** release. The phosphor *theme* shipped in v0.9.3 — pure black, thin frames,
+amber/green/cyan — but the *layouts* never did; the screens were the old composition wearing the new
+colours. This release implements the full layout overhaul across every screen, rebuilds the **CONSOLE**
+into a two-column command floor, and replaces the attach buttons with **paste-to-attach**. **No engine
+changes** — this is the interface catching up to the design.
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+This release reshapes the interface; the engine's honest limits on the
+[Beta calibration page](/v0-1-0-beta/) still hold. This page is the *delta* on top of [v0.9.7](/v0-9-7/).
+</Aside>
+
+---
+
+## The Feng-Tui layout overhaul
+
+**The purpose:** the theme and the layout should agree. After v0.9.3 the colours were new but the
+arrangement was still the old cyan-dashboard composition.
+
+**What changed:** every screen is ported to its intended layout. The list tabs — **TICKETS**, **LOGS**,
+**JT LIBRARY**, **SKILLS**, **ARTIFACTS** — share a **controls row** with live `/ search`, counts, and a
+per-pane affordance hint. **CONFIG·MODELS**, **CONFIG·AGENTS**, and **PROJECTS** are **configurators**: a
+persistent registry on the left, with the add/edit steps swapping into a companion pane beside it.
+**MEMORY** is one **unified layered list** (episodic / semantic / team) with add, edit, delete, and
+Markdown export. Two net-new screens arrive: **JOBS** (a run-folder browser) and **DOCS** (an offline
+documentation reader).
+
+## The CONSOLE — a two-column command floor
+
+**The purpose:** the place you talk to the Leader and watch the team work should read like a control
+surface, not a chat log.
+
+**What changed:** the CONSOLE flips (**F4**) between two views. **MOD SQUAD** puts a live
+**run-telemetry rail** — the producer roster — beside the workers' stream. **LEADER** is a full-width
+conversation with the Leader. Above both sits a single app-level **status-lamp row** carrying the run's
+state (leader · mods · qc · running · tickets), and the leader/tickets lamps **blink for attention** while
+you're watching the floor. The composer is **focused and ready to type** the moment it opens — no click
+first — inside a single clean frame.
+
+## Jobs launch from the chat
+
+**The purpose:** starting a job should be deliberate, never a fat-finger.
+
+**What changed:** a job starts only from the LEADER chat by bracketing it — **`/kickoff <objective>
+/end`** — instead of a separate kickoff box. The launch is **transactional**: it commits only when
+accepted, and if it's refused (for example, a job is already running) it keeps your brief and tells you
+why, so nothing is lost.
+
+## Paste-to-attach
+
+**The purpose:** attaching a screenshot or a file should be keyboard-native, not a button hunt.
+
+**What changed:** in the CONSOLE composer, **Ctrl+V** a clipboard image (a screenshot) or a copied file
+path and it rides with your next message. Pasted text still pastes as text. The old attach buttons are
+gone.
+
+## Runs over SSH; switching projects refreshes the roster
+
+**The purpose:** reach the interface from anywhere, and keep the per-project view honest.
+
+**What changed:** `modulatio-tui` is a standard terminal app with no local-display dependency, so it runs
+over an **SSH login** (OS-clipboard and external openers degrade gracefully when there's no local
+display). And because agents are **per-project**, switching projects now refreshes the **AGENTS** roster
+to the new project's team instead of showing the previous one's.
+
+## Reviewed, end to end
+
+The overhaul and the console rebuild each cleared a **multi-lens cadre review** before shipping — a
+security pass (which found and remediated symlink-escape paths by *running* the attacks, not just reading
+them), a hull pass for terminal-state correctness, a contract pass, and a coherence pass against the
+signed mockups. The full test suite — **4837 tests** — passes.

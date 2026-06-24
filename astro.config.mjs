@@ -93,6 +93,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.9.8 — the Feng-Tui interface, finished', slug: 'v0-9-8' },
 						{ label: 'v0.9.7 — project management: switch / create / delete projects', slug: 'v0-9-7' },
 						{ label: 'v0.9.6 — reliability: the team always finishes the job', slug: 'v0-9-6' },
 						{ label: 'v0.9.5 — subscription seats (Clay + GPT-5.5) + per-seat fallbacks', slug: 'v0-9-5' },
