@@ -1,0 +1,83 @@
+---
+title: v0.9.8.5 release notes
+description: Reliability + leadership polish — producers run thinking-off by default, task count follows the work (the fixed cap is gone), a Clay Leader sees the team's deliverables read-only, and the end-of-run sign-off shows the real verdict. Cleared by a four-reviewer code cadre.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.8.5 is a **reliability** release, driven by live test runs and cleared by a four-reviewer
+code cadre. No interface redesign — the engine getting steadier and the Leader getting sharper.
+This page is the *delta* on top of [v0.9.8](/v0-9-8/).
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+The engine's honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold.
+</Aside>
+
+---
+
+## Producers run thinking-off; judgment seats reason
+
+Producers (drafters, research) now run with their inner monologue **disabled by default** —
+`/no_think` for reasoning-toggle models, `reasoning_effort="disable"` where the provider honours
+it — while the judgment seats (**Leader, planner, QC**) keep reasoning on. A per-agent
+`disable_thinking` override in the agent file wins either way. An always-on **producer runbook**
+(the bar-commit working spine) rides every producer prompt, so a thinking-off producer stays
+rigorous rather than sloppy. The reasoning belongs at the judgment layers; the producers act.
+
+## Task count follows the work, not a fixed cap
+
+The old six-task-per-goal limit is **gone**. The planner now sizes each task to fit a producer's
+**context budget** — small enough to finish below the compression trigger, with headroom — and
+fans as wide as the work actually needs (one task or a hundred). The runtime compression/churn
+cap bounds an oversized task, and the engine-enforced *no-standalone-verification-goal* invariant
+still blocks decompose-storms. The count cap was a proxy; the context budget is the real measure.
+
+The dispatch floor also changed from a **gate** to an **ordering**: an idle under-floor producer
+takes work when the qualifiers are busy, so nobody starves and the team load-balances honestly.
+
+## The Leader sees the team's deliverables
+
+A **Clay** (`claude -p`) Leader is now granted the run directory **read-only** so its own file
+tools can open and judge the produced files — in both the goal-verify and the conversational
+paths. It can **inspect, never mutate**. (A metered-API Leader reaches the same files through the
+in-process helpers; the destination is identical, the path differs.)
+
+<Aside type="caution" title="Clay as the Leader — the honest edges">
+Clay functions as a full Leader, but running as a sandboxed `claude -p` subprocess has caveats:
+it inspects deliverables with its **own read-only** tools (not the in-process helpers); its
+goal-verdict can lean on task summaries (a conservative *"on the fence"* with a reservation for
+your spot-check rather than a deep read of every file); a `claude -p` turn can rarely come back
+empty (retry / model-fallback recovers it); and reads widen while **writes stay gated** by the
+same operator-widen permission gate as any seat. For fully unattended, deep-verifying runs, a
+metered-API Leader (`api_key`) has no subprocess caveats. See [Providers](/concepts/providers/).
+</Aside>
+
+## The sign-off shows the real verdict
+
+The end-of-run sign-off now surfaces the Leader's **actual verdict** (satisfied / on the fence /
+disappointed) plus a **Product Quality Report digest** in the conversation — not just a stats
+line. And the verdict no longer false-fails on a long report: the human-facing report rides as a
+Markdown section **outside** the verdict JSON, so prose with quotes and newlines can't break the
+parse.
+
+## Security — verified by the cadre
+
+A round-one cadre **BLOCK** caught a real hole: a Clay Leader's deliverable-visibility grant was
+mounted **read-write**, so a Clay seat handed a run directory to *inspect* could have *modified*
+the deliverables it was meant to review. Fixed — the visibility grant is now mounted read-only
+(`--ro-bind`), and the reviewer re-verified the sandbox mount before signing off.
+
+## Also in this release
+
+- Model-picker capability letters (reasoning / vision / tools).
+- Bug-report opens the issue tracker — no maintainer token needed.
+- A recovered task's failure ticket auto-resolves at run-end.
+- Delivery + the end report happen **before** best-effort codification, so a slow learning step
+  never delays your result.
+- The send-log modal never requires a token and is always exitable.
+- Downloadable **offline docs** from the DOCS tab.
+
+---
+
+**4906 tests pass.** See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md)
+for the full delta.
