@@ -1,0 +1,78 @@
+---
+title: v0.9.8.6 release notes
+description: Single-source leadership, a simpler setup, and a steadier executor — the Leader runs one model everywhere, models and agents move to the TUI Config tab, a kickoff requires the full triad, and a hung call can't freeze the run. Cleared by a four-reviewer code cadre.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.8.6 sharpens leadership and simplifies setup, driven by live test runs and cleared by a
+four-reviewer code cadre — the security pass blocked three rounds running until the Leader
+*truly* ran one model everywhere. This page is the *delta* on top of [v0.9.8.5](/v0-9-8-5/).
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+The engine's honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold.
+</Aside>
+
+---
+
+## One model for the Leader — across every lane
+
+The Leader now runs a **single model** for everything it does — decomposing objectives, talking
+to you, and verifying the team's work — resolved from its **roster agent** (by tier, so a renamed
+Leader still resolves). This closes a real split where the Leader could decompose on one model and
+*verify* on another (or fall back to a producer/QC model) without anyone noticing.
+
+The roster is now the **single source of every seat's model**: set a seat's model once and both the
+conversational Leader and the orchestration Leader use it. An engine guard fails loud if any code
+path ever re-introduces a divergent binding. The frozen `default_models` snapshot is no longer read
+to build any runner — the roster is authoritative for the TUI, daemon, ACP, and CLI alike.
+
+## Models and agents live in the Config tab now
+
+The setup wizard **no longer configures models or agents.** It just gets the install bootable
+(system tools, vault, budget, first project, embedder) and launches the TUI. You build your team —
+**Leader, QC, producers** — and add models **in the running TUI's Config tab**, an editable surface
+that beats a one-shot terminal flow. Edits are live: rename an agent, swap its model, add a producer,
+all without re-running setup.
+
+## A kickoff requires the full triad
+
+A real run now **refuses** unless the roster has a **Leader**, a **QC**, and **at least one producer**,
+each with a model — failing fast with a clear "configure the team in the Config tab" message instead
+of running a hobbled team. A fresh install (empty roster) refuses until you set the team up; typing to
+the Leader before a model is configured nudges you to the Config tab.
+
+## Continuous-pull is the executor
+
+The old wave-barrier dispatch is **gone**. A freed producer immediately pulls the next ready task
+instead of waiting for a whole wave to finish — the team stays busy, and producer concurrency is
+bounded by a global cap rather than wave size.
+
+## Task allocation routes by capability + load, never by skill
+
+Producers are selected by **capability** (an image task won't go to a text-only model) and
+**load-balanced** across qualifiers so nobody starves — **skills never route a task.** Every producer
+JIT-loads whatever skill a task needs from the shared library; the Leader and QC route by role.
+
+## A hung call can't freeze the run
+
+A single hung model call no longer stalls the whole team — the pull loop wakes on a tick to keep
+dispatching ready work to free producers while one call hangs. The Codex (GPT-5.5) streaming path
+gets a wall-clock deadline on top of the transport read timeout, on both the single-shot and tool-loop
+lanes, so a stream that trickles forever can't wedge a seat. And a wedged call now shows an honest
+"call timed out" on its lane in the TUI instead of a phantom "working…" spinner.
+
+## Also in this release
+
+- **Empty Leader reply** on the converse path renders a clear "try again" fallback, not a silent bubble.
+- **Codify (post-run learning)** is time-bounded and env-tunable (`MODULATIO_CODIFICATION_TIMEOUT_S`),
+  with a cancellation boundary so a slow learning step can't block your deliverables or end report.
+- A heavy sourcing task that trips the compression-churn cap on its first pass is decomposed and
+  recovered rather than left blocked.
+- **Reload-services** button on the Config → Agent tab.
+- The orphaned wizard model/agent modules + dead runner-builder code were deleted.
+
+---
+
+**4872 tests pass.** See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md)
+for the full delta.
