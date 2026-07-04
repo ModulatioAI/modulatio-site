@@ -1,0 +1,83 @@
+---
+title: v0.9.8.7 release notes
+description: A research library the team reuses instead of re-buying, research tasks that fan by context size so no one producer drowns, and an assembly path that stays calm under a wide fan — plus a batch of live-test-driven reliability fixes.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.8.7 teaches the team to **reuse the research it already owns**, to **fan a wide gather by
+context size** so no single producer drowns, and to keep **assembly calm under those wide fans** —
+driven by four live test runs and a code cadre across the span. This page is the *delta* on top of
+[v0.9.8.6](/v0-9-8-6/).
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+The engine's honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold.
+</Aside>
+
+---
+
+## A research library the team reuses, not re-buys
+
+The project folder is now the **durable layer**: research notes, drafts, and finished products
+persist across runs while a run's scratch is transient. Producers are **prejudiced toward reuse** —
+before reaching for `http_get`, a producer mines the team canvas and prior-run artifacts and reuses a
+grounded, still-fresh note *as-is* rather than re-fetching the same sources. Notes carry a **30-day
+freshness TTL**: a note past it is re-fetched (and re-stamped), a fresher one is reused. Cross-run
+reuse is now **measured** — the engine writes an audit row each time the team-canvas digest is
+injected, recording how many prior-run files reached the producers. A project that runs the same
+class of job repeatedly gets *cheaper*, not just faster.
+
+## Fan the work by context size, not a guess
+
+A capable planner only structures a wide research goal into parallel tasks about **half the time**;
+when it collapses, one producer inherits the whole scope and rides the compression bands. The engine
+now **binds the fan**: an oversized gather task is split into the **fewest size-bounded chunks** that
+each fit comfortably inside a producer's window and together cover the same scope. **Size** decides
+whether to cut; the model only picks the cut lines. A task that already fits stays whole — no invented
+work. The old fixed topic-count guesswork is gone. Tune the cap with `MODULATIO_TASK_CONTEXT_CAP_PCT`
+(default: a fifth of the task's own window).
+
+## Assembly stays calm under a wide fan
+
+Joining a multi-piece deliverable is a **mechanical** operation, so an over-budget assembler now falls
+back to the **engine join** instead of recursively decomposing itself into partial assemblies. **QC
+reviews with a 64K window** (up from 32K), so the reviewer's context matches the largest producer tier
+and a big single deliverable no longer forces a compressed, partial-view judgment. And the
+content-addressed cheap-verify now resolves **every** dependency's output — including the units that
+write to the drafts fallback convention — so a wide fan's assembly passes QC **by its marks** rather
+than re-reading the whole thing into a blown budget.
+
+## Producers can't leak their scaffolding into the product
+
+A producer sometimes prefixes its reply with a runbook block (`Operation:` / `Definition of Done:`)
+above the first heading. That preamble is now **stripped at the assembly join** and **rejected by a
+deterministic QC gate** — matched by runbook-*shaped* marker lines, so ordinary prose that merely
+mentions those terms mid-sentence is left untouched. The engine binds the cleanup that five LLM QC
+passes had let slip through.
+
+## The Leader grounds its size claims
+
+A deliverable's verify block now carries an **engine-measured size** (bytes / words / ≈tokens), and
+the Leader's rationale must cite it — no more rounding a nine-page draft up to the goal's "20 pages".
+When a brief asks for **reputable sources**, a user forum or social thread is treated as a lead to a
+primary source, never a citation.
+
+## Reliability, from four live test runs
+
+- **Cron fails closed** when its project was deleted: the job disables itself and opens one ticket in a
+  reserved system project instead of resurrecting an empty shell on a default team.
+- A **wedged model call** is diagnosed and surfaced by a CPU-spin watchdog rather than silently hanging
+  the run.
+- An **empty Clay reply** (`claude -p` runtime hiccup) is retried and, if still empty, surfaced as a
+  failure routed to the model fallback — never propagated as a blank message.
+- The kickoff **render-storm at run end** is quieted (it could starve the final verdict relay), the
+  finished Leader lane no longer re-animates during post-run learning, and a hidden stream lane
+  **re-follows the tail** when revealed so an off-screen verdict isn't invisible.
+- **`/reload`** applies model and config changes to the live services without a TUI restart.
+- The Leader **names each job** and captures a named ad-hoc run as a re-kickable, project-local job
+  template; deliverables are named by their title.
+
+---
+
+**See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the full
+delta.**
