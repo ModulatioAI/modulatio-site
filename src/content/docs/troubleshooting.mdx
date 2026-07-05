@@ -167,6 +167,16 @@ Three causes ranked by frequency:
 2. **Producer model too weak.** Escalate to a stronger model; the rejected drafts should pass on the new model.
 3. **Standard contradicts task constraint.** E.g., standard says "1000 words minimum" but task says "keep it under 400." Resolve at the task level (task-level constraint wins per QC's conformance hierarchy).
 
+### A seat's call never returns / the run seems wedged
+
+No seat model-call can outlive its wall-clock. Every in-process call (litellm chat + single-shot + Codex) carries a **hard kill-boundary**: the transport timeout (`MODULATIO_CALL_TIMEOUT`, default 600s) gets first chance at a clean error, and a call that outlives it by 30s — a CPU spin or C-level stall no network timeout can see — is force-released. The seat then fails with an **availability-class** error, so the normal recovery runs: fallback model, retry backoff, seat cooldown, and the QC backstop if it stays down.
+
+- The wedged call's **all-threads stack dump** lands in the crash log — read it in the **LOGS** tab (`seat call hard-timeout: …`) and attach it to an issue if it recurs.
+- Clay (`claude -p`) seats are bounded separately by their own subprocess timeout.
+- If a **local** model legitimately needs more than 600s per completion (a big model on a slow lane at long context), raise the knob: `export MODULATIO_CALL_TIMEOUT=1200`. The failure mode without it is a clean, recoverable timeout — never a silent wedge.
+
+Two honest limits: the released call's thread is *abandoned*, not killed (CPython can't kill a thread) — it burns quietly until the transport lets go, and the log line counts live "zombies" so accumulation is visible; and a stall that holds the GIL inside a C extension freezes the whole process — nothing in-process can run, and the dump from any future wedge is exactly what would prove that shape.
+
 ### "Plan reached `done` but the output is wrong"
 
 QC accepted the artifacts, which means they passed the standards as configured.

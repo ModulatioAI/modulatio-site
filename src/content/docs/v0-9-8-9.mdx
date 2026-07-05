@@ -1,0 +1,81 @@
+---
+title: v0.9.8.9 release notes
+description: A hard kill-boundary so no seat call outlives its wall-clock — a spinning or stalled model call is force-released into the self-healing team, with a stack dump for evidence. Plus a real title on ad-hoc assembled reports and a splash-art fix.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.8.9 is a reliability release with one headline: **no stalled call outlives its clock.**
+The [live telemetry rail](/v0-9-8-8/) let us watch a real run wedge for 17 minutes — a model call
+spinning in a way no network timeout could see — and this release closes that hole for good. Both
+reviewers cleared the arc. This page is the *delta* on top of [v0.9.8.8](/v0-9-8-8/).
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+The engine's honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold.
+</Aside>
+
+---
+
+## The hard kill-boundary — no seat call outlives its wall-clock
+
+A model call can go silent in a way no network timeout catches: not a quiet socket waiting on bytes,
+but a **CPU spin or a C-level stall** that never returns to the point where a timeout could fire. A
+live run hit exactly this — a producer's tool-loop completion burned CPU in silence for **17 minutes**
+before a lower transport layer happened to let go. The recovery machinery worked perfectly *once the
+call released*; the gap was that nothing bounded the call itself.
+
+Now every in-process seat call — litellm chat, single-shot, and Codex — carries a **hard
+kill-boundary**:
+
+- The **transport timeout** (`MODULATIO_CALL_TIMEOUT`, default **600s**) gets first chance at a clean
+  error.
+- A call that outlives it by 30s is **force-released**. The seat fails with an **availability-class**
+  error, so the [self-healing team you already had](/v0-9-8-8/#the-team-finishes-the-job-even-when-a-seat-dies)
+  takes over: fallback chain, retry backoff, seat cooldown, and QC as the producer of last resort.
+- The wedged call's **all-threads stack dump** lands in the crash log — read it in the **LOGS** tab
+  (`seat call hard-timeout: …`). The *next* wedge leaves evidence instead of a mystery.
+
+Clay (`claude -p`) seats keep their own subprocess bound and are exempt from the in-process boundary.
+
+<Aside type="tip" title="Proven by replaying the wedge">
+The 17-minute wedge is now an acceptance test: a completion that never returns is released **at the
+deadline** (seconds, not minutes), the run heals through the recovery train and finishes satisfied,
+and the stack dump names the wedged seat.
+</Aside>
+
+### One knob, one honest change
+
+The tool-loop's transport bound used to be a **hardcoded 1800s that nothing overrode** — so the 600s
+story never actually applied to the exact seam that wedged. It now honors `MODULATIO_CALL_TIMEOUT`
+like every other call. If a **local** model on a slow lane legitimately needs more than 600s per
+completion, raise the knob:
+
+```bash
+export MODULATIO_CALL_TIMEOUT=1200
+```
+
+Without it, a long completion raises a **clean, recoverable timeout** — never a silent wedge. See
+[Providers → Call timeouts](/concepts/providers/#call-timeouts-and-the-hard-kill-boundary) and
+[Troubleshooting → the run seems wedged](/troubleshooting/#a-seats-call-never-returns--the-run-seems-wedged).
+
+<Aside type="caution" title="Two honest limits">
+The released call's thread is *abandoned*, not killed (CPython can't kill a thread) — it burns quietly
+until its transport lets go, and the warning line counts live "zombies" so accumulation stays visible.
+And a stall that holds the GIL inside a C extension freezes the whole process; nothing in-process can
+run, and the dump from any future wedge is exactly what would prove that shape.
+</Aside>
+
+## Also in this release
+
+- **Assembled reports get a real title** in ad-hoc runs. A fan-out deliverable with no Job-Template
+  title used to open with its first section's heading — and delivery inherited *that* as the export
+  name. It now opens with a document title humanized from the plan's own output name (e.g.
+  `retro-hardware-research-report.md` → "Retro Hardware Research Report"). Producer-authored framing
+  and a declared spec title still win; a deliverable with no declared path stays untitled.
+- The **boot splash drops its stray µ block-art** — it rendered as a stray "U" glued to the wordmark.
+  The console header's inline µ is unchanged.
+
+---
+
+**See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the full
+delta.**

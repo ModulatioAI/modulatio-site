@@ -295,6 +295,12 @@ Configure via the `fallbacks` field on a model entry, or globally in `defaults.j
 
 The watchdog catches a known failure pattern where a fallback "wins" and the session sticks on the fallback model permanently — don't be surprised if you see a fallback warning in your audit trail; it's the system working as designed.
 
+## Call timeouts and the hard kill-boundary
+
+Every seat model-call is bounded twice. The **transport timeout** — `MODULATIO_CALL_TIMEOUT`, default **600s** — gets first chance to raise a clean error on a slow or silent network call, and governs both the single-shot and the tool-loop (chat) paths. Behind it sits a **hard kill-boundary**: a call that outlives the transport bound by 30s — a CPU spin or C-level stall no network timeout can observe — is force-released, and the seat fails with an **availability-class** error that flows into the [fallback chain](#fallback-chains), retry backoff, seat cooldown, and the QC backstop.
+
+A released wedge leaves an **all-threads stack dump** in the crash log (the **LOGS** tab). If a local model on a slow lane legitimately needs longer than 600s per completion, raise the knob (`export MODULATIO_CALL_TIMEOUT=1200`) — without it the call raises a clean, recoverable timeout rather than wedging. Clay (`claude -p`) seats carry their own subprocess bound and are exempt from the in-process boundary.
+
 ## Common provider issues
 
 ### "401 Unauthorized" on a key you just created
