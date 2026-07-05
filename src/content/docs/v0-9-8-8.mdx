@@ -1,0 +1,114 @@
+---
+title: v0.9.8.8 release notes
+description: Live run telemetry on the factory floor, a team that finishes the job even when a seat dies (the router routes around a dead model, QC produces the missing pieces), and seats that tell the truth about whether they can be quieted.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.8.8 is about **watching the run, and trusting the team to finish it**. The factory floor's
+telemetry rail goes **live**; the team **finishes the job even when a seat dies** — the router routes
+around a crashed model and QC, the producer of last resort, **authors the missing pieces**; and the
+seats now **tell the truth about themselves** when a reasoning model can't be quieted. Four
+cadre-cleared arcs, one live kill-test. This page is the *delta* on top of [v0.9.8.7](/v0-9-8-7/).
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+The engine's honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold.
+</Aside>
+
+---
+
+## Watch the run — live telemetry on the floor
+
+The MOD SQUAD tab's *Run Telemetry* rail is no longer a mockup. As a run moves, it paints:
+
+- **elapsed time** and a **10-segment tasks bar with a real percentage**,
+- the **QC pass / reject tally** (`qc ✓ 4 · ✗ 1`),
+- the **context load** — tokens and compression count, read from the run's audit log,
+- and, on the floor below, **each producer's current move** rendered in the same icon + verb
+  vocabulary as the stream (`◆◆ Randy  ▼▼ reading a page`). **QC steps onto the floor** while it
+  reviews, and steps off when the verdict lands.
+
+Everything rests to dashes between runs. The CONSOLE flip is now two real **LEADER** / **MOD SQUAD**
+tabs (each a click target; **F4** still cycles), and launching a job **no longer yanks you to the
+floor** — you flip to watch when you want to. This is the instrument that made the rest of the
+release *visible*: the compression bloat that #16 fixes, the recovery that the self-heal arc drives —
+you can now see both happen.
+
+## The team finishes the job even when a seat dies
+
+A crashed or unloaded local model doesn't fail cleanly — an OpenAI-compatible endpoint (LM Studio,
+llama.cpp) reports a dead model as an **HTTP 400**, which used to slip past the availability
+classifier. The retry loop would then burn a task's whole budget in about a second against the dead
+endpoint, and because a dead seat is always *idle*, the dispatcher kept feeding it new tasks — a
+task magnet. All three are fixed:
+
+- The crash-shaped 400s are now recognized as **availability failures**, so the seat's **fallback
+  chain engages** (restart the task on a backup model).
+- Retries **back off** (2 / 8 / 20s) instead of hammering a dead endpoint, and the wait rides the
+  abort event so the kill switch stays responsive.
+- The seat is **cooled out of the dispatch pool** for a cooldown window, so it stops attracting tasks
+  while it's down; a half-open probe lets it back in when the window expires.
+
+And when the seat stays dead, its exhausted tasks route to the **QC backstop** instead of dead-ending
+as blocked.
+
+<Aside type="tip" title="Proven by a live kill-test">
+A model was **killed mid-run on purpose** and left dead for the whole run. The team backed off,
+cooled the seat, routed around it, and QC authored the dead seat's work — the run finished
+**satisfied with zero human touches**. The gauges showed every beat of the recovery in real time.
+</Aside>
+
+## QC produces the missing pieces
+
+QC has always been the *producer of last resort* — when a producer can't clear the bar, QC patches
+the artifact from its own findings. v0.9.8.8 extends that to a **goal's end**: if work is still
+missing — a task blocked by a failed dependency, or a producer that committed nothing — QC now
+**produces the missing pieces itself**, rather than shipping the goal with a hole in it and a
+"disappointed" verdict while QC sits idle.
+
+The sweep builds each missing artifact from its task's brief, **in dependency order**, feeding each
+build the real content of the pieces it depends on — so an assembler assembles the *actual* parts,
+never a fabrication. It stays out of blocks it genuinely can't fix (a missing linter, a wave
+path-conflict), spends only QC's budget (never a producer's), and runs at most once per goal. The
+post-run headline is now **honest about partial runs**, too: a run that landed real deliverables but
+left a task blocked no longer reads "Nothing usable landed" — it owns both the wins and the
+reservations.
+
+## Seats that tell the truth — thinking-off honesty
+
+A reasoning model in a **producer** seat bloats its own context with reasoning tokens; the fix is to
+quiet it. But a **request parameter can't be trusted through a shim**: an Ollama or LM Studio `/v1`
+endpoint silently drops (or outright rejects) `reasoning_effort`, so a reasoning-heavy model behind
+one *can't actually be quieted that way* — even though the engine used to believe it had.
+
+v0.9.8.8 fixes both the mechanism and the honesty:
+
+- The engine sends each model family's **in-band toggle** where one is proven — Qwen's `/no_think`
+  rides the **message text**, which no shim can drop. A family with no known toggle gets clean
+  messages instead of ignored prose.
+- When a producer seat **can't** be quieted (a reasoning-heavy family behind an opaque OpenAI-compat
+  shim), the engine says so: **`modulatio doctor`** grows a **Seats** section that flags the seat
+  with a remedy, the **agent builder** warns at seat time, and the **run log** warns at team build.
+
+The guidance is *honest, not a gate* — if you want a heavy reasoner's judgment in a producer seat and
+you'll pay the reasoning tax, the engine respects it; the warnings just make sure it's a decision, not
+a surprise you find in the compression logs. For producer seats, prefer a non-reasoning model or a
+toggle-able family, and save the heavy reasoners for the Leader and QC — the judgment seats.
+
+## Also in this release
+
+- **Agents accrue episodic memory** from the jobs they run — a per-agent record of what each one
+  worked on, surfaced in the **MEMORY** tab, where **pending QC memory proposals** can now be approved
+  (`p`) or rejected (`d`).
+- A **SETTINGS** tab (CONFIG → SETTINGS) tunes the engine's knobs — persistent env overrides, retry
+  budgets, per-role context windows — from the TUI, applied without editing a config file.
+- The **activity feed speaks in icons**: each tool call and phase renders as a bold phosphor glyph +
+  a plain-language verb, a repeated action **coalesces** into one line with a counter instead of a
+  wall of identical rows, and **`/cls`** (or Ctrl+L) clears the active stream.
+- Two more **Feng-Tui** variants — neon phosphor **red** and **purple** — join amber / green / cyan on
+  the F2 cycle, and the **µ mark** (Modulatio's icon) renders in the active phosphor.
+
+---
+
+**See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the full
+delta.**

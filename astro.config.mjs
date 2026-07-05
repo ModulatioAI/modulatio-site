@@ -93,6 +93,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.9.8.8 — live telemetry + a self-healing team', slug: 'v0-9-8-8' },
 						{ label: 'v0.9.8.7 — research reuse + a context-size fan', slug: 'v0-9-8-7' },
 						{ label: 'v0.9.8.6 — single-source leadership + Config-tab setup', slug: 'v0-9-8-6' },
 						{ label: 'v0.9.8.5 — reliability + leadership polish', slug: 'v0-9-8-5' },
