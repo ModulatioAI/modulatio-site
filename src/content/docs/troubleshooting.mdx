@@ -175,7 +175,13 @@ No seat model-call can outlive its wall-clock. Every in-process call (litellm ch
 - Clay (`claude -p`) seats are bounded separately by their own subprocess timeout.
 - If a **local** model legitimately needs more than 600s per completion (a big model on a slow lane at long context), raise the knob: `export MODULATIO_CALL_TIMEOUT=1200`. The failure mode without it is a clean, recoverable timeout — never a silent wedge.
 
-Two honest limits: the released call's thread is *abandoned*, not killed (CPython can't kill a thread) — it burns quietly until the transport lets go, and the log line counts live "zombies" so accumulation is visible; and a stall that holds the GIL inside a C extension freezes the whole process — nothing in-process can run, and the dump from any future wedge is exactly what would prove that shape.
+A Python stack dump stops at the C boundary — it shows *which* call wedged but not a C-extension stall's native frames (neither `sys._current_frames` nor faulthandler can — both dump Python only). So the dump and warning name the wedged thread's OS **native TID**; to read the native stack of an *ongoing* stall, attach an out-of-process tool to that TID:
+
+```bash
+py-spy dump --pid <modulatio-pid> --native   # or: gdb -p <pid>, then thread apply all bt
+```
+
+Two honest limits: the released call's thread is *abandoned*, not killed (CPython can't kill a thread) — it burns quietly until the transport lets go, and the log line counts live "zombies" so accumulation is visible; and a stall that holds the GIL inside a C extension freezes the whole process — nothing in-process can run, and the native TID above plus `py-spy`/`gdb` is how you'd capture that shape if it ever appears live.
 
 ### "Plan reached `done` but the output is wrong"
 
