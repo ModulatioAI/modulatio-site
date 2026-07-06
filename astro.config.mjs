@@ -79,6 +79,7 @@ export default defineConfig({
 				{
 					label: 'Operations',
 					items: [
+						{ label: 'Folders — named operator folders', slug: 'operations/folders' },
 						{ label: 'Daemon operator guide', slug: 'operations/daemon' },
 						{ label: 'ACP — drive from an editor', slug: 'operations/acp' },
 						{ label: 'Multi-user host hardening', slug: 'operations/multi-user-hardening' },
