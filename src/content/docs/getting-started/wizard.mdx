@@ -17,7 +17,7 @@ You can re-run `modulatio setup` at any time. On re-run, every step is pre-popul
 
 End-to-end, after the wizard you'll have:
 
-1. System tools checked (pandoc for export, a clipboard backend)
+1. System tools checked (pandoc for export, a clipboard backend), and an offer to install the optional WebOS
 2. The vault directory configured and writable
 3. Optional default budget caps (wall-clock, tokens, cost) inherited by new plans
 4. A first project initialized with a code and an objective
@@ -31,6 +31,10 @@ What the wizard does **not** do anymore: pick models, authenticate providers, or
 ### 1. Pandoc + clipboard checks
 
 Confirms whether `pandoc` and a clipboard backend are available. Pandoc is required for `modulatio export` to render artifacts to DOCX/PDF; it's optional for plain-markdown work. If pandoc isn't found, the wizard offers to install it via the `[export]` extra. This step also prints the welcome / re-config banner.
+
+### 1c. Install the WebOS *(optional)*
+
+Offers to install the [WebOS](/reference/webos/) — Modulatio in your browser — as a one-click step. It's an opt-in extra (a small FastAPI + uvicorn server), so it isn't pulled by the base install. Choose **Install now** and the wizard runs the environment-correct command for you (`pipx inject` when Modulatio runs from a pipx install, otherwise `pip install`); choose **Skip** and nothing is lost — you can add it later by re-running setup or from the **CONFIG → SETTINGS** tab's **Install WebOS** button. If the automatic install can't run (offline, a locked-down environment), it shows the manual command: `pip install "modulatio[web]"`.
 
 ### 2. Vault path
 

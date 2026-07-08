@@ -70,6 +70,7 @@ export default defineConfig({
 				{
 					label: 'Reference',
 					items: [
+						{ label: 'The WebOS', slug: 'reference/webos' },
 						{ label: 'CLI', slug: 'reference/cli' },
 						{ label: 'Skill catalog', slug: 'reference/skills' },
 						{ label: 'Tool catalog', slug: 'reference/tools' },

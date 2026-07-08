@@ -1,5 +1,5 @@
 {
-  "version": "0.9.8.1",
+  "version": "0.9.9.0",
   "bundle": "docs-bundle.tar.gz",
   "pages": [
     {
@@ -83,37 +83,45 @@
       "title": "Daemon operator's guide"
     },
     {
-      "slug": "21-multi-user-hardening",
+      "slug": "21-folders",
+      "title": "Folders \u2014 named operator folders"
+    },
+    {
+      "slug": "22-multi-user-hardening",
       "title": "Multi-user host hardening"
     },
     {
-      "slug": "22-vault-backup",
+      "slug": "23-vault-backup",
       "title": "Vault backup + restore"
     },
     {
-      "slug": "23-api",
+      "slug": "24-api",
       "title": "Python API reference"
     },
     {
-      "slug": "24-cli",
+      "slug": "25-cli",
       "title": "CLI reference"
     },
     {
-      "slug": "25-skills",
+      "slug": "26-skills",
       "title": "Skill catalog"
     },
     {
-      "slug": "26-tools",
+      "slug": "27-tools",
       "title": "Tool catalog"
     },
     {
-      "slug": "27-methodology",
+      "slug": "28-webos",
+      "title": "The WebOS"
+    },
+    {
+      "slug": "29-methodology",
       "title": "Testing methodology"
     },
     {
-      "slug": "28-troubleshooting",
+      "slug": "30-troubleshooting",
       "title": "Troubleshooting"
     }
   ],
-  "bundle_sha256": "bd9d6412deda585ab50439b38a9c1978af521e7d839ee7d3ba18abf3f5efbfa4"
+  "bundle_sha256": "62a823c3d619b32ac1ec21a16ab424f3f78bbf3d3fd49f7d03e816326ecc8a88"
 }
