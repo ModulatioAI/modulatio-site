@@ -1,0 +1,115 @@
+---
+title: v0.9.9.0 release notes
+description: The WebOS — the TUI's whole layout rendered in your browser, hooked straight to the same engine seams. Plus outside APIs on the team (Services), named operator folders, and a wider QC window.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+v0.9.9.0 is the release the roadmap has been pointing at: **the WebOS — Modulatio in
+your browser.** The whole terminal layout, rendered as a web app and wired *straight* to
+the same engine the TUI already drives. No parallel data paths, no second copy of the
+logic — one new surface over the same body. Alongside it: **outside APIs on the team**
+(Services), **named operator folders**, and a wider reviewer window. This page is the
+delta on top of [v0.9.8.9](/v0-9-8-9/).
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+The engine's honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold.
+</Aside>
+
+---
+
+## The WebOS — Modulatio in your browser
+
+The WebOS is the TUI's layout in a browser, hooked to the **same engine seams** the
+terminal consumes. Where the TUI has a tab, the web has a page; where the terminal
+receives a pushed event, the web has a stream frame. It's opt-in — one extra, one command:
+
+```bash
+pip install "modulatio[web]"
+modulatio-api          # binds 127.0.0.1:8787 — then open it in your browser
+```
+
+### The Console is the centerpiece
+
+Exactly the terminal's anatomy, top to bottom: the **status-lamp row** (leader · mods ·
+running/idle · tickets · tokens · elapsed — glyph and word, never colour alone), the
+**LEADER / MOD SQUAD flip** (`F4`), the **live activity TV** rendering the terminal's exact
+glyph-and-verb vocabulary, the **run telemetry rail** (task gauge, QC tally, context
+tokens), and a **composer** where `/kickoff … /end` brackets are the only job trigger and
+`F8` stops a run. The Leader's permission asks land as a modal that **fails closed** — no
+decision means deny.
+
+### Nine pages, two themes
+
+Nine read-only **pages** ride a single layout archetype — **JT Library, Tickets,
+Artifacts** (with previews and delivery stars on your finished products), **Skills,
+Memory, Jobs, Cron, Logs, Docs**. Two print-flavored **Feng-Web themes** switch with `F2`:
+
+- **Atelier** — thin ink hairlines on a flat field you choose (Sage, Reed, Mist, Clay,
+  Heather, Bone).
+- **Vellum** — invertible greyscale, a single switch flipping which tone is field and
+  which is panel.
+
+The frontend is **hand-authored vanilla ES modules** — no framework, no build step, no
+runtime JS dependency — shipped as static files inside the wheel, in keeping with the
+whole project's hand-built ethos (the TUI is raw Textual).
+
+<Aside type="tip" title="The CONFIG tab lands next release">
+This first cut ships the Console plus the nine read-only pages. The **CONFIG tab —
+models, agents, projects, settings, folders — arrives read/write next release**, when the
+interactive Configurator pages clear their own security cadre.
+</Aside>
+
+### Built to keep the engine's red-lines
+
+The web surface adds no new authority. It binds `127.0.0.1` by default; a non-loopback
+`--host` **requires a bearer token** (generated `0600` into the config dir) and
+Host-allowlists every request against DNS-rebinding. **Key values, vault secrets and
+OAuth tokens never cross the boundary** — key views report only whether a slot is set —
+and event text is secret-scrubbed server-side. File previews are extension-filtered,
+size-capped, and confined to the project's artifact roots. One operator per project for
+now. The build cleared a **full four-round security + quality cadre**.
+
+## Services — outside APIs on the team
+
+Configure outside SaaS services — image, video, speech, research, or any custom API —
+from a shipped catalog (OpenAI Images, Tavily, ElevenLabs, Luma Dream Machine) or as a
+**custom service with an operator-pinned base URL**. Keys ride the same numbered-slot pool
+provider keys use (vault `.env`, values never shown). Producers get capability tools —
+`generate_image`, `generate_speech`, `generate_video`, `research_search`, and a generic
+`api_call` for custom services (paths are relative to the pinned base, the host re-checked
+after joining, no redirects — the model can never choose a host). Binary results save into
+the artifacts tree and return as **filenames, never bytes**; the API key is injected at the
+adapter layer and never enters agent context, results, or errors.
+
+It rides a **fail-closed metered-spend tier**: a service call is `paid-cloud` by default,
+bounded by a per-project daily budget (a missing budget is a denial, not "unlimited") and
+a per-task call cap. `modulatio doctor` grows a **Services** section so a misconfiguration
+surfaces before the run, not as a mid-run denial.
+
+## Folders — named operator folders for job runs
+
+Register folder locations — local paths, mapped drives, already-mounted shares — that the
+whole team can use during a run, and reference them **by name** in kickoff directions
+("process the document files in folder `contracts` one at a time"). Three modes:
+**read-only** (items to process), **output** (finished products deliver there), and
+**read-write** (files created or modified live mid-run). The tab **is** the permission
+decision — a registered folder never fires a runtime prompt — while the guardrails hold
+(system/home/vault roots refused at registration and re-checked at use; the dotfile secret
+floor holds inside registered folders; dead network mounts never hang the app).
+
+## Also in this release
+
+- **QC's context budget raised to 96K** (2× the producer tier) — a reviewer squeezed near
+  the producer's window forces compressed, partial-view judgments, and QC-as-fixer needs
+  room to hold the canvas, the standards, and its own tool results at once.
+- The **wedge stack dump now names each thread's native TID** and points at
+  `py-spy --native` / `gdb` — the out-of-process tools that can read a C-extension stall's
+  native frames.
+- **Env-var-shaped secret labels now scrub in logs and crash reports** — a slug-prefixed
+  label (`TAVILY_API_KEY: sk-…`) and numbered key slots both redact now.
+
+---
+
+**See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for
+the full delta.**
