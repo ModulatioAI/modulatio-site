@@ -95,6 +95,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.9.9.1 — the WebOS grows hands', slug: 'v0-9-9-1' },
 						{ label: 'v0.9.9 — the WebOS: Modulatio in your browser', slug: 'v0-9-9' },
 						{ label: 'v0.9.8.9 — the hard kill-boundary', slug: 'v0-9-8-9' },
 						{ label: 'v0.9.8.8 — live telemetry + a self-healing team', slug: 'v0-9-8-8' },

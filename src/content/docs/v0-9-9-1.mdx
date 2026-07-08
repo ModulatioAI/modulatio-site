@@ -1,0 +1,83 @@
+---
+title: v0.9.9.1 release notes
+description: The WebOS grows hands — every page gains a clickable button for every verb, plus one-click install and a configurable port. A full security + quality cadre cleared.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+[v0.9.9.0](/v0-9-9/) put Modulatio in your browser as a read-only mirror of the terminal.
+v0.9.9.1 makes it **act**: every one of the nine pages gains a clickable button for every
+verb — the web's version of the TUI's key-actions. Plus one-click install and a configurable
+port. This page is the delta on top of [v0.9.9.0](/v0-9-9/).
+
+<Aside type="note" title="Still Beta — the Beta calibration still applies">
+The engine's honest limits on the [Beta calibration page](/v0-1-0-beta/) still hold.
+</Aside>
+
+---
+
+## The pages can act now
+
+The read-only pages grow an action row. Every button is a **thin call to the same engine
+seam the terminal uses** — no new authority, no parallel logic — and destructive verbs
+confirm first:
+
+- **JT Library** — Kick off · Schedule (as a recurring cron job)
+- **Tickets** — Delete
+- **Artifacts** — Export · Delete
+- **Skills** — Add · Delete
+- **Memory** — Add · Edit · Approve · Delete (an operator manages an agent's own memory in
+  place; **team memory stays QC-curated** — an edit *proposes* a revision for review, it
+  never overwrites)
+- **Jobs** — Reveal folder · Delete
+- **Cron** — Enable · Disable · Run now · Remove · Refresh
+- **Logs** — Send to the team (opens a prefilled issue) · Delete · Refresh
+- **Docs** — Update docs · Open online
+
+### Export reaches your folders
+
+The Artifacts **Export** button renders an artifact to `.docx` / `.pdf` / `.md` (via pandoc)
+and writes it into a folder you registered on the [Folders tab](/reference/webos/) — a local
+path, a mapped drive, or an **already-mounted SMB/CIFS network share**. The destination is
+validated as a currently-registered, reachable, writable folder before anything is written,
+and the response never leaks the host path — only the folder name you chose and the filename.
+
+## One-click install, and a port you can move
+
+The opt-in `[web]` extra no longer needs you to know the magic words:
+
+- **In the setup wizard** — `modulatio setup` offers an *Install WebOS* step.
+- **In the TUI** — **CONFIG → SETTINGS** has an *Install WebOS* button.
+
+Both run the environment-correct command for you — `pipx inject` when Modulatio runs from a
+pipx install (so the deps survive a later `pipx upgrade`), otherwise `pip install` — and fall
+back to the manual `pip install "modulatio[web]"` when an automatic install can't run.
+
+And the server's port is now yours: a **`MODULATIO_WEB_PORT`** knob in CONFIG → SETTINGS
+(default `8787`) moves the WebOS off an occupied port. An explicit `modulatio-api --port`
+still wins.
+
+## Security — a full cadre pass
+
+The interactive surface cleared a **two-lens cadre** (security + quality). The security lens
+found and closed:
+
+- A **CSRF fence**: every state-changing request must carry a custom header the browser app
+  sends and a cross-origin page can't set without a preflight that fails — closing the
+  bodyless-POST gap on the token-free loopback bind.
+- **Per-project scoping** on the cron verbs: a global job id reached under one project's path
+  can no longer touch another project's schedule.
+- **A run can't be deleted while a job is writing it** (the same in-flight guard the terminal
+  keeps).
+- **Export never returns the host path** — only the folder name and filename.
+- The installer accepts **only real requirement names** from its own metadata.
+
+<Aside type="tip" title="The CONFIG tab is still next">
+The WebOS CONFIG tab (models, agents, projects, settings, folders) is read/write in the
+terminal today; the interactive browser version is the next arc.
+</Aside>
+
+---
+
+**See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for
+the full delta.**
