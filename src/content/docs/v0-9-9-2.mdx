@@ -1,0 +1,56 @@
+---
+title: v0.9.9.2 release notes
+description: The WebOS takes the controls — the CONFIG tab is now read/write in the browser, with a write-only key manager. Configure your whole team without opening the terminal. A two-lens security + quality cadre cleared, plus a Feng-Web theme polish pass.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+[v0.9.9.0](/v0-9-9/) put Modulatio in your browser as a read-only mirror; [v0.9.9.1](/v0-9-9-1/)
+gave every page its verbs. **v0.9.9.2 takes the controls**: the **CONFIG tab is now read/write**,
+so a new user can set up models, agents, and API-based services from the browser without ever
+opening the TUI. This page is the delta on top of [v0.9.9.1](/v0-9-9-1/).
+
+## The CONFIG tab, read/write
+
+All six sub-pages act — each a thin binding to the **same engine seam** the terminal's Config
+screens use, reproducing each screen's guards at the web boundary:
+
+- **Models** — add a model from the provider catalog, set its API key, remove one.
+- **Agents** — add / remove producers, change a seat's model, set fallback models. Leader and QC
+  stay singletons (a second is refused).
+- **Services** — add an outside image / video / speech / research API from the catalog or a
+  custom one (pinned https base URL), set its key, make it a capability default.
+- **Folders** — register / remove operator folders, set the delivery output folder.
+- **Projects** — create / switch / delete, refused on the active project or one with a job in
+  flight.
+- **Settings** — edit the engine knobs, with shell/.env-owned values read-only.
+
+## The write-only key manager
+
+API keys go **in** through the browser and never come back out. A value is stored write-only in
+the vault; the interface only ever reports whether a slot *is set*, never the secret. Keys are
+**allowlisted to configured model/service handles**, so an arbitrary environment variable — a
+sandbox-bypass switch, say — can't be written through the key route.
+
+<Aside type="note" title="Cadre cleared">
+A two-lens cadre signed off: **quality** (the shared knob seam, the reused list-and-detail
+archetype, thin routes, TUI parity) and **security** (the write-only key contract holds, and the
+key route was hardened to the configured-handle allowlist after review). Every TUI guard —
+singletons, in-flight refusals, folder-root refusals, cross-project scoping — is reproduced at the
+web boundary.
+</Aside>
+
+## Feng-Web polish
+
+Both browser themes got a pass while the tab was live-tested:
+
+- **Modal dialogs get an opaque fill** — Atelier popups no longer show the page through them.
+- **Buttons adapt to their surface** — action-row buttons stay visible on Vellum's dark panels
+  (they were dark-on-dark).
+- **The Console centers** its width instead of leaving a right-hand gutter, the Leader's speech
+  fills the activity TV, and your own operator lines read in full-strength text.
+
+---
+
+**See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the
+complete list.**
