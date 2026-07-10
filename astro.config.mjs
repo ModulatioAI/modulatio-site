@@ -95,6 +95,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.9.9.3 — the WebOS runs your calendar', slug: 'v0-9-9-3' },
 						{ label: 'v0.9.9.2 — the WebOS takes the controls', slug: 'v0-9-9-2' },
 						{ label: 'v0.9.9.1 — the WebOS grows hands', slug: 'v0-9-9-1' },
 						{ label: 'v0.9.9 — the WebOS: Modulatio in your browser', slug: 'v0-9-9' },

@@ -1,0 +1,92 @@
+---
+title: v0.9.9.3 release notes
+description: The WebOS runs your calendar — a real Teams-style cron scheduler in the JT Library, tokens-in/out on the telemetry rail, the autonomy pill, permission-gate parity in the browser, and honest displays everywhere. Two-lens cadre cleared after a four-round adversarial convergence.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+[v0.9.9.2](/v0-9-9-2/) made the CONFIG tab read/write; **v0.9.9.3 makes the WebOS trustworthy
+under real daily use** — a real scheduler, real telemetry, the engine's real permission gate in
+the browser, and displays that tell the truth. This page is the delta on top of
+[v0.9.9.2](/v0-9-9-2/).
+
+## A real cron scheduler — Teams-style
+
+The JT Library's **Schedule** button grew from a bare DSL prompt into a real schedule builder:
+
+- Pick a **date and a time** — the picked moment *is* the first run, and the recurrence anchors
+  to it.
+- **One-off or recurring** — daily, weekly, monthly, every N days, every N weeks.
+- **Ends** never, **after N runs**, or **on a date** — every logical combination.
+- A live **plain-English preview** states exactly what will run and when — "Runs weekly on
+  Mondays at 09:00, starting Jan 5, 12 times" — before you commit.
+
+The daemon holds the stop rules **fail-closed**: a one-off fires exactly once, a count is a
+**hard upper limit** (never an after-the-fact stop signal), an end date ends it, and a
+hand-edited or malformed schedule value — a garbage count, an empty date, a negative run
+counter — **disables the job before it can fire** rather than wedging the dispatch sweep or
+running forever.
+
+<Aside type="note" title="Hardened the hard way">
+The scheduler's stop invariant was drilled through a **four-round adversarial security review**
+— naive-timezone wedges, poisoned counters, falsy-value bypasses, an exhausted counter buying
+one extra fire — each round's findings fixed and re-probed until the invariant held: *an
+enabled job fires only if its stored metadata is well-typed and strictly under its cap;
+everything else disables before the side effect.*
+</Aside>
+
+## Tokens in / tokens out
+
+The console telemetry rail now shows the current run's **billed token counts — in and out** —
+on both the WebOS rail and the terminal's, read from the same usage ledger. Raw counts, never a
+dollar estimate: input and output price differently per provider, so Modulatio shows you the
+numbers that actually meter. Interactive kickoff runs are now token-accounted exactly like
+scheduled ones.
+
+## The autonomy pill
+
+The console's lamp row shows the Leader's **current autonomy mode** — default, yolo, goal, or
+yolo-goal — live. The mode is still set the same way it always was (the `/yolo` / `/goal` /
+`/yolo-goal` / `/default` commands in converse); the pill just tells the truth about where the
+dial sits, and lights up when the Leader is running with any autonomy at all.
+
+## Permission-gate parity
+
+A Leader capability ask in the browser now runs the **engine's own permission gate**, end to
+end. The approval modal offers the same scopes as the terminal — **once**, **this session**,
+**always**, or **deny** — durable grants persist through the engine's own stores, the refusal
+floor still refuses what no grant can allow, and everything **fails closed**: a timeout, a
+dismissed modal, or a scope the request never offered is a deny.
+
+## Honest displays
+
+- **The run stream survives.** The console replays the current run on every (re)connect — a tab
+  switch or a dropped connection rebuilds the whole stream, and a long run's newest frames
+  (including the finish line) win over its oldest.
+- **CLEAR sticks.** Clearing the consoles drops the server-side replay and watermarks the
+  conversation repaint — flip tabs all you like, the cleared log stays cleared. The thread
+  itself is untouched; reset remains the destructive verb.
+- **Settings match reality.** Every engine knob on the Settings page was audited against its
+  real engine consumer. One had drifted (the qc context-window default lagged an engine raise —
+  and the stale range even refused the engine's own default); knob defaults and ranges now
+  **derive from the engine's own tables**, welded by drift-guard tests, so the display can't
+  lie again. The WebOS-port entry now says so when the live server is bound elsewhere via
+  `--port`.
+
+## Also in this release
+
+- An **svg-drawing seed skill + SVG standard** — inert, self-contained, theme-aware
+  (`currentColor`) vector art as a first-class artifact kind, with the craft conventions in the
+  standard. Skill-crafting agents now write library skills **agnostic** — no
+  project/producer/run lingo; domain specifics live in the standards.
+- The Leader's verify pass catches **cross-artifact contradictions** inside a goal — the one
+  exception to "don't flog complete work."
+- The **Kick off…** button kicks off, the composer hides on the team view, and the team TV
+  fills the screen.
+- Live provider round-trip tests are **opt-in** (`pytest -m live`) — the default gate stays
+  deterministic.
+
+---
+
+**See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the
+complete list.**
