@@ -1,13 +1,13 @@
 ---
 title: ACP — drive Modulatio from an editor
-description: Run the Agent Client Protocol server so a Zed-class editor can talk to the conversational Leader — prompt turns, live activity, and client-approved tool calls — over JSON-RPC-on-stdio.
+description: Run the Agent Client Protocol server so an editor can talk to the conversational Leader — prompt turns, live activity, and client-approved tool calls — over JSON-RPC-on-stdio.
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
 Modulatio's conversational Leader isn't only reachable inside the TUI. The
 **Agent Client Protocol (ACP)** server exposes him over JSON-RPC-on-stdio, so any
-ACP-speaking client — a Zed-class editor — can drive him: send a prompt, watch
+ACP-speaking client — an editor — can drive him: send a prompt, watch
 the activity, and approve the tools he wants to run.
 
 It's the same Leader, the same per-project memory: a turn over ACP and a turn in

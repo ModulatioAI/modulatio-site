@@ -1,0 +1,68 @@
+---
+title: v0.9.9.4 release notes
+description: Stability + housekeeping — a line-by-line audit of the shipped source hardened the engine's failure paths, cleaned the code's comments down to code-only context, and consolidated the test suite. No new features, no behavior change for a normal run.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**v0.9.9.4 is a stability + housekeeping release.** No new features, no behavior
+change for a normal run — a line-by-line audit of the shipped source hardened
+the engine's failure paths and cleaned the codebase for the run up to 1.0. This
+page is the delta on top of [v0.9.9.3](/v0-9-9-3/).
+
+## Failure paths that used to hide errors now surface them
+
+A line-by-line stability pass over the whole engine found roughly thirty places
+where a real error — a disk fault, a corrupt file, a genuine bug — was swallowed
+with no log line, on load-bearing paths: skill loading, the model
+fallback-chain build, deferred ticket/proposal writes, telemetry, agent-memory
+reads, and the heartbeat queue read. Each still degrades gracefully (a broken
+skill never sinks the whole prompt build; telemetry never kills a run), but now
+each logs the failure, so a problem is **visible in the logs** instead of
+vanishing.
+
+Three concrete fixes stood out:
+
+- **A per-request write race in SERVICES config.** Two concurrent WebOS requests
+  editing services could read the same base state and lose one update. The four
+  config mutators now serialize their read-modify-write.
+- **A missing timeout on the multimodal model call.** The image/attachment chat
+  path was the one model call with no deadline; it now carries the same
+  per-completion timeout as every other call, so it can't hang without bound.
+- **A heartbeat data-loss precursor.** An unreadable queue file was treated as
+  empty silently — a following save would have overwritten it. It now logs
+  loudly before degrading.
+
+A dead permission field (a `_denied_this_session` set that was written but never
+read — a "deny backoff" that never actually existed) was removed.
+
+<Aside type="note" title="No behavior change for a normal run">
+Every fix here is on an error path. A run that doesn't hit a fault behaves
+exactly as it did in v0.9.9.3 — the difference only shows when something
+actually goes wrong, where it now leaves a trace instead of failing silently.
+</Aside>
+
+## The code carries only code-context
+
+A companion sweep cut every comment and docstring in the shipped source down to
+**strictly code-functional context** — what the code does and why, on a
+functional basis. Decision-history notes, review-round labels, dates, and
+internal identifiers were removed throughout (~850 comment/docstring edits),
+with every functional explanation preserved intact. No behavior change.
+
+## Housekeeping
+
+- The low-credibility web-search domain list ships **empty** — the product
+  carries no built-in opinion about specific third-party sites. A deployment
+  supplies its own via `MODULATIO_LOW_CREDIBILITY_DOMAINS` (the flagging
+  mechanism is unchanged).
+- The test suite was **consolidated**: 156 duplicate test files folded into
+  their topic suites (395 → 239 files) with zero coverage loss, verified by an
+  ID-level reconciliation against the pre-consolidation baseline. Live-provider
+  round-trip tests are now opt-in (`pytest -m live`) so the default run stays
+  deterministic. **5,486 tests pass.**
+
+---
+
+**See the [CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md) for the
+complete list.**
