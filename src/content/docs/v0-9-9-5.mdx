@@ -1,0 +1,100 @@
+---
+title: v0.9.9.5 release notes
+description: MCP servers — Modulatio can now consume Model Context Protocol servers; the conversational Leader rides the model's full context window; and the WebOS console gains terminal-parity polish. Every new surface cleared a two-lens adversarial review.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**v0.9.9.5 is a feature release.** Modulatio can now consume **MCP servers**,
+the conversational Leader remembers a whole conversation, and the WebOS console
+gained a batch of terminal-parity polish. This page is the delta on top of
+[v0.9.9.4](/v0-9-9-4/). Every new surface was cleared by a two-lens (security +
+quality) adversarial review before shipping.
+
+<Aside type="note" title="Still Beta">
+The [v0.1.0 Beta calibration](/v0-1-0-beta/) page still applies — read it before
+serious work.
+</Aside>
+
+## MCP servers — bring outside tools onto the team
+
+Modulatio is now an **MCP client**. Plug in a Model Context Protocol server and
+its tools become first-class Modulatio tools:
+
+```bash
+pip install "modulatio[mcp]"
+
+# a local (stdio) server Modulatio launches as a subprocess
+modulatio mcp add-stdio files --command /path/to/files-server --arg /home/me/notes
+
+# a remote (http) server with an auth token
+modulatio mcp add-http hub --url https://mcp.example.com/api --auth bearer --token <TOKEN>
+
+modulatio mcp test files      # connect + show the tools it offers
+```
+
+Each discovered tool registers as `mcp__<server>__<tool>`. The **Leader** can
+call any enabled server's tools — each authorized once/session/always the first
+time, or mark a read-only server **trusted** for zero prompts. A **producer**
+gets a specific MCP tool only when a skill's loadout names it (that grant *is*
+the authorization — jobs never block). MCP is a fourth capability provider on
+the *same* control plane as the built-ins and the SERVICES pool: the tool
+registry, the write-only key vault, the permission gate, and the spend
+comptroller. Secrets never enter agent context or results, and a server that
+won't connect degrades to an honest "unavailable" instead of crashing a run.
+
+The opt-in `[mcp]` extra keeps the base install lean — without it, a configured
+server is inert with an install hint. Full details in the
+[MCP servers reference](/reference/mcp/).
+
+## The conversational Leader rides the model's full window
+
+Talking to the Leader used to be capped at a role-sized context budget, so a
+long conversation would quietly compress away his memory of it. Now the chat
+lane rides the **model's own full context window** by default — a 500K- or
+1M-token model keeps the whole thread in view. The operator can cap it lower
+from the SETTINGS tab for cost control (every conversational turn re-sends the
+whole thread, so cost grows with depth — `/new` resets it). Every other lane —
+producers, QC, the Leader's decompose and verify — keeps its role-bounded
+window; the exception is conversation-only.
+
+The Leader can also **read and change the team's own configuration** directly
+now (models, agents, services) — "what models and agents do we have" is
+answerable in the chat, where the permission gate previously refused the
+config directory. Credential files stay fenced behind the secret floor.
+
+## WebOS console — terminal-parity polish
+
+- **Add model uses the live picker.** Pick a provider, then pick from its real
+  model list — fetched with your configured key server-side (the key never
+  crosses the boundary), free models flagged, with a typed-id fallback. Parity
+  with the terminal's two-level picker.
+- **Reload services** (Agents tab) and **Refresh** (Services tab) — the
+  terminal's `/reload`, mirrored: apply model/roster/config changes without a
+  server restart (refused while the Leader or a job is busy), and reconnect any
+  MCP servers against the current config.
+- **Copy works like the terminal.** Drag-select in a TV — the view won't yank to
+  the bottom mid-selection while a run streams — then `Ctrl+C` / `Ctrl+V`;
+  `Ctrl+C` with nothing selected copies the Leader's last message whole, and the
+  selection is now visible inside his speech block.
+- Static assets carry `Cache-Control: no-cache` so a browser can't pin a stale
+  interface across an upgrade.
+
+## Sign in to xAI with a subscription
+
+`modulatio auth login-xai` signs in to xAI (Grok) with a **SuperGrok /
+X Premium+** subscription through a PKCE OAuth flow Modulatio owns end to end.
+Tokens are stored write-only and auto-refreshed. If your subscription tier
+isn't authorized for API access, the flow says so and points you at an API key.
+
+## `doctor` checks the model-call stack
+
+`modulatio doctor` now probes the model-call import path and names any missing
+dependency with the remedy — a library version drift that would otherwise fail
+every agent call is surfaced as a plain diagnosis instead of a traceback.
+
+<Aside type="tip" title="Upgrade">
+`pip install --upgrade modulatio` (add `[web]` for the WebOS, `[mcp]` for MCP).
+5,598 tests; the full delta is in the
+[CHANGELOG](https://github.com/ModulatioAI/modulatio/blob/main/CHANGELOG.md).
+</Aside>

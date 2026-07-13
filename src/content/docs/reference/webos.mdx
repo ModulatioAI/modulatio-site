@@ -74,6 +74,21 @@ write-only**: a value goes in and the interface only ever reports whether a
 slot *is set*, never the secret, and keys are allowlisted to configured
 model/service handles.
 
+- **Add model is the terminal's two-level picker**: pick the provider, then pick
+  from its **live model list** — fetched server-side with your configured key
+  (the key never crosses the boundary), free models flagged, with a typed-id
+  fallback for anything unlisted.
+- **Reload services** (Agents sub-page) is the terminal's `/reload`: apply
+  model/roster/config changes to the live services without a server restart
+  (refused while the Leader or a job is busy), and reconnect any
+  [MCP servers](/reference/mcp/) against the current config.
+
+**Copy from the TVs works like the terminal.** Drag-select in a TV — the view
+won't yank to the bottom mid-selection while a run streams — then `Ctrl+C` /
+`Ctrl+V`; `Ctrl+C` with nothing selected copies the Leader's last message whole.
+Static assets carry `Cache-Control: no-cache`, so a shipped fix reaches the
+browser on the next load without a hard refresh.
+
 ## The Feng-Web themes
 
 Two print-flavored siblings of the terminal's Feng-Tui, switched with

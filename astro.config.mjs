@@ -74,6 +74,7 @@ export default defineConfig({
 						{ label: 'CLI', slug: 'reference/cli' },
 						{ label: 'Skill catalog', slug: 'reference/skills' },
 						{ label: 'Tool catalog', slug: 'reference/tools' },
+						{ label: 'MCP servers', slug: 'reference/mcp' },
 						{ label: 'Python API', slug: 'reference/api' },
 					],
 				},
@@ -95,6 +96,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v0.9.9.5 — MCP servers + the Leader, unbound', slug: 'v0-9-9-5' },
 						{ label: 'v0.9.9.4 — stability + housekeeping', slug: 'v0-9-9-4' },
 						{ label: 'v0.9.9.3 — the WebOS runs your calendar', slug: 'v0-9-9-3' },
 						{ label: 'v0.9.9.2 — the WebOS takes the controls', slug: 'v0-9-9-2' },

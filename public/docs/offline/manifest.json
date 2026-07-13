@@ -1,5 +1,5 @@
 {
-  "version": "0.9.9.2",
+  "version": "0.9.9.5",
   "bundle": "docs-bundle.tar.gz",
   "pages": [
     {
@@ -103,25 +103,29 @@
       "title": "CLI reference"
     },
     {
-      "slug": "26-skills",
+      "slug": "26-mcp",
+      "title": "MCP servers"
+    },
+    {
+      "slug": "27-skills",
       "title": "Skill catalog"
     },
     {
-      "slug": "27-tools",
+      "slug": "28-tools",
       "title": "Tool catalog"
     },
     {
-      "slug": "28-webos",
+      "slug": "29-webos",
       "title": "The WebOS"
     },
     {
-      "slug": "29-methodology",
+      "slug": "30-methodology",
       "title": "Testing methodology"
     },
     {
-      "slug": "30-troubleshooting",
+      "slug": "31-troubleshooting",
       "title": "Troubleshooting"
     }
   ],
-  "bundle_sha256": "ae1b6e0c754abb390b8a0a9683fae93babb0ca36a47bca0211ebd9110f2708ba"
+  "bundle_sha256": "6a84ac78775195a2c6e6b509f7cf7bd2f427f697f7c1e9e9a16cd007ea40b038"
 }
