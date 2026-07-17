@@ -1,0 +1,75 @@
+---
+title: v0.9.9.6 release notes
+description: Sign in from the seat — OAuth sign-in now happens inside the app. Both surfaces run the whole flow themselves — xAI via loopback consent, OpenAI via device code — cancellable from every surface, with throttle-proof polling and scrubbed failure surfaces.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**v0.9.9.6 is a feature release.** OAuth sign-in now happens **inside the
+app**: the add-model pickers no longer dead-end at "go run a terminal
+command" — both the TUI and the WebOS run the whole sign-in themselves, for
+both OAuth providers. This page is the delta on top of
+[v0.9.9.5](/v0-9-9-5/).
+
+<Aside type="note" title="Still Beta">
+The [v0.1.0 Beta calibration](/v0-1-0-beta/) page still applies — read it before
+serious work.
+</Aside>
+
+## In-app OAuth sign-in — both surfaces, both providers
+
+Choosing an OAuth auth method in the add-model picker (TUI or WebOS) now runs
+the sign-in in place:
+
+- **xAI (SuperGrok / X Premium+):** the app binds the loopback callback, opens
+  the provider's consent page, and captures the token — PKCE (S256) end to
+  end. Sign in, and the picker continues where you left it.
+- **OpenAI (ChatGPT subscription):** device-code flow — the picker shows the
+  code and verification URL and polls for the grant. No callback port, no
+  external tooling.
+
+Sign-in state is shared across surfaces: `GET /api/config/oauth-login` reports
+it, the TUI and the WebOS poll the same seam, and a completed sign-in lands in
+Modulatio's own credentials file with auto-refresh. The CLI paths
+(`modulatio auth login-xai` / `login-openai`) remain, now the parenthetical
+rather than the front door.
+
+## Cancellable sign-in
+
+A pending sign-in no longer owns the machine:
+
+- **Every surface can abandon it.** `DELETE /api/config/oauth-login` cancels a
+  pending flow; the WebOS wires it to a confirm-and-take-over step when a
+  second operator hits an already-in-progress sign-in; Ctrl-C on the CLI path
+  cancels cleanly.
+- **The fixed loopback port is released within a beat** of a cancel, so an
+  immediate retry never hits "address in use".
+
+## Throttle-proof device-code polling
+
+The OpenAI poll is hardened against an unruly server:
+
+- **429** — honors `Retry-After` (capped), keeps going.
+- **RFC 8628 codes** — `authorization_pending` continues, `slow_down` backs
+  off, `expired_token` / `access_denied` become clean, stable errors.
+- **Scrubbed surfaces** — provider response bodies never reach the status
+  line; unexpected failures report the exception class only, with detail to
+  the logger.
+
+<Aside type="caution" title="Validation grade">
+The xAI in-app flow is live-validated end to end. The OpenAI device-code flow
+ships unit-validated against the RFC 8628 shapes; its first live pass is
+scheduled for the next release cycle.
+</Aside>
+
+## Housekeeping
+
+- **Comments carry code-functional context only.** A codebase-wide pass over
+  the source and test suite (~100 files): every comment and docstring now
+  describes mechanism and purpose only. No behavior change.
+
+## Upgrade
+
+```bash
+pip install -U "modulatio[web]"    # or: pipx upgrade modulatio
+```
