@@ -49,9 +49,15 @@ if ! curl -fL -o "$TMP/SHA256SUMS.deb" "$SUMS_URL"; then
     echo "Could not fetch the checksum manifest ($SUMS_URL) — aborting." >&2
     exit 1
 fi
-EXPECTED="$(awk -v n="$DEB_NAME" '$2 ~ n {print $1; exit}' "$TMP/SHA256SUMS.deb")"
+# Exact filename match (not a substring — a lookalike must not satisfy it).
+EXPECTED="$(awk -v n="$DEB_NAME" '$2 == n {print $1; exit}' "$TMP/SHA256SUMS.deb")"
 if [ -z "$EXPECTED" ]; then
     echo "No checksum for $DEB_NAME in the manifest — aborting." >&2
+    exit 1
+fi
+# The expected value must be a 64-hex SHA-256 digest, or the manifest is junk.
+if ! printf '%s' "$EXPECTED" | grep -Eq '^[0-9a-fA-F]{64}$'; then
+    echo "Malformed checksum for $DEB_NAME in the manifest — aborting." >&2
     exit 1
 fi
 ACTUAL="$(sha256sum "$TMP/modulatio.deb" | awk '{print $1}')"
