@@ -43,9 +43,10 @@ The rest of this page uses `python3` for brevity. If your `python3` is too old, 
 
 ### Debian / Ubuntu package (recommended on Debian-family Linux)
 
-A self-contained `.deb` — it bundles its own Python interpreter under
+A self-contained **amd64** `.deb` — it bundles its own Python interpreter under
 `/opt/modulatio`, so the host needs **no Python at all** (only glibc). One
-artifact installs identically on Debian, Ubuntu, and their derivatives.
+artifact installs identically on Debian, Ubuntu, and their derivatives (on
+other architectures, install from PyPI below).
 
 ```bash
 curl -fsSL https://modulatio.ai/install.sh | sh
