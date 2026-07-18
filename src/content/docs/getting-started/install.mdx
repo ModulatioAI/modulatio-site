@@ -41,7 +41,31 @@ The rest of this page uses `python3` for brevity. If your `python3` is too old, 
 
 ## Install
 
-### Quick install (recommended)
+### Debian / Ubuntu package (recommended on Debian-family Linux)
+
+A self-contained `.deb` — it bundles its own Python interpreter under
+`/opt/modulatio`, so the host needs **no Python at all** (only glibc). One
+artifact installs identically on Debian, Ubuntu, and their derivatives.
+
+```bash
+curl -fsSL https://modulatio.ai/install.sh | sh
+```
+
+Or download it yourself from the
+[latest release](https://github.com/ModulatioAI/modulatio/releases/latest)
+(`modulatio_<version>_amd64.deb`, with `SHA256SUMS.deb` beside it) and:
+
+```bash
+sudo apt install ./modulatio_*_amd64.deb
+modulatio setup
+```
+
+The package ships a user-level systemd unit for the WebOS — keep the browser
+interface running across logins with `systemctl --user enable --now
+modulatio-api` (or `modulatio-api --install-service`). Uninstall cleanly with
+`sudo apt remove modulatio`.
+
+### Quick install from PyPI
 
 Modulatio is on PyPI. In a Python 3.12+ environment:
 
