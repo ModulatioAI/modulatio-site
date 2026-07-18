@@ -65,6 +65,26 @@ interface running across logins with `systemctl --user enable --now
 modulatio-api` (or `modulatio-api --install-service`). Uninstall cleanly with
 `sudo apt remove modulatio`.
 
+### Docker (the WebOS as a deployment)
+
+The container image runs the complete Modulatio — WebOS, TUI (locally or
+**over SSH**: `ssh -p 2222` drops you straight into the terminal UI), CLI,
+cloud providers, **local model servers on the host** (Ollama / LM Studio via
+host networking), and **Clay** (the bundled Claude Code binary; one-time
+sign-in, state persists in the volume — or use Anthropic/OpenRouter API keys
+instead). All features are enabled by the default compose file.
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/ModulatioAI/modulatio/main/packaging/docker-compose.yml
+docker compose up -d
+docker exec -it modulatio modulatio setup
+```
+
+Every feature's configuration — SSH-TUI keys, Clay sign-in, local models on
+Docker Desktop, ports, upgrades — is documented step by step in
+[README-docker](https://github.com/ModulatioAI/modulatio/blob/main/packaging/README-docker.md);
+the image is published to `ghcr.io/modulatioai/modulatio` on each release.
+
 ### Quick install from PyPI
 
 Modulatio is on PyPI. In a Python 3.12+ environment:
