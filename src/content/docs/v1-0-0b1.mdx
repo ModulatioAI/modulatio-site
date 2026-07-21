@@ -1,0 +1,101 @@
+---
+title: v1.0.0b1 release notes
+description: The first release of the 1.0 line — a public beta. The Leader earns real hands and an honest console — a security-hardened solo coding harness, an unblockable conversational lane, permission grants that land the moment they're given, and a live mission board.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**v1.0.0b1 is the first release of the 1.0 line — a public beta.** The theme:
+**the Leader earns real hands and an honest console.** The solo coding harness
+hardened through eight adversarial security-review rounds, the conversational
+lane became unblockable by anything except a permission ask, operator grants
+now land the moment they're given, and the WebOS console grew into a live
+mission board. This page is the delta on top of [v0.9.9.6](/v0-9-9-6/).
+
+<Aside type="caution" title="Installing the beta">
+Pre-release versions are **opt-in** — a plain `pip install modulatio` stays on
+the latest stable (v0.9.9.6). To run the beta:
+
+```sh
+pip install "modulatio[web]==1.0.0b1"   # or: pip install --pre "modulatio[web]"
+pipx install "modulatio[web]==1.0.0b1"  # pipx equivalent
+```
+</Aside>
+
+## The Leader's coding harness
+
+The Leader now works on code the way a careful engineer does — and the engine
+holds the evidence:
+
+- **Fix in place, not regenerate.** A goal verdict of *disappointed* sends the
+  Leader back to EDIT the existing work — the same recover-don't-discard
+  philosophy QC applies to drafts.
+- **Code goals are gated by evidence, not claims.** An engine-run pytest pass —
+  routed through the sandboxed shell, so model-authored tests never run
+  unsandboxed — binds the verdict. A noisy, truncated, or unclassifiable
+  failure stays RED; the verdict binds to the actually-collected test set.
+- **QC defaults to one verdict, then the fix** — review once, then repair.
+- Eight rounds of adversarial security review hardened the whole path:
+  sandbox-mandatory execution, artifacts-bound writes, tamper detection on
+  config and audit sinks, and fail-closed handling for every ambiguity the
+  reviewers could manufacture.
+
+## The console becomes a mission board
+
+The WebOS console's team lane is now a three-panel live board:
+
+- **Full-width, borderless feeds** — the stream runs to the true edge of your
+  screen; the Team TV centres its lines between the panels.
+- **Run telemetry** (left): clock, tokens, context — engine vitals only.
+- **Goal board + QC desk** (right): live goal/task tallies with the progress
+  bar, and QC's scoreboard — verdicts, fixes authored, rejections, and the
+  recently patched tasks, counting in real time.
+- **"On the floor" shows each seat's current task**, and every seat gets a
+  live filter: a checkbox mutes it, clicking its name solos it, and the filter
+  re-sorts the whole streamed backlog instantly. Filters reset with the run.
+- **The Leader's replies render their markdown** — headings, lists, code —
+  built with safe DOM construction (no raw HTML path exists).
+
+## A conversational lane that cannot be blocked
+
+The converse Leader's standing invariant is now engine-enforced: **nothing
+stops the lane except a permission ask.**
+
+- Any mid-turn failure — a model error, a context overflow, a tool crash,
+  even a failing conversation write — returns as an honest in-lane reply
+  instead of a surface error.
+- **Permission grants are live.** A grant reaches the very tool call that
+  prompted the ask. *Once* covers exactly that call and re-prompts next time;
+  *Session* and *Always* apply immediately.
+- A resolved permission dialog never re-appears on tab return, and a
+  still-pending ask survives run starts, clear-screen, and reconnects — it
+  reaches every tab that needs to answer it.
+
+## Reading beyond text
+
+`read_file` now recognizes PDFs and returns the text layer, extracted by the
+host's `pdftotext` run as a **contained helper**: fixed-path binary
+resolution, an engine-owned staged copy (the source pathname is never
+reopened), a stripped environment, resource limits, bounded output, and
+group-killed timeouts. Binary files refuse with one actionable line instead
+of a context-flooding byte soup. Hosts without poppler get a one-line install
+hint.
+
+## Also in this release
+
+- In-app OAuth: both flows now **live-validated end to end**, plus six
+  live-fire fixes (service install, credential-first add-model, token
+  isolation, persistent code dialog, picklist refresh + source labeling).
+- Model pickers always pull live listings — never a silent text box.
+- Leader-reflect rides the model window and can no longer fail a completed
+  run; a bound job template runs against its body, not the placeholder.
+- Release dependencies are frozen with hashes and drift fails closed.
+- The `.deb` package (self-contained, cross-distro proven) ships its release
+  channel with this train.
+
+<Aside type="note" title="What the beta means">
+The 1.0 line ships on the strength of the TUI, Leader, and QC work. The
+coding-output pipeline (multi-producer package assembly) is real but young —
+a post-1.0 hardening campaign is already scoped from live evidence. Treat
+generated codebases as strong drafts: review before you ship them.
+</Aside>

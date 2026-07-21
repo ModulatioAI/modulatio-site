@@ -9,9 +9,19 @@ If you want a one-page summary of the engine's current ceilings (what works, wha
 
 ---
 
-## Current — v0.9.9.5 (MCP servers + the Leader, unbound)
+## Current — v1.0.0b1 (the 1.0 line opens — public beta)
 
-The current release is **v0.9.9.6 — sign in from the seat** ([release notes](/v0-9-9-6/)). OAuth sign-in now happens **inside the app**: choosing an OAuth auth method in the add-model picker (TUI or WebOS) runs the whole sign-in in place — **xAI (SuperGrok / X Premium+)** via a loopback consent flow (PKCE end to end), **OpenAI (ChatGPT subscription)** via device code (the picker shows the code + URL and polls for the grant with RFC 8628-hardened, throttle-proof backoff) — no terminal dead-end, cancellable from every surface, tokens landing in Modulatio's own credentials file with auto-refresh. Plus a codebase-wide pass leaving every comment strictly code-functional. It builds on **v0.9.9.5 — MCP servers + the Leader, unbound** ([release notes](/v0-9-9-5/)): MCP servers as a fourth capability provider on the same control plane as the built-ins, the conversational Leader on the model's full context window, and WebOS terminal-parity polish.
+The current release is **v1.0.0b1** ([release notes](/v1-0-0b1/)) — the first release of the
+**1.0 line**, shipped as a public beta. The Leader earns real hands and an honest console: a
+solo coding harness hardened through eight adversarial security-review rounds (fix-in-place
+remediation, sandbox-routed pytest evidence gating code goals, QC one-verdict-then-fix), a
+conversational lane that cannot be blocked by anything except a permission ask, permission
+grants that land on the very call that asked (Once/Session/Always all live), contained PDF
+reading, and the WebOS console grown into a live mission board (Goal board + QC desk,
+per-seat solo/mute filtering, markdown-rendered Leader replies). Being a pre-release, the
+beta is opt-in: `pip install "modulatio[web]==1.0.0b1"` — a plain install stays on stable.
+
+The prior release was **v0.9.9.6 — sign in from the seat** ([release notes](/v0-9-9-6/)). OAuth sign-in now happens **inside the app**: choosing an OAuth auth method in the add-model picker (TUI or WebOS) runs the whole sign-in in place — **xAI (SuperGrok / X Premium+)** via a loopback consent flow (PKCE end to end), **OpenAI (ChatGPT subscription)** via device code (the picker shows the code + URL and polls for the grant with RFC 8628-hardened, throttle-proof backoff) — no terminal dead-end, cancellable from every surface, tokens landing in Modulatio's own credentials file with auto-refresh. Plus a codebase-wide pass leaving every comment strictly code-functional. It builds on **v0.9.9.5 — MCP servers + the Leader, unbound** ([release notes](/v0-9-9-5/)): MCP servers as a fourth capability provider on the same control plane as the built-ins, the conversational Leader on the model's full context window, and WebOS terminal-parity polish.
 
 The prior release was **v0.9.9.4 — stability + housekeeping** ([release notes](/v0-9-9-4/)). No new features and no behavior change for a normal run: a line-by-line audit of the shipped source hardened the engine's failure paths — roughly thirty silent error-swallows on load-bearing paths (skill loading, fallback-chain build, deferred writes, telemetry, the heartbeat queue read) now log the failure instead of hiding it; a per-request SERVICES config write-race is serialized; the multimodal model call gained the same per-completion timeout as every other call; and a dead permission field was removed. A companion sweep cut every comment and docstring down to strictly code-functional context, and the test suite was consolidated (395 → 239 files, zero coverage loss; 5,486 tests).
 
