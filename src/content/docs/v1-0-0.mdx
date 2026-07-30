@@ -1,0 +1,130 @@
+---
+title: v1.0.0 release notes
+description: The 1.0 line, still beta software. v1.0.0b1 opened this line with the standalone Leader harness present; 1.0 makes it trustworthy — bounded, observable, and unable to claim a success it did not earn.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**v1.0.0 carries the 1.0 line — and it is still beta software.** v1.0.0b1
+opened this line with the **standalone Leader harness** *present*. This release
+makes it **trustworthy**: bounded so it cannot wedge or spend without limit,
+observable so you can see exactly what it may do on every surface, and unable
+to claim a success it did not earn. These are the things 1.0 was supposed to
+mean and did not yet. This page is the delta on top of [v1.0.0b1](/v1-0-0b1/).
+
+<Aside type="caution" title="1.0 is the line, not a promise of stability">
+There is **no stable release**, and this version number does not imply one.
+Modulatio is beta software: read the [Beta calibration](/v0-1-0-beta/) page
+before serious work — knowing the engine's real ceilings is the difference
+between a smooth run and a frustrated one.
+
+Unlike the `b1` prerelease, 1.0.0 installs plainly:
+
+```sh
+pip install "modulatio[web]"
+pipx install "modulatio[web]"   # pipx equivalent
+```
+</Aside>
+
+## The harness is bounded
+
+A solo agent you leave alone has to be unable to run away with your time or
+your money.
+
+- **One absolute wall** bounds the Leader's whole chat loop *and* every
+  dispatch inside it, reaching shell setup and draining alike. A pre-expired
+  budget starts no child and names the binding bound.
+- **Shells are abortable.** Abort interrupts live sequential *and* isolated
+  shell paths; a two-pipe drain kills the process group, reaps it, and stays
+  bounded.
+- **Terminal classifications are unsuppressible.** `[ABORTED]` and `[TIMEOUT]`
+  ride an engine-owned framing line *outside* per-stream truncation, so a child
+  flooding stderr can no longer push the engine's own verdict out of the
+  window.
+- **Tool spend is capped per task.** Every dispatch consumes from one
+  serializable authority under the store lock — denied, errored, cache-hit and
+  replayed attempts all count — and the budget survives crashes and concurrent
+  writers. Trip it and the task yields a typed outcome straight to QC-as-fixer
+  instead of spinning.
+
+## The harness is observable
+
+- **A live capability card** in `modulatio doctor`, rendered from the
+  production authority descriptors themselves rather than a hand-maintained
+  table that drifts out of date.
+- **A conformance matrix** exercises the *real* permission gate across operator
+  surface × execution backend × tool origin × autonomy mode, with set-equality
+  completeness — so a new tool or surface cannot be added without appearing in
+  it.
+- **One authorization coordinator** asks **once per call** over a single atomic
+  bundle, and architectural parity gaps are *declared* rather than papered
+  over.
+- **The producer seat cooldown is named on screen** instead of a seat quietly
+  vanishing from dispatch for three minutes with no operator-visible reason.
+- **A `SYSTEM` tab** reports the install's own state.
+
+## The harness cannot claim a success it did not earn
+
+This is the part that changed most.
+
+- **Code deliverables are executed.** The engine builds a wheel in a sandbox,
+  validates its metadata, installs it into a pristine network-off environment,
+  then probes the entry point, imports the declared component, and runs the
+  suite from a disposable clone. The rollup is typed — `OK` /
+  `PRODUCT_FAILED` / `ENGINE_UNAVAILABLE`, origin stated — so an undeclared
+  dependency fails **by name**, and a deliverable the engine cannot execute
+  never ships clean.
+- **Component shape is sealed before any producer writes code.** After planning
+  and before dispatch the engine derives and seals each component's contract —
+  import name, distribution name, source layout — and renders it into every
+  producer, QC and Leader prompt. Ambiguity is refused up front instead of
+  discovered in the deliverable, and a component the Python schema does not
+  claim runs explicitly *unbound* rather than being silently counted as
+  conforming.
+- **The test gate separates "it ran" from "it ran the right thing."** Every
+  engine-run pytest goes through the engine's isolated wrapper, and a run that
+  reports exit 0 *without a recoverable completion record* produced no outcome
+  at all — RED, whatever the exit status said. Exit status is never mistaken
+  for evidence.
+- **Whether the suite loaded the shipped component stays advisory** — that
+  observation shares an interpreter with producer code and can be influenced
+  by it, so it rides as diagnostic evidence and never clamps on its own. Hard
+  verdicts settle *before* the advisory is composed, so a failing report never
+  claims the suite passed.
+- **A component cannot be named after a task or run id**, and earlier runs are
+  fenced out of the current deliverable.
+- **A decompose split is a mint.** The parent's remaining producer budget is
+  consumed by the split in one atomic parent write, and every child is
+  constructed with exactly one producer attempt. Worst-case spend is bounded
+  and disclosed honestly: `8 + 64 + 512 = 584` child attempts per eligible
+  root. A crashed mint finishes from the record alone, and a claimed attempt is
+  never re-run.
+
+## Security and correctness
+
+- The **capability dispatch table is validated when the module loads**, so a
+  missing or malformed entry fails at import rather than when authority is
+  checked.
+- **Authorization recovery is durable and revocation wins.** A revoke clears
+  both authority axes, supersedes older recovery state, and rejects a null
+  capability store before touching anything; rollback debt outlives the
+  coordinator, and a failed rollback latches it deny-until-reconciled.
+- **Authority readiness is one linearization point**, proven by lock refusal
+  rather than elapsed time.
+- A **designated-host black-box tier** witnesses real confinement, and its
+  evidence artifact is captured from a clean commit into an external file
+  before being committed — so the provenance it records is the provenance of
+  the code it tested.
+- A **stored sandbox bypass is refused** rather than honoured.
+
+## Fixed
+
+- **Version literal drift.** The bundled-docs manifest had been left at
+  `0.9.9.5` through two subsequent releases while the package literals moved.
+  All three now move together.
+- **The Debian/GHCR release lane fires again** — its tag grammar never matched
+  a `b`-suffixed prerelease, so no `.deb` was published for v1.0.0b1.
+- The WebOS console decodes UTF-16 output, keeps the conversation pseudo-task
+  off task surfaces, and coalesces telemetry-rail paints.
+- Removed the superseded producer-escalation path, a dead ACP permission
+  callback, and a patch applied to an attribute that does not exist.

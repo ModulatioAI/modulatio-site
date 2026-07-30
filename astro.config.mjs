@@ -96,6 +96,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v1.0.0 — the 1.0 line (beta)', slug: 'v1-0-0' },
 						{ label: 'v1.0.0b1 — the 1.0 line opens (beta)', slug: 'v1-0-0b1' },
 						{ label: 'v0.9.9.6 — sign in from the seat', slug: 'v0-9-9-6' },
 						{ label: 'v0.9.9.5 — MCP servers + the Leader, unbound', slug: 'v0-9-9-5' },
