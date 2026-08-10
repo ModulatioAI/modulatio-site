@@ -100,8 +100,50 @@ This is the part that changed most.
   root. A crashed mint finishes from the record alone, and a claimed attempt is
   never re-run.
 
+### One fact in the test gate is no longer producer-authored
+
+Evidence gathered *inside* the interpreter running the code under judgement is
+worth nothing against that code: every secret the observer holds sits in a
+frame the observed code can reach. A suite could therefore credit itself a
+component it never loaded, and nothing in the process could contradict it.
+
+The kernel is the one party to the run that code cannot write to. Modulatio now
+watches the shipped component's source from **outside** the interpreter, and a
+credit for a file the kernel never saw opened is **withdrawn**.
+
+It reports **access, not execution** — it can refute a false load and it cannot
+attest an honest one, and the report says exactly that. An import served from
+cached bytecode opens no source, and the tree under examination can supply that
+cache, so the cache is cleared first — following no symlink, emptying nothing it
+cannot prove is in scope, and reporting whether the tree is provably clear. When
+it cannot measure, it says so and withdraws nothing rather than convicting a
+run of its own silence.
+
+The completion half of the gate is still open and still disclosed: a missing
+wrapper result means no outcome whatever the exit status said, and a reported
+success remains the deliverable's own evidence.
+
 ## Security and correctness
 
+- **The secret store's lock is addressed by an inode, not a name.** A lock
+  reached through a pathname is only as stable as that name: renaming it aside
+  and creating another valid one let two processes hold good locks on different
+  inodes and serialise against nothing. The domain is the settings directory
+  itself, opened no-follow and checked and repaired through that descriptor, so
+  nothing outside the tree is inspected or altered on the way in.
+- **The vault migration is one transaction**, so a key written between its read
+  and its write is no longer overwritten with an older value.
+- **Build evidence comes from the interpreter that will build.** Markers are
+  evaluated against the target environment and wheel tags are read from the
+  target itself; where the target cannot be read, no filter is applied, because
+  a check should add evidence and never fail a build that works. The preflight
+  probes run isolated, so a tree under examination cannot have its own
+  `packaging` or `platform` executed in the engine's process.
+- **An upload is claimed by the composer that staged it**, matching the scope
+  its cleanup already used — two browsers on one project are two people.
+- **`doctor` reports a key stored under another provider's environment
+  variable**, where two endpoints silently shared one secret and setting either
+  replaced the other.
 - The **capability dispatch table is validated when the module loads**, so a
   missing or malformed entry fails at import rather than when authority is
   checked.

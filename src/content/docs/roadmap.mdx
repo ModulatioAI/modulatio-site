@@ -9,17 +9,27 @@ If you want a one-page summary of the engine's current ceilings (what works, wha
 
 ---
 
-## Current — v1.0.0b1 (the 1.0 line opens — public beta)
+## Current — v1.0.0 (the 1.0 line — still beta software)
 
-The current release is **v1.0.0b1** ([release notes](/v1-0-0b1/)) — the first release of the
-**1.0 line**, shipped as a public beta. The Leader earns real hands and an honest console: a
-solo coding harness hardened through eight adversarial security-review rounds (fix-in-place
-remediation, sandbox-routed pytest evidence gating code goals, QC one-verdict-then-fix), a
-conversational lane that cannot be blocked by anything except a permission ask, permission
-grants that land on the very call that asked (Once/Session/Always all live), contained PDF
-reading, and the WebOS console grown into a live mission board (Goal board + QC desk,
-per-seat solo/mute filtering, markdown-rendered Leader replies). Being a pre-release, the
-beta is opt-in: `pip install "modulatio[web]==1.0.0b1"` — a plain install stays on stable.
+The current release is **v1.0.0** ([release notes](/v1-0-0/)) — the 1.0 line, and
+**still beta software**. There is no stable release and the version number does not imply
+one. v1.0.0b1 opened this line with the standalone Leader harness *present*; 1.0 makes it
+**trustworthy**: **bounded** (one absolute wall over the Leader's whole chat loop and every
+dispatch inside it, abortable shells, a per-task tool-call budget that yields to QC rather
+than spinning), **observable** (a live capability card built from the production authority
+descriptors, and a conformance matrix that runs the real gate across every surface ×
+backend × tool-origin × autonomy-mode cell), and **careful about which successes it
+claims** — code deliverables are *executed* before anyone calls them done, component shape
+is sealed before a producer writes a line, and **one fact in the test gate is no longer
+producer-authored**: the shipped component's source is watched from outside the
+interpreter, and a credit for a file the kernel never saw opened is withdrawn. Install
+plainly: `pip install "modulatio[web]"`.
+
+The prior release was **v1.0.0b1 — the 1.0 line opens** ([release notes](/v1-0-0b1/)): the
+Leader's real hands and an honest console — a solo coding harness hardened through eight
+adversarial review rounds, a converse lane that cannot be blocked except by a permission
+ask, grants landing on the call that asked, contained PDF reading, and the WebOS console
+grown into a live mission board.
 
 The prior release was **v0.9.9.6 — sign in from the seat** ([release notes](/v0-9-9-6/)). OAuth sign-in now happens **inside the app**: choosing an OAuth auth method in the add-model picker (TUI or WebOS) runs the whole sign-in in place — **xAI (SuperGrok / X Premium+)** via a loopback consent flow (PKCE end to end), **OpenAI (ChatGPT subscription)** via device code (the picker shows the code + URL and polls for the grant with RFC 8628-hardened, throttle-proof backoff) — no terminal dead-end, cancellable from every surface, tokens landing in Modulatio's own credentials file with auto-refresh. Plus a codebase-wide pass leaving every comment strictly code-functional. It builds on **v0.9.9.5 — MCP servers + the Leader, unbound** ([release notes](/v0-9-9-5/)): MCP servers as a fourth capability provider on the same control plane as the built-ins, the conversational Leader on the model's full context window, and WebOS terminal-parity polish.
 
