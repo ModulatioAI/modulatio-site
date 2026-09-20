@@ -91,6 +91,7 @@ export default defineConfig({
 				},
 				{ label: 'Methodology', slug: 'methodology' },
 				{ label: 'Roadmap', slug: 'roadmap' },
+				{ label: 'Caesar — coming soon', slug: 'caesar' },
 				{ label: 'Troubleshooting', slug: 'troubleshooting' },
 				{
 					label: 'Releases',
