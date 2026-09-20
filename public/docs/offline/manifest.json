@@ -1,5 +1,5 @@
 {
-  "version": "0.9.9.5",
+  "version": "1.0.1",
   "bundle": "docs-bundle.tar.gz",
   "pages": [
     {
@@ -127,5 +127,5 @@
       "title": "Troubleshooting"
     }
   ],
-  "bundle_sha256": "5e2fdc4738876977133623233668bbb1b058c59d7d66ebb56eae379fa67a87b2"
+  "bundle_sha256": "c80c1e75d2f45d8f28230ab7cb2fcd058406ae6e6f90a27047e2a257a013b2e5"
 }
