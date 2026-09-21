@@ -109,6 +109,12 @@ def build(dest: Path) -> dict:
         pages.append({"slug": slug, "title": title})
         files.append(f"{slug}.md")
 
+    # The reader takes the docs version from a manifest inside the archive, so the
+    # manifest goes in as a member; the checksum is added to the copy served beside it.
+    manifest = {"version": engine_version(), "bundle": "docs-bundle.tar.gz", "pages": pages}
+    (dest / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    files.append("manifest.json")
+
     # A fixed mtime and sorted member order keep the archive byte-identical for identical
     # sources, which is what makes --check a usable gate.
     raw = io.BytesIO()
@@ -128,8 +134,7 @@ def build(dest: Path) -> dict:
     for name in files:
         (dest / name).unlink()
 
-    manifest = {"version": engine_version(), "bundle": "docs-bundle.tar.gz",
-                "pages": pages, "bundle_sha256": hashlib.sha256(data).hexdigest()}
+    manifest["bundle_sha256"] = hashlib.sha256(data).hexdigest()
     (dest / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
 
