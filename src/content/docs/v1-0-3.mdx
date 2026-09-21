@@ -1,0 +1,37 @@
+---
+title: v1.0.3 release notes
+description: A patch on the 1.0 line, still beta software. The shell stops showing empty stand-ins for folders it cannot see, and a turn that hits the tool cap answers from what it gathered.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**v1.0.3 is a patch on the 1.0 line — and it is still beta software.** Two
+fixes, both found in one live session the day 1.0.2 shipped. This page is the
+delta on top of [v1.0.2](/v1-0-2/).
+
+<Aside type="caution" title="1.0 is the line, not a promise of stability">
+There is **no stable release**, and this version number does not imply one.
+Modulatio is beta software: read the [Beta calibration](/v0-1-0-beta/) page
+before serious work.
+</Aside>
+
+```sh
+pip install "modulatio[web]==1.0.3"
+pipx install "modulatio[web]==1.0.3"   # pipx equivalent
+```
+
+## Fixed
+
+**The shell no longer shows an empty stand-in for folders it cannot see.**
+`run_shell` runs in a sandbox that carries the Leader's workspace and any
+granted folders — deliberately not the vault, so shell code can never read the
+secret store. But the sandbox created the *parents* of those mounts as empty
+directories, so `ls` on the project folder answered with a single entry, and
+the Leader concluded that a run's work had vanished from disk. It had not. A
+path outside the shell's roots and the system prefixes is now refused by name,
+and the refusal names `read_file` as the way to read it.
+
+**A turn that hits the tool cap answers from what it gathered.** A model that
+kept calling tools past the sixteen-round cap used to lose the entire turn —
+"failed before I could reply" — along with everything it had read. The loop now
+makes one final completion with no tools offered and returns that answer.
