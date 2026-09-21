@@ -1,0 +1,47 @@
+---
+title: v1.0.2 release notes
+description: A patch on the 1.0 line, still beta software. Three fixes to what the Leader tells you, and a record of every model response.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**v1.0.2 is a patch on the 1.0 line — and it is still beta software.** It fixes
+three ways the Leader could tell you something untrue about your own files and
+your own run, and adds a record that makes a silent drop distinguishable from a
+model that never spoke. This page is the delta on top of [v1.0.0](/v1-0-0/).
+
+<Aside type="caution" title="1.0 is the line, not a promise of stability">
+There is **no stable release**, and this version number does not imply one.
+Modulatio is beta software: read the [Beta calibration](/v0-1-0-beta/) page
+before serious work.
+</Aside>
+
+```sh
+pip install "modulatio[web]==1.0.2"
+pipx install "modulatio[web]==1.0.2"   # pipx equivalent
+```
+
+## Fixed
+
+**A granted directory no longer reports itself absent.** `read_file` on a
+directory answered `does not exist`, so the Leader could tell you the project
+vault was missing while its own report sat inside it. A directory now says so
+and lists its entries — under the same secret floor as every read, so no
+dotfile is ever named.
+
+**Every file a conversation turn writes is named in the reply.** When a
+destination could not be honoured, the file went somewhere the tools could
+reach, and the reply said nothing. The engine now appends `wrote: <path>` for
+each write to the turn that made it, so nothing lands in silence.
+
+**A kickoff without a runnable Leader or QC seat is refused** before anything is
+written, with a plain message and an error log entry. Previously the run went
+ahead and produced drafts nobody reviewed, with nothing to say so.
+
+## Added
+
+**Every model response is recorded to the run directory**, in `responses.jsonl`
+beside the tool-call log: role, agent, goal, task and the verbatim text. A reply
+that carries no tool call — a task plan emitted as bare JSON, a QC verdict —
+previously left no trace, so a field the engine consumed but never received
+could not be told apart from one dropped in parsing.
