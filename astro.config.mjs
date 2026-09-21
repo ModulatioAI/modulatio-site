@@ -97,6 +97,7 @@ export default defineConfig({
 					label: 'Releases',
 					collapsed: true,
 					items: [
+						{ label: 'v1.0.4 — the list closed (beta)', slug: 'v1-0-4' },
 						{ label: 'v1.0.3 — the shell tells the truth (beta)', slug: 'v1-0-3' },
 						{ label: 'v1.0.2 — three truths from the Leader (beta)', slug: 'v1-0-2' },
 						{ label: 'v1.0.0 — the 1.0 line (beta)', slug: 'v1-0-0' },

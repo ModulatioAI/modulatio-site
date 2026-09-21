@@ -1,0 +1,41 @@
+---
+title: v1.0.4 release notes
+description: A patch on the 1.0 line, still beta software. A placeholder model is refused plainly, the boot-stamp test is hermetic, and load-balancing off a busy producer is pinned by a test.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+**v1.0.4 is a patch on the 1.0 line — and it is still beta software.** It
+closes the last items on the post-1.0 list. This page is the delta on top of
+[v1.0.3](/v1-0-3/).
+
+<Aside type="caution" title="1.0 is the line, not a promise of stability">
+There is **no stable release**, and this version number does not imply one.
+Modulatio is beta software: read the [Beta calibration](/v0-1-0-beta/) page
+before serious work.
+</Aside>
+
+```sh
+pip install "modulatio[web]==1.0.4"
+pipx install "modulatio[web]==1.0.4"   # pipx equivalent
+```
+
+## Fixed
+
+**A placeholder model name is refused in plain words.** A seat whose model read
+as a placeholder used to reach the provider library and die with its complaint
+about a missing prefix. The runner now refuses at construction, in the
+operator's words: no model is set for this seat — set one in the Config tab and
+restart the service.
+
+**Two tests are hermetic under parallel load.** The web boot-stamp test
+launches its server with the engine's environment knobs stripped and lets the
+kernel pick the port; the jobs detail-card test waits for the card over
+frames. Test-only.
+
+## Verified
+
+**A task hinted to a busy producer moves to a free one.** The wave scheduler
+follows a continuity hint only while that producer has a free slot. This has
+been the engine's behaviour since the continuous-pull occupancy accounting,
+and is now pinned by a test.
