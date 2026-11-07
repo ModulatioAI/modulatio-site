@@ -10,6 +10,8 @@ hero:
   actions: []
 ---
 
+import CaesarFilm from '../../components/CaesarFilm.astro';
+
 <div class="caesar-page">
 
 <section class="caesar-bleed caesar-hero" aria-label="Introducing Caesar">
@@ -17,7 +19,7 @@ hero:
 		<source src="/caesar/chariot-loop.mp4" type="video/mp4" />
 	</video>
 	<div class="caesar-hero__inner">
-		<p class="caesar-hero__eyebrow">MODULATIO PRESENTS · CAESAR 0.8</p>
+		<p class="caesar-hero__eyebrow">CAESAR · FROM MODULATIO LABS</p>
 		<h1 class="caesar-hero__title">Introducing Caesar.</h1>
 		<p class="caesar-hero__claim">The world's first OS that <em>is</em> the agent.</p>
 		<p class="caesar-hero__sub">
@@ -36,12 +38,7 @@ hero:
 <section class="caesar-section" id="the-film">
 	<p class="caesar-kicker">THE FILM · 2 MINUTES</p>
 	<h2 class="caesar-heading">Meet Caesar.</h2>
-	<div class="caesar-film">
-		<video controls preload="metadata" playsinline poster="/caesar/caesar-film-poster.jpg">
-			<source src="/caesar/caesar-film.mp4" type="video/mp4" />
-			Your browser cannot play this film. <a href="/caesar/caesar-film.mp4">Download it</a> instead.
-		</video>
-	</div>
+	<CaesarFilm />
 	<p class="caesar-film__caption">EVERY SCREEN OF CAESAR IN THE FILM IS REAL, RECORDED LIVE ON A RUNNING MACHINE.</p>
 </section>
 

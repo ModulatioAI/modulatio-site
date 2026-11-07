@@ -15,7 +15,9 @@
 /* Full-bleed bands break out of Starlight's centred content column. 100vw counts the
    vertical scrollbar, so the page clips the few pixels it would otherwise scroll sideways. */
 html:has(.caesar-page),
-body:has(.caesar-page) {
+body:has(.caesar-page),
+html:has(.caesar-billing),
+body:has(.caesar-billing) {
 	overflow-x: clip;
 }
 /* Full-bleed bands break out of Starlight's centred content column. */
@@ -483,5 +485,112 @@ body:has(.caesar-page) {
 	}
 	.caesar-section {
 		margin-top: 4rem;
+	}
+}
+
+/* ── The film playing by itself (CaesarFilm.astro) ─────────────────────── */
+.caesar-film--auto {
+	position: relative;
+}
+.caesar-film__sound {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	padding: 0.75rem 1.3rem;
+	font-family: var(--font-mono);
+	font-size: 0.9rem;
+	letter-spacing: 0.14em;
+	color: #050b14;
+	background: #f2c14e;
+	border: 0;
+	cursor: pointer;
+	box-shadow: 0 0 0 1px rgba(5, 11, 20, 0.6), 0 8px 28px rgba(0, 0, 0, 0.55), 0 0 26px rgba(242, 193, 78, 0.45);
+	animation: caesar-pulse-soft 2.2s ease-in-out infinite;
+}
+.caesar-film__sound:hover {
+	background: #fff1c9;
+}
+.caesar-film--sounding .caesar-film__sound,
+.caesar-film--blocked .caesar-film__sound {
+	display: none;
+}
+@keyframes caesar-pulse-soft {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.04); }
+}
+
+/* ── Top billing on Modulatio's front page ─────────────────────────────── */
+.caesar-billing {
+	--caesar-gold: #f2c14e;
+	--caesar-ink: #050b14;
+	margin-top: -4.5rem;
+	padding: 4.5rem 1.25rem 4rem;
+	text-align: center;
+	isolation: isolate;
+	overflow: hidden;
+	background:
+		radial-gradient(ellipse at 50% 30%, rgba(180, 108, 255, 0.16) 0%, rgba(5, 11, 20, 0) 55%),
+		radial-gradient(ellipse at 50% 85%, rgba(242, 193, 78, 0.12) 0%, rgba(5, 11, 20, 0) 60%),
+		linear-gradient(180deg, #050b14 0%, #0a1628 100%);
+	border-bottom: 1px solid rgba(242, 193, 78, 0.25);
+}
+.caesar-billing__eyebrow {
+	font-family: var(--font-mono);
+	letter-spacing: 0.42em;
+	font-size: 0.8rem;
+	color: var(--caesar-gold);
+	margin: 0 0 1rem;
+}
+.caesar-billing__title {
+	font-family: var(--font-hero);
+	font-weight: 700;
+	font-size: clamp(2.2rem, 6vw, 4.6rem);
+	line-height: 1.05;
+	letter-spacing: 0.04em;
+	margin: 0;
+	background: linear-gradient(180deg, #fff6dc 0%, #f2c14e 58%, #c8901e 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0 0 20px rgba(242, 193, 78, 0.3));
+}
+.caesar-billing__claim {
+	font-family: var(--font-hero);
+	font-size: clamp(1.05rem, 2.3vw, 1.7rem);
+	letter-spacing: 0.08em;
+	color: #fff;
+	margin: 0.9rem 0 0;
+}
+.caesar-billing__claim em {
+	font-style: normal;
+	color: var(--caesar-gold);
+}
+.caesar-billing .caesar-film {
+	margin-top: 2rem;
+}
+.caesar-billing__actions {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin-top: 1.8rem;
+}
+.caesar-billing__actions > *,
+.caesar-billing > * + * {
+	margin-top: 0;
+}
+.caesar-billing > .caesar-billing__claim { margin-top: 0.9rem; }
+.caesar-billing > .caesar-film { margin-top: 2rem; }
+.caesar-billing > .caesar-billing__actions { margin-top: 1.8rem; }
+@media (max-width: 50rem) {
+	.caesar-billing {
+		margin-top: -2rem;
+		padding-top: 3rem;
+	}
+	.caesar-film__sound {
+		top: 0.6rem;
+		right: 0.6rem;
+		padding: 0.55rem 0.9rem;
+		font-size: 0.78rem;
 	}
 }

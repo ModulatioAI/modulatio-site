@@ -1,0 +1,37 @@
+---
+/**
+ * Caesar's film, playing by itself. Browsers start a video unbidden only with its sound off, so it
+ * plays muted and offers "Sound on", which starts it again from the beginning with sound. A browser
+ * that refuses even a muted start shows the film's own play button instead.
+ */
+---
+
+<div class="caesar-film caesar-film--auto" data-caesar-film>
+	<video autoplay muted playsinline preload="auto" poster="/caesar/caesar-film-poster.jpg" controls>
+		<source src="/caesar/caesar-film.mp4" type="video/mp4" />
+		Your browser cannot play this film. <a href="/caesar/caesar-film.mp4">Download it</a> instead.
+	</video>
+	<button class="caesar-film__sound" type="button" aria-label="Play the film from the start with sound">
+		<span aria-hidden="true">🔊</span>&nbsp; SOUND ON
+	</button>
+</div>
+
+<script>
+	for (const box of document.querySelectorAll<HTMLElement>('[data-caesar-film]')) {
+		const video = box.querySelector('video');
+		const sound = box.querySelector<HTMLButtonElement>('.caesar-film__sound');
+		if (!video || !sound) continue;
+		const hide = () => box.classList.add('caesar-film--sounding');
+		sound.addEventListener('click', () => {
+			video.muted = false;
+			video.currentTime = 0;
+			video.play().catch(() => {});
+			hide();
+		});
+		// Unmuting from the player's own controls does the same as the button.
+		video.addEventListener('volumechange', () => {
+			if (!video.muted) hide();
+		});
+		video.play().catch(() => box.classList.add('caesar-film--blocked'));
+	}
+</script>

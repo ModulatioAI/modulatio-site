@@ -11,6 +11,17 @@ hero:
 import { Card, CardGrid } from '@astrojs/starlight/components';
 import HeroTypewriter from '../../components/HeroTypewriter.astro';
 import MuMark from '../../components/MuMark.astro';
+import CaesarFilm from '../../components/CaesarFilm.astro';
+
+<section class="caesar-bleed caesar-billing" aria-label="Introducing Caesar">
+	<p class="caesar-billing__eyebrow">CAESAR · FROM MODULATIO LABS</p>
+	<h2 class="caesar-billing__title">Introducing Caesar.</h2>
+	<p class="caesar-billing__claim">The world's first OS that <em>is</em> the agent.</p>
+	<CaesarFilm />
+	<div class="caesar-billing__actions">
+		<a class="caesar-button caesar-button--solid" href="/caesar/">MEET CAESAR →</a>
+	</div>
+</section>
 
 <div class="modulatio-hero">
 	<h1 class="modulatio-hero__mark"><MuMark aria-label="mu" />MODULATIO</h1>
