@@ -15,7 +15,7 @@ export default defineConfig({
 			// Starlight default sparkle to re-fetch the new icon — without
 			// it, the 7-day max-age sticks visitors on the old icon.
 			favicon: '/favicon.svg?v=2',
-			customCss: ['./src/styles/modulatio.css'],
+			customCss: ['./src/styles/modulatio.css', './src/styles/caesar.css'],
 			components: {
 				// One theme only — suppress the light/dark toggle entirely.
 				ThemeSelect: './src/components/ThemeSelect.astro',
@@ -91,7 +91,7 @@ export default defineConfig({
 				},
 				{ label: 'Methodology', slug: 'methodology' },
 				{ label: 'Roadmap', slug: 'roadmap' },
-				{ label: 'Caesar — coming soon', slug: 'caesar' },
+				{ label: 'Caesar', slug: 'caesar' },
 				{ label: 'Troubleshooting', slug: 'troubleshooting' },
 				{
 					label: 'Releases',

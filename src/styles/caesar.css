@@ -1,0 +1,487 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * Caesar's page (/caesar/) — every rule scoped by a .caesar-* class, so the
+ * rest of the site is untouched. Built on the site's own palette and faces:
+ * deep navy, amber phosphor, Cinzel for the Roman lettering.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+.caesar-page {
+	--caesar-gold: #f2c14e;
+	--caesar-gold-deep: #c8901e;
+	--caesar-violet: #b46cff;
+	--caesar-rose: #ff4fa3;
+	--caesar-ink: #050b14;
+}
+
+/* Full-bleed bands break out of Starlight's centred content column. 100vw counts the
+   vertical scrollbar, so the page clips the few pixels it would otherwise scroll sideways. */
+html:has(.caesar-page),
+body:has(.caesar-page) {
+	overflow-x: clip;
+}
+/* Full-bleed bands break out of Starlight's centred content column. */
+.caesar-bleed {
+	position: relative;
+	width: 100vw;
+	margin-left: calc(50% - 50vw);
+	margin-right: calc(50% - 50vw);
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────────── */
+.caesar-hero {
+	min-height: min(88vh, 54rem);
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+	text-align: center;
+	isolation: isolate;
+	margin-top: -4.5rem;
+}
+.caesar-hero__loop {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: -2;
+	filter: saturate(1.1) brightness(0.62);
+}
+.caesar-hero::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background:
+		radial-gradient(ellipse at 50% 42%, rgba(5, 11, 20, 0.15) 0%, rgba(5, 11, 20, 0.7) 62%, var(--caesar-ink) 100%),
+		linear-gradient(180deg, rgba(5, 11, 20, 0.35) 0%, rgba(5, 11, 20, 0) 30%, rgba(10, 22, 40, 1) 100%);
+}
+.caesar-hero__inner {
+	padding: 6rem 1.5rem 5rem;
+	max-width: 62rem;
+}
+.caesar-hero__eyebrow {
+	font-family: var(--font-mono);
+	letter-spacing: 0.42em;
+	font-size: 0.8rem;
+	color: var(--caesar-gold);
+	text-shadow: var(--phosphor-glow-soft);
+	margin: 0 0 1.4rem;
+	animation: caesar-rise 1.1s ease-out both;
+}
+.caesar-page h1.caesar-hero__title {
+	font-family: var(--font-hero);
+	font-weight: 700;
+	font-size: clamp(2.6rem, 7.5vw, 6.2rem);
+	line-height: 1.02;
+	letter-spacing: 0.04em;
+	margin: 0;
+	color: #fff4d6;
+	background: linear-gradient(180deg, #fff6dc 0%, var(--caesar-gold) 58%, var(--caesar-gold-deep) 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0 0 22px rgba(242, 193, 78, 0.35));
+	animation: caesar-rise 1.3s 0.15s ease-out both;
+}
+.caesar-hero__claim {
+	font-family: var(--font-hero);
+	font-size: clamp(1.15rem, 2.6vw, 2rem);
+	letter-spacing: 0.08em;
+	color: #fff;
+	margin: 1.4rem 0 0;
+	text-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
+	animation: caesar-rise 1.3s 0.45s ease-out both;
+}
+.caesar-hero__claim em {
+	font-style: normal;
+	color: var(--caesar-gold);
+}
+.caesar-hero__sub {
+	font-family: var(--font-aphorism);
+	font-size: clamp(1.1rem, 1.7vw, 1.4rem);
+	color: var(--phosphor-body);
+	max-width: 44rem;
+	margin: 1.6rem auto 0;
+	text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9);
+	animation: caesar-rise 1.3s 0.7s ease-out both;
+}
+.caesar-hero__actions {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin-top: 2.4rem;
+	animation: caesar-rise 1.3s 0.95s ease-out both;
+}
+.caesar-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.85rem 1.6rem;
+	font-family: var(--font-mono);
+	font-size: 0.9rem;
+	letter-spacing: 0.14em;
+	text-decoration: none;
+	border: 1px solid var(--caesar-gold);
+	color: var(--caesar-gold);
+	background: rgba(5, 11, 20, 0.55);
+	backdrop-filter: blur(4px);
+	transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.caesar-button:hover {
+	background: var(--caesar-gold);
+	color: var(--caesar-ink);
+	box-shadow: 0 0 24px rgba(242, 193, 78, 0.45);
+}
+.caesar-button--solid {
+	background: var(--caesar-gold);
+	color: var(--caesar-ink);
+}
+.caesar-button--solid:hover {
+	background: #fff1c9;
+}
+.caesar-hero__scroll {
+	position: absolute;
+	bottom: 1.6rem;
+	left: 50%;
+	transform: translateX(-50%);
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	letter-spacing: 0.3em;
+	color: var(--phosphor-dim);
+	animation: caesar-pulse 2.4s ease-in-out infinite;
+}
+
+/* ── Sections ───────────────────────────────────────────────────────────── */
+.caesar-section {
+	max-width: 68rem;
+	margin: 6rem auto 0;
+	padding: 0 1.25rem;
+}
+.caesar-kicker {
+	font-family: var(--font-mono);
+	font-size: 0.78rem;
+	letter-spacing: 0.38em;
+	color: var(--caesar-gold);
+	text-align: center;
+	margin: 0 0 0.8rem;
+}
+.caesar-page h2.caesar-heading {
+	font-family: var(--font-hero);
+	font-size: clamp(1.8rem, 4vw, 3rem);
+	letter-spacing: 0.05em;
+	text-align: center;
+	color: #fff4d6;
+	margin: 0 0 1.2rem;
+	border: 0;
+}
+.caesar-lede {
+	font-family: var(--font-aphorism);
+	font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+	line-height: 1.55;
+	text-align: center;
+	max-width: 46rem;
+	margin: 0 auto;
+	color: var(--phosphor-body);
+}
+
+/* The film */
+.caesar-film {
+	margin: 2.2rem auto 0;
+	max-width: 64rem;
+	border: 1px solid rgba(242, 193, 78, 0.35);
+	box-shadow: 0 0 0 1px rgba(5, 11, 20, 1), 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 60px rgba(180, 108, 255, 0.18);
+	background: #000;
+}
+.caesar-film video {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+}
+.caesar-film__caption {
+	text-align: center;
+	font-family: var(--font-mono);
+	font-size: 0.78rem;
+	letter-spacing: 0.12em;
+	color: var(--phosphor-dim);
+	margin-top: 0.9rem;
+}
+
+/* The line from the film */
+.caesar-quote {
+	margin: 6rem auto 0;
+	padding: 4.5rem 1.5rem;
+	text-align: center;
+	background:
+		radial-gradient(ellipse at center, rgba(242, 193, 78, 0.1) 0%, rgba(10, 22, 40, 0) 65%),
+		linear-gradient(180deg, rgba(5, 11, 20, 0) 0%, rgba(5, 11, 20, 0.7) 50%, rgba(5, 11, 20, 0) 100%);
+	border-top: 1px solid rgba(242, 193, 78, 0.18);
+	border-bottom: 1px solid rgba(242, 193, 78, 0.18);
+}
+.caesar-quote blockquote {
+	border: 0;
+	margin: 0 auto;
+	padding: 0;
+	max-width: 54rem;
+	font-family: var(--font-hero);
+	font-size: clamp(1.4rem, 3.2vw, 2.4rem);
+	line-height: 1.35;
+	color: #fff4d6;
+	background: none;
+}
+.caesar-quote blockquote strong {
+	color: var(--caesar-gold);
+	font-weight: 700;
+}
+.caesar-quote cite {
+	display: block;
+	margin-top: 1.4rem;
+	font-family: var(--font-mono);
+	font-style: normal;
+	font-size: 0.78rem;
+	letter-spacing: 0.3em;
+	color: var(--phosphor-dim);
+}
+
+/* Feature rows: a still from the film beside its words, alternating sides */
+.caesar-feature {
+	display: grid;
+	grid-template-columns: 1.15fr 1fr;
+	gap: 3rem;
+	align-items: center;
+	margin-top: 5rem;
+}
+.caesar-feature:nth-of-type(even) .caesar-feature__media {
+	order: 2;
+}
+.caesar-feature__media {
+	position: relative;
+	margin: 0;
+}
+.caesar-feature__media img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border: 1px solid rgba(242, 193, 78, 0.28);
+	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(242, 193, 78, 0.08);
+}
+.caesar-feature__num {
+	font-family: var(--font-hero);
+	font-size: 0.9rem;
+	letter-spacing: 0.3em;
+	color: var(--caesar-gold);
+	margin: 0;
+}
+.caesar-page h3.caesar-feature__title {
+	font-family: var(--font-hero);
+	font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+	letter-spacing: 0.04em;
+	color: #fff4d6;
+	margin: 0.4rem 0 1rem;
+}
+.caesar-feature__body p {
+	font-size: 1.06rem;
+	line-height: 1.7;
+	color: var(--phosphor-body);
+	margin: 0 0 0.9rem;
+}
+.caesar-feature__body p.caesar-feature__proof {
+	font-family: var(--font-mono);
+	font-size: 0.82rem;
+	line-height: 1.6;
+	color: var(--phosphor-dim);
+	border-left: 2px solid var(--caesar-gold-deep);
+	padding-left: 0.9rem;
+}
+
+/* What you do with it: a grid of short tiles */
+/* Starlight spaces each block after the first with a top margin; inside a grid that pushes every
+   cell but the first out of line, so the cells here take none. */
+.caesar-page .caesar-tiles > *,
+.caesar-page .caesar-gallery > *,
+.caesar-page .caesar-feature > *,
+.caesar-page .caesar-hero__actions > * {
+	margin-top: 0;
+}
+.caesar-tiles {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+	margin-top: 2.4rem;
+}
+.caesar-tile {
+	padding: 1.3rem 1.3rem 1.1rem;
+	border: 1px solid rgba(242, 193, 78, 0.2);
+	background: linear-gradient(180deg, rgba(242, 193, 78, 0.06) 0%, rgba(5, 11, 20, 0.3) 100%);
+	transition: border-color 0.2s, transform 0.2s;
+}
+.caesar-tile:hover {
+	border-color: rgba(242, 193, 78, 0.6);
+	transform: translateY(-2px);
+}
+.caesar-tile__ask {
+	font-family: var(--font-aphorism);
+	font-style: italic;
+	font-size: 1.15rem;
+	color: #fff4d6;
+	margin: 0 0 0.6rem;
+}
+.caesar-tile__does {
+	font-size: 0.93rem;
+	line-height: 1.55;
+	color: var(--phosphor-dim);
+	margin: 0;
+}
+
+/* Real screens */
+.caesar-gallery {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+	margin-top: 2.4rem;
+}
+.caesar-gallery figure {
+	margin: 0;
+	background: rgba(5, 11, 20, 0.6);
+	border: 1px solid rgba(242, 193, 78, 0.18);
+	overflow: hidden;
+}
+.caesar-gallery figure.caesar-gallery__wide {
+	grid-column: span 2;
+}
+.caesar-gallery a {
+	display: block;
+}
+.caesar-gallery img {
+	display: block;
+	width: 100%;
+	height: 15rem;
+	object-fit: cover;
+	object-position: top left;
+	transition: transform 0.4s;
+}
+.caesar-gallery figure:hover img {
+	transform: scale(1.03);
+}
+.caesar-gallery figcaption {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	letter-spacing: 0.06em;
+	color: var(--phosphor-dim);
+	padding: 0.7rem 0.9rem;
+	border-top: 1px solid rgba(242, 193, 78, 0.12);
+}
+
+/* Facts */
+.caesar-facts {
+	columns: 2;
+	column-gap: 3rem;
+	margin: 2.2rem auto 0;
+	padding: 0;
+	list-style: none;
+}
+.caesar-facts li {
+	break-inside: avoid;
+	padding: 0 0 1rem 1.4rem;
+	position: relative;
+	line-height: 1.6;
+	color: var(--phosphor-body);
+}
+.caesar-facts li::before {
+	content: '◆';
+	position: absolute;
+	left: 0;
+	top: 0.1rem;
+	font-size: 0.7rem;
+	color: var(--caesar-gold);
+}
+
+/* Closing band */
+.caesar-finale {
+	margin-top: 7rem;
+	min-height: 30rem;
+	display: grid;
+	place-items: center;
+	text-align: center;
+	overflow: hidden;
+	isolation: isolate;
+}
+.caesar-finale > img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: -2;
+	filter: brightness(0.5);
+}
+.caesar-finale::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: linear-gradient(180deg, rgba(10, 22, 40, 1) 0%, rgba(10, 22, 40, 0.2) 35%, rgba(10, 22, 40, 0.2) 65%, rgba(10, 22, 40, 1) 100%);
+}
+.caesar-finale__inner {
+	padding: 4rem 1.5rem;
+}
+.caesar-finale__mark {
+	font-family: var(--font-hero);
+	font-size: clamp(2.4rem, 6vw, 4.6rem);
+	letter-spacing: 0.18em;
+	color: var(--caesar-gold);
+	text-shadow: 0 0 30px rgba(242, 193, 78, 0.4);
+	margin: 0;
+}
+.caesar-finale__line {
+	font-family: var(--font-hero);
+	letter-spacing: 0.3em;
+	color: #fff;
+	margin: 0.6rem 0 0;
+}
+.caesar-status {
+	margin: 2rem auto 0;
+	max-width: 40rem;
+	font-size: 1rem;
+	line-height: 1.65;
+	color: var(--phosphor-body);
+	text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+}
+
+@keyframes caesar-rise {
+	from { opacity: 0; transform: translateY(18px); }
+	to { opacity: 1; transform: none; }
+}
+@keyframes caesar-pulse {
+	0%, 100% { opacity: 0.35; }
+	50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.caesar-hero__eyebrow, .caesar-page h1.caesar-hero__title, .caesar-hero__claim,
+	.caesar-hero__sub, .caesar-hero__actions, .caesar-hero__scroll { animation: none; }
+}
+
+/* ── Phones and narrow windows ──────────────────────────────────────────── */
+@media (max-width: 50rem) {
+	.caesar-feature {
+		grid-template-columns: 1fr;
+		gap: 1.4rem;
+		margin-top: 3.5rem;
+	}
+	.caesar-feature:nth-of-type(even) .caesar-feature__media {
+		order: 0;
+	}
+	.caesar-gallery,
+	.caesar-tiles {
+		grid-template-columns: 1fr;
+	}
+	.caesar-gallery figure.caesar-gallery__wide {
+		grid-column: auto;
+	}
+	.caesar-facts {
+		columns: 1;
+	}
+	.caesar-section {
+		margin-top: 4rem;
+	}
+}
