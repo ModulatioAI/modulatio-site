@@ -188,7 +188,7 @@ import CaesarFilm from '../../components/CaesarFilm.astro';
 <section class="caesar-section" id="report-a-bug">
 	<p class="caesar-kicker">REPORT A BUG</p>
 	<h2 class="caesar-heading">Something went wrong? Tell us.</h2>
-	<form class="caesar-bugform" method="post" action="/caesar/report-bug.php">
+	<form class="caesar-bugform" method="post" action="/caesar/report-bug.php" enctype="multipart/form-data">
 		<label>Your email, so we can answer you <input type="email" name="email" required maxlength="200" autocomplete="email" /></label>
 		<label>What went wrong, in a few words <input type="text" name="title" required maxlength="120" /></label>
 		<label>What happened <textarea name="happened" required rows="5" maxlength="6000"></textarea></label>
@@ -196,6 +196,7 @@ import CaesarFilm from '../../components/CaesarFilm.astro';
 		<label>Steps that make it happen again <textarea name="steps" rows="4" maxlength="6000"></textarea></label>
 		<label>The computer (make and model, graphics card) <input type="text" name="computer" maxlength="400" /></label>
 		<label>Caesar's version <input type="text" name="version" value="0.8.5" maxlength="12" /></label>
+		<label>Files, if they help: screenshots, logs or text, or a zip of them (up to 3 files, 10 MB each) <input type="file" name="files[]" multiple accept=".png,.jpg,.jpeg,.webp,.gif,.txt,.log,.json,.conf,.md,.zip,.gz,.tgz,.xz,.zst,.pdf" /></label>
 		<label class="caesar-bugform__trap" aria-hidden="true">Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
 		<button class="caesar-button caesar-button--solid" type="submit">SEND THE REPORT</button>
 		<p class="caesar-bugform__said" role="status" aria-live="polite"></p>
