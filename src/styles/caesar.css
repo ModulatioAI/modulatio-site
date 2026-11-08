@@ -32,6 +32,8 @@ body:has(.caesar-billing) {
 .caesar-hero {
 	min-height: min(88vh, 54rem);
 	display: grid;
+	/* One column no wider than the screen, as the closing section's. */
+	grid-template-columns: minmax(0, 1fr);
 	place-items: center;
 	overflow: hidden;
 	text-align: center;
@@ -59,6 +61,8 @@ body:has(.caesar-billing) {
 .caesar-hero__inner {
 	padding: 6rem 1.5rem 5rem;
 	max-width: 62rem;
+	min-width: 0;
+	box-sizing: border-box;
 }
 .caesar-hero__eyebrow {
 	font-family: var(--font-mono);
@@ -72,7 +76,8 @@ body:has(.caesar-billing) {
 .caesar-page h1.caesar-hero__title {
 	font-family: var(--font-hero);
 	font-weight: 700;
-	font-size: clamp(2.6rem, 7.5vw, 6.2rem);
+	/* The floor lets "Introducing" fit a phone of 320 pixels; from 555 wide the size is as before. */
+	font-size: clamp(1.8rem, 7.5vw, 6.2rem);
 	line-height: 1.02;
 	letter-spacing: 0.04em;
 	margin: 0;
@@ -211,7 +216,9 @@ body:has(.caesar-billing) {
 
 /* The line from the film */
 .caesar-quote {
-	margin: 6rem auto 0;
+	/* The top alone: the side margins are the full-width section's, which line it up with the
+	   screen's edges; set here as auto, they moved it right by the text column's margin. */
+	margin-top: 6rem;
 	padding: 4.5rem 1.5rem;
 	text-align: center;
 	background:
@@ -403,6 +410,9 @@ body:has(.caesar-billing) {
 	margin-top: 7rem;
 	min-height: 30rem;
 	display: grid;
+	/* One column no wider than the screen: a grid column otherwise grows to the widest piece of
+	   its content that cannot break, which on a phone pushed the closing section past the right edge. */
+	grid-template-columns: minmax(0, 1fr);
 	place-items: center;
 	text-align: center;
 	overflow: hidden;
@@ -426,6 +436,9 @@ body:has(.caesar-billing) {
 }
 .caesar-finale__inner {
 	padding: 4rem 1.5rem;
+	min-width: 0;
+	max-width: 100%;
+	box-sizing: border-box;
 }
 .caesar-finale__mark {
 	font-family: var(--font-hero);
@@ -617,6 +630,9 @@ body:has(.caesar-billing) {
 }
 .caesar-bugform input,
 .caesar-bugform textarea {
+	width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
 	font: inherit;
 	color: #fff;
 	background: rgba(255, 255, 255, 0.06);
