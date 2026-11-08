@@ -59,7 +59,7 @@ if (field('website', 200) !== '') {
 
 $email = field('email', 200);
 $title = preg_replace('/[\r\n\t]+/', ' ', field('title', 120));
-$version = field('version', 12);
+$version = field('version', 80);
 $happened = field('happened', 6000);
 $expected = field('expected', 3000);
 $steps = field('steps', 6000);
@@ -71,9 +71,10 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 if ($title === '' || $happened === '') {
     answer(400, 'Please say in a few words what went wrong, and what happened.');
 }
-if (!preg_match('/^[0-9][0-9A-Za-z.]{0,11}$/', $version)) {
-    $version = 'unknown version';
-}
+// A Caesar may send more than the bare number, such as "0.8.9 (caesar-code-20261108_2)" or
+// "Caesar 0.8.9": the version is the first number of that shape in what was sent.
+$version = preg_match('/(?<![0-9.])([0-9]{1,3}\.[0-9]{1,3}(?:\.[0-9]{1,4})?[A-Za-z]?)(?![0-9A-Za-z])/', $version, $found)
+    ? $found[1] : 'unknown version';
 
 // At most a few reports an hour from one address on the internet, so the form cannot be used to
 // send our replies to someone again and again.
