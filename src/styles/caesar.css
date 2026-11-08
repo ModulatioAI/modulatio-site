@@ -449,6 +449,13 @@ body:has(.caesar-billing) {
 	color: var(--phosphor-body);
 	text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
 }
+.caesar-status--sum {
+	margin-top: 0.8rem;
+	font-family: var(--sl-font-mono, monospace);
+	font-size: 0.75rem;
+	overflow-wrap: anywhere;
+	opacity: 0.8;
+}
 
 @keyframes caesar-rise {
 	from { opacity: 0; transform: translateY(18px); }
