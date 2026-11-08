@@ -601,3 +601,52 @@ body:has(.caesar-billing) {
 		font-size: 0.78rem;
 	}
 }
+
+/* The bug-report form: one column, the page's own colours. */
+.caesar-bugform {
+	display: grid;
+	gap: 1rem;
+	max-width: 40rem;
+	margin: 2rem auto 0;
+}
+.caesar-bugform label {
+	display: grid;
+	gap: 0.35rem;
+	font-size: 0.95rem;
+	color: var(--phosphor-body);
+}
+.caesar-bugform input,
+.caesar-bugform textarea {
+	font: inherit;
+	color: #fff;
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 0.25rem;
+	padding: 0.55rem 0.7rem;
+}
+.caesar-bugform input:focus,
+.caesar-bugform textarea:focus {
+	outline: 2px solid #f0c040;
+	outline-offset: 1px;
+}
+.caesar-bugform button {
+	justify-self: start;
+	cursor: pointer;
+}
+.caesar-bugform button:disabled {
+	opacity: 0.5;
+	cursor: wait;
+}
+.caesar-bugform__trap {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+.caesar-bugform__said,
+.caesar-bugform__note {
+	max-width: 40rem;
+	margin: 1rem auto 0;
+	color: var(--phosphor-body);
+}
