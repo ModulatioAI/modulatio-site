@@ -161,4 +161,9 @@ if (!$sent) {
 }
 $times[] = $now;
 @file_put_contents($seen, json_encode($times), LOCK_EX);
+// A title carrying a report's number adds to that report: it is filed under the number and is
+// not thanked again, so it is not promised a reply.
+if (preg_match('/\[(CB-\d{4,})\]/i', $title, $named)) {
+    answer(200, "Thank you. What you sent was added to report " . strtoupper($named[1]) . '.');
+}
 answer(200, "Thank you. Your report was sent. A reply with its number is on its way to $email.");
