@@ -31,6 +31,11 @@ export default defineConfig({
 					label: 'Patreon',
 					href: 'https://www.patreon.com/ModulatioLabs',
 				},
+				{
+					icon: 'discord',
+					label: 'Discord',
+					href: 'https://discord.gg/RKfyFRuyvK',
+				},
 			],
 			sidebar: [
 				{
