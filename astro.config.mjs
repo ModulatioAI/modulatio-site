@@ -26,6 +26,11 @@ export default defineConfig({
 					label: 'GitLab',
 					href: 'https://gitlab.com/modulatio-labs',
 				},
+				{
+					icon: 'patreon',
+					label: 'Patreon',
+					href: 'https://www.patreon.com/ModulatioLabs',
+				},
 			],
 			sidebar: [
 				{
