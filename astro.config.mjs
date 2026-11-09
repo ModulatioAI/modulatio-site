@@ -22,9 +22,9 @@ export default defineConfig({
 			},
 			social: [
 				{
-					icon: 'github',
-					label: 'GitHub',
-					href: 'https://github.com/ModulatioAI/modulatio',
+					icon: 'gitlab',
+					label: 'GitLab',
+					href: 'https://gitlab.com/modulatio-labs',
 				},
 			],
 			sidebar: [
