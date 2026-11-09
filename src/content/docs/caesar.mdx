@@ -242,7 +242,17 @@ import CaesarFilm from '../../components/CaesarFilm.astro';
 			<a class="caesar-button" href="#the-film">▶&nbsp; WATCH AGAIN</a>
 			<a class="caesar-button" href="/">MODULATIO</a>
 		</div>
+		<div class="caesar-donate" id="donate">
+			<img src="/caesar/donate-eth.svg" alt="QR code of the Ethereum address below" width="132" height="132" />
+			<p class="caesar-status caesar-status--sum">
+				Donate Ethereum: send ETH on the Ethereum network to<br />
+				<code id="eth-address">0xb4e6E01a73fbCF2d1d3C3b876cf525a77d33154b</code>
+				<button class="caesar-button caesar-donate__copy" type="button" data-copy="eth-address">COPY</button><br />
+				Or give once by card in the <a href="https://www.patreon.com/ModulatioLabs/shop">Patreon Shop</a>.
+			</p>
+		</div>
 	</div>
 </section>
+<script is:inline src="/caesar/donate.js" defer></script>
 
 </div>

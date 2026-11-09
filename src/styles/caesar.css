@@ -470,6 +470,29 @@ body:has(.caesar-billing) {
 	opacity: 0.8;
 }
 
+.caesar-donate {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	margin: 2rem auto 0;
+	max-width: 40rem;
+}
+.caesar-donate img {
+	border-radius: 6px;
+}
+.caesar-donate .caesar-status--sum {
+	margin: 0;
+	opacity: 1;
+}
+.caesar-donate__copy {
+	margin-left: 0.5rem;
+	padding: 0.25rem 0.7rem;
+	font-size: 0.7rem;
+	background: transparent;
+	cursor: pointer;
+}
+
 @keyframes caesar-rise {
 	from { opacity: 0; transform: translateY(18px); }
 	to { opacity: 1; transform: none; }
