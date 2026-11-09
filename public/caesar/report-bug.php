@@ -128,6 +128,7 @@ if ($total > MAX_TOTAL) {
 $subject = "Caesar $version: $title [Bug Report]";
 $body = "Sent with the form on modulatio.ai/caesar.\n\n"
     . "Reported by: $email\n"
+    . (field('private', 10) !== '' ? "Keep private: yes\n" : '')
     . "Caesar's version: $version\n"
     . "The computer: " . ($computer !== '' ? $computer : '(not given)') . "\n\n"
     . "What happened:\n$happened\n\n"

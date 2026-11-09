@@ -197,6 +197,7 @@ import CaesarFilm from '../../components/CaesarFilm.astro';
 		<label>The computer (make and model, graphics card) <input type="text" name="computer" maxlength="400" /></label>
 		<label>Caesar's version <input type="text" name="version" value="0.8.5" maxlength="12" /></label>
 		<label>Files, if they help: screenshots, logs or text, or a zip of them (up to 3 files, 10 MB each) <input type="file" name="files[]" multiple accept=".png,.jpg,.jpeg,.webp,.gif,.txt,.log,.json,.conf,.md,.zip,.gz,.tgz,.xz,.zst,.pdf" /></label>
+		<label class="caesar-bugform__check"><input type="checkbox" name="private" value="yes" /> Keep this report private: do not show it on Discord</label>
 		<label class="caesar-bugform__trap" aria-hidden="true">Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
 		<button class="caesar-button caesar-button--solid" type="submit">SEND THE REPORT</button>
 		<p class="caesar-bugform__said" role="status" aria-live="polite"></p>
@@ -206,8 +207,10 @@ import CaesarFilm from '../../components/CaesarFilm.astro';
 		Your address is used for this report only.
 	</p>
 	<p class="caesar-bugform__note">
-		Reports are public: each one is posted in #bug-reports on our <a href="https://discord.gg/RKfyFRuyvK">Discord</a>,
-		where anyone can add what they see and follow it to the fix. Your email address and your files are never posted.
+		Reports are public unless you tick the box: once we have read it, each one is posted in #bug-reports on our
+		<a href="https://discord.gg/RKfyFRuyvK">Discord</a>, where anyone can add what they see and follow it to the fix.
+		Your email address and your files are never posted. Please leave passwords and keys out, and tick the box for
+		anything about security.
 	</p>
 </section>
 
@@ -222,7 +225,7 @@ import CaesarFilm from '../../components/CaesarFilm.astro';
 			Caesar 0.8.5 is available as a beta. It is early software: expect rough edges.
 			Installing erases the disk you choose, so keep a copy of anything on it.
 			Found a bug? Report it with the form above, and you will get a reply with your report's number.
-			Reports are shown on our Discord, without your address.
+			Reports are shown on our Discord, without your address, unless you ask us to keep one private.
 		</p>
 		<p class="caesar-status caesar-status--sum">
 			Rather send it by mail? Open the report in <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact%40modulatio.ai&su=Caesar%200.8.5%3A%20%28what%20went%20wrong%2C%20in%20a%20few%20words%29%20%5BBug%20Report%5D&body=What%20happened%3A%0A%0A%0AWhat%20you%20expected%20to%20happen%3A%0A%0A%0ASteps%20that%20make%20it%20happen%20again%3A%0A1.%0A2.%0A3.%0A%0AThe%20computer%20%28make%20and%20model%2C%20graphics%20card%29%3A%0A%0ACaesar%27s%20version%3A%200.8.5%0A" target="_blank" rel="noopener">Gmail</a>

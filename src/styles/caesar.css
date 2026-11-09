@@ -663,6 +663,15 @@ body:has(.caesar-billing) {
 	border-radius: 0.25rem;
 	padding: 0.55rem 0.7rem;
 }
+.caesar-bugform label.caesar-bugform__check {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+.caesar-bugform__check input {
+	width: auto;
+	padding: 0;
+}
 .caesar-bugform input:focus,
 .caesar-bugform textarea:focus {
 	outline: 2px solid #f0c040;
