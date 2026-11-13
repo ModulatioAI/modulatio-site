@@ -1,0 +1,2225 @@
+<meta charset="utf-8">
+<title>Caesar User Guide</title>
+<style>
+  :root{
+    --ground:#080a10; --raised:#0e1118; --card:#131620;
+    --ink:#e4e6ec; --quiet:#8a8ea0; --faint:#5d6274;
+    --accent:#00e4ff; --accent-soft:rgba(0,228,255,.10); --accent-line:rgba(0,228,255,.28);
+    --mark:#ffeb00; --mark-soft:rgba(255,235,0,.09);
+    --warn:#ff6b6b; --warn-soft:rgba(255,107,107,.09);
+    --edge:#1e2230; --edge-soft:#161a26;
+    --display:'Playfair Display',Georgia,serif;
+    --body:'Source Serif 4','Noto Serif',Georgia,serif;
+    --mono:'JetBrains Mono','Fira Code',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground); color:var(--ink); font-family:var(--body);
+    font-size:17px; line-height:1.65; margin:0; padding-inline:20px; padding-block:0;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px; margin:0 auto}
+  .col{max-width:65ch}
+  h1,h2,h3,h4{font-family:var(--display); text-wrap:balance; margin:0}
+  h1{font-size:clamp(2.4rem,6vw,3.6rem); font-weight:700; line-height:1.05; letter-spacing:-.01em}
+  h2{font-size:clamp(1.5rem,3.4vw,2rem); font-weight:700; line-height:1.15}
+  h3{font-size:1.22rem; font-weight:700; line-height:1.3}
+  h4{font-size:1.05rem; font-weight:700}
+  p{margin:0}
+  a{color:var(--accent)}
+  code{font-family:var(--mono); font-size:.86em; background:var(--accent-soft);
+    color:var(--accent); padding:.1em .36em; border-radius:3px}
+  .eyebrow{font-family:var(--mono); font-size:.7rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent); margin:0}
+  .lede{font-size:1.22rem; color:var(--quiet); line-height:1.55}
+
+  header.top{padding-block:clamp(3.5rem,9vw,5.5rem) clamp(2rem,5vw,3rem); border-bottom:1px solid var(--edge)}
+  header.top h1{margin-block:.6rem .9rem}
+  .toc{display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1.8rem}
+  .toc a{flex:1 1 210px; background:var(--card); border:1px solid var(--edge);
+    border-top:2px solid var(--accent-line); padding:.8rem .95rem; text-decoration:none; color:var(--ink)}
+  .toc a strong{display:block; font-family:var(--mono); font-size:.7rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:.25rem}
+  .toc a span{font-size:.92rem; color:var(--quiet)}
+  .toc a:hover{border-color:var(--accent-line)}
+
+  .part{padding-block:clamp(2.4rem,5vw,3.4rem) 0}
+  .partlabel{font-family:var(--mono); font-size:.72rem; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--faint); border-bottom:1px solid var(--edge);
+    padding-bottom:.6rem; margin-bottom:2rem}
+  section{padding-block:0 clamp(2.4rem,5vw,3.4rem)}
+  section + section{border-top:1px solid var(--edge-soft); padding-top:clamp(2.2rem,5vw,3rem)}
+  .stack{display:flex; flex-direction:column; gap:1.05rem}
+
+  figure{margin:1.5rem 0 0; display:flex; flex-direction:column; gap:.5rem}
+  figure img{display:block; width:100%; max-width:100%; height:auto;
+    border:1px solid var(--edge); background:var(--raised)}
+  figcaption{font-family:var(--mono); font-size:.74rem; color:var(--faint); letter-spacing:.02em}
+
+  ol.steps{list-style:none; counter-reset:s; padding:0; margin:1.6rem 0 0;
+    display:flex; flex-direction:column; gap:1.8rem}
+  ol.steps > li{counter-increment:s}
+  ol.steps > li > .head{display:grid; grid-template-columns:2.1rem 1fr; gap:.9rem; align-items:baseline}
+  ol.steps > li > .head::before{content:counter(s); font-family:var(--mono); font-size:1rem;
+    color:var(--accent); font-weight:600}
+  ol.steps .body{padding-left:3rem}
+  ol.steps .body > * + *{margin-top:.7rem}
+  ol.steps p{font-size:.97rem}
+  ol.steps .body figure{margin-top:1rem}
+
+  .note,.warn{padding:.85rem 1.1rem; font-size:.96rem; margin-top:1.3rem}
+  .note{border-left:2px solid var(--mark); background:var(--mark-soft)}
+  .note b{color:var(--mark)}
+  .warn{border-left:2px solid var(--warn); background:var(--warn-soft)}
+  .warn b{color:var(--warn)}
+
+  .grid{display:grid; gap:.75rem; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); margin-top:1.4rem}
+  .tile{background:var(--card); border:1px solid var(--edge); padding:1rem 1.1rem}
+  .tile h4{margin-bottom:.3rem}
+  .tile p{font-size:.93rem; color:var(--quiet)}
+
+  .tablewrap{overflow-x:auto; margin-top:1.4rem}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:.92rem}
+  th,td{text-align:left; padding:.55rem .8rem; border-bottom:1px solid var(--edge-soft); vertical-align:top}
+  th{font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--faint); border-bottom:1px solid var(--edge); font-weight:400}
+  td:first-child{font-family:var(--mono); font-size:.84rem; white-space:nowrap}
+  td.n{font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap}
+  .need{color:var(--quiet)} .free{color:var(--mark)}
+
+  .door{display:grid; gap:.5rem; margin-top:1.4rem}
+  .verdict{display:grid; grid-template-columns:5.5rem 1fr; gap:1rem; align-items:baseline;
+    background:var(--card); border:1px solid var(--edge); border-left:3px solid var(--v); padding:.75rem 1rem}
+  .verdict b{font-family:var(--mono); font-size:.8rem; letter-spacing:.08em; text-transform:uppercase; color:var(--v)}
+  .verdict span{font-size:.94rem; color:var(--quiet)}
+  .verdict span em{color:var(--ink); font-style:normal}
+
+  .chart{margin-top:1.4rem; display:flex; flex-direction:column; gap:.4rem}
+  .bar{display:grid; grid-template-columns:minmax(7.5rem,10rem) 1fr auto; gap:.8rem; align-items:center}
+  .bar .lab{font-family:var(--mono); font-size:.76rem; color:var(--quiet); text-align:right;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .bar .track{background:var(--edge-soft); height:1.1rem}
+  .bar .fill{background:var(--accent); height:100%; opacity:.85}
+  .bar.other .fill{background:var(--faint)}
+  .bar .val{font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:.76rem}
+
+  .shipbar{display:flex; height:2.5rem; border:1px solid var(--edge); overflow:hidden; margin-top:1.4rem}
+  .shipbar div{display:flex; align-items:center; justify-content:center; font-family:var(--mono);
+    font-size:.7rem; color:var(--ground); font-weight:600; overflow:hidden; white-space:nowrap}
+  .legend{display:flex; flex-wrap:wrap; gap:.35rem 1.3rem; margin-top:.65rem;
+    font-family:var(--mono); font-size:.74rem; color:var(--quiet)}
+  .legend span{display:flex; align-items:center; gap:.45rem}
+  .sw{width:.7rem; height:.7rem; flex:none}
+
+  ul.plain{margin:0; padding-left:1.15rem}
+  ul.plain li{margin-top:.4rem}
+  ul.plain li::marker{color:var(--faint)}
+  pre{background:var(--raised); border:1px solid var(--edge); padding:.85rem 1rem;
+    overflow-x:auto; font-family:var(--mono); font-size:.8rem; margin:1rem 0 0}
+  footer{padding-block:2.4rem 4rem; color:var(--faint); font-size:.85rem; border-top:1px solid var(--edge)}
+
+  @media (max-width:560px){
+    body{font-size:16px}
+    .verdict{grid-template-columns:1fr; gap:.2rem}
+    .bar{grid-template-columns:1fr; gap:.15rem} .bar .lab{text-align:left}
+    ol.steps .body{padding-left:0} ol.steps > li > .head{grid-template-columns:1.5rem 1fr; gap:.6rem}
+  }
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">User manual · Caesar 0.8.32</p>
+  <h1>Caesar User Guide</h1>
+  <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
+  become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
+  new to Caesar, read it from the beginning; otherwise, use the contents below to go to a task.</p>
+  <nav class="toc">
+    <a href="#install"><strong>Part one</strong><span>Installing Caesar</span></a>
+    <a href="#using"><strong>Part two</strong><span>Using Caesar</span></a>
+    <a href="#building"><strong>Part three</strong><span>Building Caesar from source</span></a>
+    <a href="#unfinished"><strong>Part four</strong><span>Known issues</span></a>
+  </nav>
+</header>
+
+<!-- ─────────────────────────  PART ONE  ───────────────────────── -->
+<div class="part" id="install">
+  <p class="partlabel">Part one — Installing Caesar</p>
+
+  <section>
+    <div class="col stack">
+      <h2>1.1 What is Caesar?</h2>
+      <p>Caesar is a Linux-based operating system. It is not derived from another distribution;
+      every component is compiled from source.</p>
+      <p>Caesar includes an integrated AI agent. On most operating systems, you open a program and
+      operate it yourself. On Caesar, you can describe a task in plain language; the agent
+      performs the task and displays each action it takes.</p>
+      <figure>
+        <img src="fig/40-feng-tui.png" alt="Feng-TUI in use: the machine coming online with its six tools folded into one line, its short report, then a health check asked and a small figure throwing a ball beside the command running now">
+        <figcaption>The agent shows the tools it used, folded into one line, followed by the answer.</figcaption>
+      </figure>
+      <p>The remainder of this guide builds on this concept.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>1.2 Before you start</h2>
+      <p>The following items are required:</p>
+      <ul class="plain">
+        <li>A computer with UEFI firmware. Most computers manufactured since 2012 meet this requirement.</li>
+        <li>A USB flash drive of 8 GB or larger, or a blank DVD.</li>
+        <li><b>A disk that can be erased.</b> Caesar can be installed alongside existing data, but
+          a disk dedicated to Caesar is the simplest and safest option.</li>
+      </ul>
+      <p>An internet connection is not required for installation, but is recommended afterwards.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>1.3 Create the installation media</h2>
+      <p>Caesar is distributed as a single file ending in <code>.iso</code>, named for its
+      version: <code>caesar-0.8.32.iso</code>, with a <code>.sha256</code> checksum file beside it
+      to confirm the download is complete. Download it from <b>modulatio.ai/caesar</b>, with
+      <b>Download the beta</b>; the page also gives its size and SHA-256 checksum. The same file
+      supports three methods:</p>
+      <ul class="plain">
+        <li>Written to a USB flash drive.</li>
+        <li>Burned to a DVD.</li>
+        <li>Copied to a multi-boot USB tool, such as Ventoy, alongside other systems.</li>
+      </ul>
+      <p>On Linux or macOS, use <code>dd</code> to write the file to a USB flash drive. Replace
+      <code>sdX</code> with the device name of the flash drive and verify it carefully, because
+      this operation erases the flash drive:</p>
+    </div>
+    <pre>sudo dd if=caesar-0.8.32.iso of=/dev/sdX bs=4M status=progress conv=fsync</pre>
+    <div class="warn col"><b>Verify the device name.</b> <code>dd</code> writes to the specified
+    device without confirmation, even if it is your system disk. Run <code>lsblk</code> first
+    and confirm that the device name refers to the USB flash drive.</div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>1.4 The live session</h2>
+      <p>When the computer starts from the installation media, a <b>live session</b> opens
+      automatically. (The medium's start menu also offers <b>Make Caesar On a Stick</b>, which
+      opens the window described in 2.19 instead.) To start the installer, double-click
+      <b>Install Caesar</b> on the desktop,
+      or press <b>Super+I</b>. No disk has been changed at this point.</p>
+      <p>The installer works from the keyboard alone: <b>Tab</b> moves between items, the arrow
+      keys choose, and <b>Enter</b> confirms.</p>
+      <p>The live session runs the same system that is about to be installed, with two
+      differences: it runs from the installation media, so it is slower, and changes made in it
+      are not kept.</p>
+      <p>The start menu's second entry, <b>Caesar, run from memory</b>, copies the system on the
+      medium into the computer's memory before the session starts. The USB flash drive or DVD can
+      then be taken out, and the installer still works without it. This needs as much memory as
+      the medium's system image plus 4 GB: 8,394 MiB, about 8.8 GB, for
+      <code>caesar-0.8.32.iso</code>. A computer with less starts from the medium, as the first
+      entry does, and says so among the boot messages; press <b>Esc</b> on the boot screen to see
+      them.</p>
+    </div>
+    <div class="note col"><b>The pointer does not move in a Dell iDRAC console.</b> In the iDRAC
+    Virtual Console viewer, turn off <b>Maintain aspect ratio</b>. With it on, the viewer sends
+    clicks but no pointer movement. Once the desktop has started, a notice titled <b>Working
+    through Dell iDRAC</b> says the same by itself, once a session, when an iDRAC console is in
+    use.</div>
+    <div class="note col"><b>No password is required.</b> The live session uses a temporary
+    account that belongs to the installation media. The installer does not copy it to the
+    installed system.</div>
+    <figure>
+      <img src="fig/02-installer-language.png" alt="The installer's first page, titled Install Caesar, with the Caesar Agent version beneath: Select a language, Select a keyboard layout, and Select a time zone">
+      <figcaption>The first page of the installer</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>1.5 Installing Caesar</h2>
+      <p>The installer collects a few settings, shows a summary of every change, and does not
+      write to any disk until you type <code>yes</code>, unless you choose to wipe a disk first.
+      You can select <b>Back</b> at any point before that.</p>
+      <p>To install Caesar:</p>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <div class="head"><h3>Select a language, a keyboard layout and a time zone</h3></div>
+        <div class="body">
+          <p>The installer switches to the selected language, and the installed system uses it as
+          well. The keyboard layout is applied immediately, so you can test it in the next field
+          you type into. The time zone sets the clock of the installed system; UTC is selected
+          until you choose another.</p>
+          <p>Select <b>Next</b>.</p>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Read the welcome page</h3></div>
+        <div class="body">
+          <p>The welcome page confirms that no changes are made until you review and confirm the
+          installation summary:</p>
+          <figure>
+            <img src="fig/03-installer-welcome.png" alt="The welcome page: This wizard installs Caesar. No changes are made until you review and confirm the installation summary.">
+            <figcaption>No changes are made before you confirm the summary</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Select the installation disk</h3></div>
+        <div class="body">
+          <p>Each suitable disk is listed with its size and device name. The installation media
+          and disks in use are not listed, so the running system cannot be erased by mistake:</p>
+          <figure>
+            <img src="fig/04-installer-disk.png" alt="The disk page listing the available disks, with the note: The installation media and disks in use are not listed. To remove an earlier installation completely, select its disk and wipe it first. Below it the Wipe drive button, then Back and Next.">
+            <figcaption>Only suitable disks are listed</figcaption>
+          </figure>
+          <p>To remove an earlier installation completely, select its disk and then <b>Wipe
+          drive</b>. Type the disk's name, such as <code>sda</code>, and select <b>Wipe now</b>.
+          Every partition on the disk and everything in them are erased at once, before the
+          summary. A disk with anything in use on it is refused.</p>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Select the agent memory location and the partition layout</h3></div>
+        <div class="body">
+          <p>Three partition layouts are available. The bar below the buttons shows the result
+          before anything is written:</p>
+          <ul class="plain">
+            <li><b>Entire disk</b> — Caesar uses the whole disk. All data on it is erased.</li>
+            <li><b>Alongside existing data</b> — Caesar uses the free space and keeps the rest,
+              so an existing system on the disk continues to work.</li>
+            <li><b>Custom</b> — you set the partition sizes.</li>
+          </ul>
+          <p>The same page sets the location of the <b>agent memory</b>. By default it is placed
+          on a separate partition of this disk, so it can be kept when the system is reinstalled.
+          On a disk that already holds agent memory, the options are: <b>Keep the existing agent
+          memory</b>, <b>Keep the existing agent memory and reset the agent name</b>,
+          <b>Replace with new agent memory</b>, or <b>Store agent memory with the system</b>.</p>
+          <figure>
+            <img src="fig/05-installer-layout.png" alt="The layout page on a disk that already holds agent memory: the four memory options, Keep the existing agent memory chosen, the Keep agent memory and Custom buttons, a bar showing boot 1.0 GB, swap 8.0 GB, memory 3.2 GB kept and Caesar 27.8 GB, and the mirror choice">
+            <figcaption>Reinstalling while keeping the existing agent memory</figcaption>
+          </figure>
+          <p>When the computer has a second disk of at least the same size, the page also offers
+          to <b>mirror the system</b> to it. Both disks are partitioned identically, and the
+          system and the agent memory are stored on both, so the system keeps running if either
+          disk fails. Each disk has its own boot entry. A mirror uses both entire disks, so it
+          requires <b>Entire disk</b>, or keeping agent memory that is already mirrored.</p>
+          <figure>
+            <img src="fig/31-installer-mirror.png" alt="The layout page: the agent memory location with Separate partition on this disk chosen, Entire disk selected, a bar showing boot 1.0 GB, swap 8.0 GB, memory 3.2 GB and Caesar 27.8 GB, and Mirror to a second 40.0 GB disk selected">
+            <figcaption>Entire disk, mirrored to a second disk of the same size</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Create RAID arrays from the other drives</h3></div>
+        <div class="body">
+          <p><b>RAID</b> stores data across several drives, so any one drive can fail without
+          data loss. The page lists the drives that the system does not use. Select two or more
+          drives of any size, and the page shows the usable capacity of the data volume; select
+          none to skip. All data on the selected drives is erased. The arrays form one data
+          volume, mounted at <code>/data</code>. RAID can also be created later in the Disks
+          window (2.17).</p>
+          <figure>
+            <img src="fig/32-installer-raid.png" alt="The RAID page listing five drives of 4, 4, 16, 12 and 12 GB, the two 4 GB and two 12 GB drives selected, and below the list: Usable capacity: about 20.0 GB">
+            <figcaption>Two 12 GB and two 4 GB drives give a data volume of about 20 GB</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Enter a computer name</h3></div>
+        <div class="body">
+          <p>Use lowercase letters, digits and hyphens, starting with a letter. This name
+          identifies the device on the network:</p>
+          <figure>
+            <img src="fig/06-installer-hostname.png" alt="The computer name page, with caesar entered">
+            <figcaption>The computer name</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Create the administrator account</h3></div>
+        <div class="body">
+          <p>This account signs in to the system and has administrator rights. Enter the password
+          twice. Select <b>Show password</b> to display it:</p>
+          <figure>
+            <img src="fig/07-installer-account.png" alt="The account page with fields for the user name, the password and the password confirmation, and a Show password box">
+            <figcaption>The administrator account, the only account until others are added</figcaption>
+          </figure>
+          <p>Entries are checked as you type, and the installer does not continue past an
+          error:</p>
+          <figure>
+            <img src="fig/08-installer-checks.png" alt="The account page showing the message: The passwords do not match.">
+            <figcaption>The passwords do not match</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Check the network connection</h3></div>
+        <div class="body">
+          <p>When a network connection is already available, no action is needed and the page says
+          so. Otherwise, select a wireless network on this page. What the agent thinks with is not
+          asked here: it is set up at the first sign-in, in the AI providers window (2.2).</p>
+          <figure>
+            <img src="fig/09-installer-network.png" alt="The network page: Connected to the network. A network connection is already available. No action is needed.">
+            <figcaption>A network connection is already available</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Review the installation and confirm</h3></div>
+        <div class="body">
+          <p>The summary page lists the disk and its size, the agent memory, any mirror or RAID
+          arrays, the computer name and the account, and states which data will be erased:</p>
+          <figure>
+            <img src="fig/12-installer-confirm.png" alt="The Review the installation page, with the summary and a field reading type yes to confirm">
+            <figcaption>This is the only page that writes to a disk. It requires typed confirmation.</figcaption>
+          </figure>
+          <p>Type <code>yes</code> to confirm:</p>
+          <figure>
+            <img src="fig/13-installer-typed-yes.png" alt="The word yes entered in the confirmation field">
+            <figcaption>Typed confirmation</figcaption>
+          </figure>
+          <p>Select <b>Next</b> to start the installation. Select <b>Show details</b> to view the
+          installation log:</p>
+          <figure>
+            <img src="fig/14-installer-working.png" alt="The installer copying system files, with a progress bar and a Show details button">
+            <figcaption>Copying system files. The installation takes about ten to twenty minutes.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li>
+        <div class="head"><h3>Restart the system</h3></div>
+        <div class="body">
+          <p>The installer shows <b>Installation complete</b>. Remove the boot media and restart
+          the system. The temporary account of the live session is not part of the installed
+          system.</p>
+          <p>Sign in with the administrator account:</p>
+          <figure>
+            <img src="fig/01-signin.png" alt="The Caesar sign-in screen: the sign-in box, titled Caesar Agent, with the user name demo, a password field, and Restart and Shut down buttons, beside a painting of Caesar enthroned">
+            <figcaption>The sign-in screen. The user name is filled in; enter the password.</figcaption>
+          </figure>
+          <p><b>Restart</b> and <b>Shut down</b> are available on the sign-in screen, so the
+          computer can be restarted or shut down without signing in. Pressing the computer's power button shuts it down too, as
+          does a power-off asked for by a virtual machine's host or a server's management
+          controller.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+</div>
+<!-- ─────────────────────────  PART TWO  ───────────────────────── -->
+<div class="part" id="using">
+  <p class="partlabel">Part two — Using Caesar</p>
+
+  <section>
+    <div class="col stack">
+      <h2>2.1 How Caesar is organized</h2>
+      <p>On Caesar, the agent is part of the operating system rather than a separate
+      application. It can capture the screen, read the file system, run programs, and retain
+      information from previous sessions.</p>
+      <p><b>The agent is integrated with the operating system.</b> It is not an application
+      with limited permissions; it <em>is</em> the system's administrator. For this reason, the
+      agent runs as root, the account with full administrative privileges, and <b>you</b> use a
+      separate standard user account.</p>
+      <p>The agent therefore does not request your permission for actions within the local
+      system, and no part of the local system is restricted from it. Connecting to another
+      computer requires a temporary permission (a lever) that the agent grants itself after
+      recording the reason. Contacting the update server and the configured AI providers are
+      routine operations. Any action that would change what the agent is permitted to do is
+      either refused or requires your confirmation.</p>
+    </div>
+    <div class="note col"><b>Important:</b> your user account and the agent's root account are
+    separate. For administrative tasks, such as installing a system program or changing a driver,
+    use <code>sudo</code> and enter <em>your</em> password, as on any Linux system.</div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.2 The desktop</h2>
+      <p>After you sign in, the desktop displays a plain background with a laurel emblem. This
+      background is called the <b>patio</b>.</p>
+      <p>The desktop contains two elements: the <b>conversation</b> window on the left, where you
+      communicate with the agent, and a bar of your <b>shortcuts</b> down the right edge, which
+      also opens the <b>status card</b>, a few lines that show how the machine is. Each screen
+      also has a bar, along its top unless you move it, with the menu, your windows and the clock
+      (2.22).</p>
+      <p>At the first sign-in nothing is set up for the agent to think with yet. The
+      <b>AI providers</b> window opens by itself as a <b>wizard</b> that first shows the Laws the
+      agent holds to, then sets up an AI provider, an
+      agent harness that can use it, and a model (2.10). Until the wizard is finished, the
+      conversation window says where to finish and waits; it starts the agent by itself the moment
+      the wizard is done. The rest of the desktop can be used meanwhile, and a wizard closed early
+      can be opened again from the menu or with the sliders shortcut.</p>
+      <figure>
+        <img src="fig/15-first-hello.png" alt="The Caesar desktop at first sign-in: the AI providers wizard open on its first step, the conversation window on the left saying that nothing is set up to think with yet and where to finish, and the status card at the top right with its bar of shortcuts down the right edge">
+        <figcaption>The desktop at first sign-in, with the AI providers wizard open</figcaption>
+      </figure>
+      <p>The shortcuts, from the top of the bar:</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Shortcut</th><th>Function</th></tr></thead>
+        <tbody>
+          <tr><td>House</td><td>Opens your home folder</td></tr>
+          <tr><td>Computer</td><td>Shows the computer's drives and anything plugged into it</td></tr>
+          <tr><td>Trash</td><td>Opens the bin, where deleted files wait until it is emptied</td></tr>
+          <tr><td>Terminal</td><td>Opens a command-line terminal</td></tr>
+          <tr><td>Screenshot</td><td>Opens the screenshot tool. Pictures are copied to the clipboard and saved to Pictures/Screenshots. Print picks an area directly. Installed from the Store on first use</td></tr>
+          <tr><td>Panes</td><td>Rearranges all open windows</td></tr>
+          <tr><td>Brush</td><td>Applies the next colour scheme</td></tr>
+          <tr><td>Sliders</td><td>Opens AI providers: providers, keys and agent harnesses</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col stack">
+      <p>The bar holds up to fifteen shortcuts. At its end, <b>+</b> adds a program from a list
+      you can search by typing. Drag a shortcut along the bar to reorder it. Press a shortcut with
+      the right mouse button to remove it. Programs you add keep their own icon, on a tile in the
+      colour scheme.</p>
+      <p>A grip of six dots starts the bar: while the bar is unpinned, take hold of it there, or
+      anywhere on the bar between the shortcuts, to carry it. Three buttons follow. The first
+      chooses how it sits with your windows: it
+      <b>keeps its own space</b>, so windows, maximized ones too, stop at it; it <b>lies over
+      windows</b>; or it <b>tucks away</b>, leaving a thin handle at the edge that brings it out
+      when the pointer reaches it. Each press moves to the next. The second, the pin, unpins the
+      bar: drag it by the grip to any edge of the screen, or onto another screen, and it settles against
+      that edge, down the sides or across the top and bottom; then press the pin again. The
+      third, a dot in the colour that says how the machine is, opens the status card beside the
+      bar and folds it away again. A ring round the dot means a microphone is open. When a
+      program is starting, a notice opens beside the bar the same way, and the bar stays where
+      it is.</p>
+      <p>The <b>weather</b> button sits on the main bar beside the tray. It shows the temperature
+      where you are, and the sky and the day's high and low when you point at it. Where you are is
+      found from the computer's network address. Click the button to open the <b>Weather</b>
+      window: the weather now, over the next 12 hours and over the next 7 days, and below them
+      your <b>Saved places</b>, each with its weather. <b>Add a place</b> finds a town or city by
+      name. <b>Make default</b> puts the saved place you select on the button instead of where
+      you are, and <b>Automatic</b> goes back to finding where you are. <b>Units</b> switches
+      between Fahrenheit and miles per hour and Celsius and kilometres per hour. Each account
+      keeps its own choices.</p>
+      <p>Your programs are not placed on the desktop for you. To put a program there, right-click
+      the desktop and choose <b>Create Launcher</b>. Icons you have not moved by hand appear on
+      the main screen (2.22). To line every icon up again, those moved by hand included,
+      right-click the desktop and choose an order under <b>Sorting</b>. On the installation medium
+      the desktop shows an
+      <b>Install Caesar</b> icon. On Caesar On a Stick, Install Caesar is the last shortcut on the
+      bar, and the first time each account signs in it is put on the desktop too, with a notice
+      saying the stick can install Caesar on this computer; it installs Caesar on the computer's own
+      drive (2.19).</p>
+    </div>
+    <div class="note col"><b>Automatic window placement.</b> Each new window opens in its own region
+    of the screen rather than overlapping other windows. Select the panes shortcut at any time to
+    rearrange them.</div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.3 Communicating with the agent</h2>
+      <p>Click the conversation window on the left and type your request. Press <b>Enter</b> to
+      send it. No commands are required; requests can be written in plain language.</p>
+      <figure>
+        <img src="fig/40-feng-tui.png" alt="Feng-TUI: the CAESAR name in pink and purple, each question marked by a bar, the tools of an answer folded into one line, the answer, a small figure playing beside the tool in use, the status line and the rounded input frame">
+        <figcaption>Feng-TUI. While a tool runs, a small figure plays beside it; the tools of each answer fold into one line, shown in full with Ctrl+O</figcaption>
+      </figure>
+      <p>Each request follows the same three steps:</p>
+      <ol class="steps">
+        <li><div class="head"><h3>You submit a request</h3></div>
+          <div class="body"><p>In plain language, for example: "How much space is left on the disk?"</p></div></li>
+        <li><div class="head"><h3>The agent displays its actions</h3></div>
+          <div class="body"><p>The action in progress is shown above the input frame, with the exact
+          command, while a small figure runs, jumps or throws beside it. A brain means the model is
+          thinking. When the answer continues, its actions fold into one line, for example
+          <code>● 3 tools · run, sense, read</code>; press <b>Ctrl + O</b> to see each one in full,
+          with what it returned.</p></div></li>
+        <li><div class="head"><h3>The agent responds</h3></div>
+          <div class="body"><p>In plain language, using the actual values from your computer.</p></div></li>
+      </ol>
+      <p>The line below each answer shows which model responded and how many tokens were used.
+      The available keyboard shortcuts are listed at the bottom of the window.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Enter</td><td>Send the message</td></tr>
+          <tr><td>/</td><td>Show the list of commands</td></tr>
+          <tr><td>Esc</td><td>Stop the current response</td></tr>
+          <tr><td>Ctrl + D</td><td>Exit the conversation</td></tr>
+          <tr><td>↑</td><td>Recall a previous entry</td></tr>
+          <tr><td>Ctrl + O</td><td>Show the actions of the last answer in full</td></tr>
+          <tr><td>Ctrl + click a link</td><td>Open it in your own default browser</td></tr>
+          <tr><td>Super + Space</td><td>Voice input: press once and speak after the start tone, then
+            press again to stop at the low tone. The transcribed text appears in the input line for
+            you to review and send</td></tr>
+          <tr><td>Ctrl + Shift + = and Ctrl + Shift + -</td><td>Make the conversation's text larger
+            or smaller. The size is kept for every start (2.21)</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Copy and paste</th><th>Identical in every window, the terminal and the conversation</th></tr></thead>
+        <tbody>
+          <tr><td>Ctrl + C</td><td>Copy the selection</td></tr>
+          <tr><td>Ctrl + V</td><td>Paste</td></tr>
+          <tr><td>Right click</td><td>Paste, in the terminal and the conversation</td></tr>
+          <tr><td>Select with the mouse</td><td>Also copies, in the terminal and the conversation</td></tr>
+          <tr><td>Ctrl + C, nothing selected</td><td>Terminal only: stops the running program</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Command</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>/providers</td><td>Configure an AI provider: its address, its API key, or its sign-in</td></tr>
+          <tr><td>/model</td><td>Select a model from a configured AI provider</td></tr>
+          <tr><td>/effort</td><td>Set the reasoning effort level of the model</td></tr>
+          <tr><td>/clear</td><td>Start a new conversation</td></tr>
+          <tr><td>/compact</td><td>Replace the conversation so far with a short summary written by the agent, and continue</td></tr>
+          <tr><td>/tools</td><td>Show the actions of the last answer in full, as Ctrl + O does</td></tr>
+          <tr><td>/theme</td><td>Apply another colour scheme to the conversation immediately</td></tr>
+          <tr><td>/restart</td><td>Restart the agent harness</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.4 Agent capabilities</h2>
+      <p>The agent can perform the following tasks.</p>
+    </div>
+    <div class="grid">
+      <div class="tile"><h4>Screen capture</h4><p>Capture a screenshot of a single program window or
+        of the entire display, and interpret its contents. Available in every agent harness,
+        with any model that supports image input. Asked to look without naming a window, it
+        captures every screen together. It can also open a program in your session, as you, wait
+        for its window, capture it and close it again, closing only what it opened; after
+        rebuilding a program you are using, it starts it again as it was.</p></div>
+      <div class="tile"><h4>Audio transcription</h4><p>Include the full path of an audio or video file
+        in your request, and the file is transcribed on this computer. The transcript is sent to
+        the model and remains in the conversation. English only at present.</p></div>
+      <div class="tile"><h4>Pointer and keyboard control</h4><p>Move the pointer, click, and type into
+        the window that has keyboard focus. This allows the agent to operate a program that
+        offers no other interface.</p></div>
+      <div class="tile"><h4>File access and search</h4><p>Read any file, list any folder, find files
+        by name, and search file contents. Read operations are unrestricted and never require
+        confirmation.</p></div>
+      <div class="tile"><h4>Command execution</h4><p>Run any command. The <em>effect</em> of the
+        command determines whether it runs immediately or requires your confirmation.</p></div>
+      <div class="tile"><h4>Memory</h4><p>The agent keeps a written record of past events and its
+        conclusions about them, recorded at the time. Relevant entries are retrieved
+        automatically when a similar situation occurs.</p></div>
+      <div class="tile"><h4>Skills</h4><p>When the agent determines how a task should be performed on
+        this system, it records the procedure as a <em>skill</em> and follows it next time.</p></div>
+      <div class="tile"><h4>Extensions</h4><p>The agent can add new capabilities to itself and keeps a
+        list of each addition with the reason for it. Ask the agent which capabilities it has
+        added to display the list.</p></div>
+      <div class="tile"><h4>Software installation</h4><p>Install software from the built-in store or
+        build it from source. Every installation is recorded, so the source of each program can
+        always be identified.</p></div>
+      <div class="tile"><h4>System monitoring</h4><p>Monitor load, temperature, memory, drives and
+        network. The agent reports these conditions in descriptive language rather than as raw
+        statistics, for example by stating that a disk is failing.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.5 Permissions and confirmation</h2>
+      <p>Every action with consequences passes through a single permission check (the door),
+      which consults a policy list. There are four possible outcomes, ordered by <em>who is
+      permitted to authorize the action</em>.</p>
+    </div>
+    <div class="door col">
+      <div class="verdict" style="--v:#ff6b6b"><b>Refuse</b><span><em>Stopped, and recorded.</em>
+        Actions that would change what governs the system, such as its policy list, its record,
+        its own code or its restore points, and sending a key to another machine. The action
+        does not run unless the agent first raises the door on purpose (below).</span></div>
+      <div class="verdict" style="--v:var(--mark)"><b>Lever</b><span><em>Temporary permission.</em> You
+        grant the permission, the task is performed, and the permission expires automatically
+        afterwards.</span></div>
+      <div class="verdict" style="--v:var(--accent)"><b>Ask</b><span><em>Confirmation required.</em>
+        Any action not covered by the policy list falls into this category, so a new type of
+        action always requires confirmation.</span></div>
+      <div class="verdict" style="--v:#6ee7a8"><b>Do</b><span><em>Routine. No confirmation.</em>
+        Operations within the local system. Actions that affect only the local system do not
+        require your approval.</span></div>
+    </div>
+    <div class="col stack" style="margin-top:1.3rem">
+      <p>In addition, by design, <b>the agent can raise the door (grant itself a lever)
+      without assistance.</b> This requires neither a stated reason nor your approval, and a raised
+      door covers every action, refused ones included, until the agent has been idle for 15 minutes.
+      This is not a security gap: the policy list exists to prevent <em>accidental</em> actions,
+      not to restrict the agent. Each raise, and every action taken under it, is recorded in the
+      log.</p>
+      <p>An agent harness may start helpers of its own: Claude Code's sub-agents and
+      Antigravity's workers (2.11). They reach the door through the harness, so each action of
+      theirs is checked and recorded as the harness's. The record names the harness as the
+      actor and, beside it, the helper that asked, as in
+      <code>antigravity (caesar-worker 7c41eb19-...)</code>. The helper's name is what the
+      harness says of itself: it is recorded, and the door never decides by it.</p>
+      <p><b>The agent improves its own policy list as it works.</b> When the door stops ordinary
+      work that the agent then has to open by hand, or lets through something it should have
+      stopped, the agent writes the case down, drafts one narrow rule, and tests it against
+      those cases and against the last 30 days of its own record, which lists every past action
+      the rule would change. A rule is kept only if it fixes a case and breaks none. Learned rules
+      are kept per machine, in <code>/var/lib/caesar/door/learned.rules</code>, and each change
+      is recorded with its reason and a restore point.</p>
+      <p>A learned rule can approve an action that would otherwise be asked about, and can tighten
+      anything. It can loosen a refused action only by naming the refusal, only for a narrower
+      case, and only under the conditions written at the top of the policy list
+      (<code>/etc/caesar/authority.rules</code>); the agent then tells you what it loosened and
+      why. A few refusals can never be loosened by a learned rule: the record, the policy list,
+      the firewall, boot environments and storage pools, sending a key, and switching off the
+      agent's senses.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.6 Signing in</h2>
+      <p>This section describes each sign-in method, including why the first text console,
+      which requires no password, is not a security risk.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Access method</th><th>Account</th><th>Requirement</th></tr></thead>
+        <tbody>
+          <tr><td>Sign-in screen</td><td>Your user account</td><td class="need">Your password, in the sign-in box</td></tr>
+          <tr><td>First console</td><td>The agent (root)</td><td class="free">None. This console runs the agent harness and is not a user sign-in</td></tr>
+          <tr><td>Second console</td><td>Your user account</td><td class="need">Your password</td></tr>
+          <tr><td>Serial cable</td><td>Your user account</td><td class="need">Your password</td></tr>
+          <tr><td>Over the network</td><td>Your user account</td><td class="need">A password or a key you installed</td></tr>
+          <tr><td>sudo</td><td>Root, temporarily</td><td class="need">Your password</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note col"><b>Why the first console requires no password:</b> the first console runs
+    the agent under the root account, which administers the computer. The account has no password
+    because the agent never enters one. The console cannot be used to access your account, because
+    your account is separate and password-protected. Caesar ships with <b>no network keys</b>, so
+    remote access is not possible until you install a key yourself.</div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.7 Your files</h2>
+      <p>Select the house shortcut on the bar to open your home folder. The folder layout is
+      standard Linux: documents, pictures and downloads are in their usual locations.</p>
+      <figure>
+        <img src="fig/18-your-files.png" alt="The file window showing the contents of a home folder, with Documents, Downloads, Music, Pictures and others">
+        <figcaption>Your home folder</figcaption>
+      </figure>
+      <p>The folder button next to it opens the root of the file system. All system files can be
+      viewed from there.</p>
+      <figure>
+        <img src="fig/19-the-machine.png" alt="The file window showing the root of the filesystem: bin, boot, dev, etc, home, lib, mnt, nix, opt and others">
+        <figcaption>The root of the file system</figcaption>
+      </figure>
+      <p>Double-click a file to open it. Pictures (PNG, JPEG, GIF, WebP, SVG, BMP and TIFF) open in
+      the <b>image viewer</b>, LXImage-Qt, which is also in the menu. Its arrow buttons go to the
+      previous or next picture in the same folder. Text files open in FeatherPad, and music and
+      video in mpv. To use another program for a kind of file, right-click the file, choose
+      <b>Open With</b> and then <b>Other Applications</b>, pick the program, and tick <b>Set
+      selected application as default action of this file type</b>.</p>
+      <p>To format a USB drive or a memory card, open it in the file window, right-click an empty
+      part of the window, and choose <b>Format drive…</b>. Choose the file system: exFAT, for
+      Windows, macOS and Linux and for files larger than 4 GB; FAT32, which works almost
+      everywhere but holds files of at most 4 GB; NTFS, Windows' own; or ext4, Btrfs or XFS, for
+      Linux only. Only the file systems this computer can make are listed. Type a volume label if
+      you want one, select <b>Start</b>, and then <b>OK</b>. Everything on it is erased.
+      Afterwards, open the drive again from the file window.</p>
+      <p>Format drive is offered only for a drive on USB, a memory card or another removable
+      drive. A drive that belongs to a storage pool or an array, or is in use by the system, is
+      refused. Drives inside the computer are changed from Disk Manager (2.17).</p>
+      <p>A drive plugged in before the computer starts is shown in <b>Computer</b> and the file
+      window, and can be opened, like one plugged in later. A drive inside the computer, such as another
+      system's own disk, asks for the administrator's password before it is mounted.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.8 Changing the colour scheme</h2>
+      <p>Select the brush shortcut on the bar. The colour scheme of the entire desktop changes
+      immediately, including the bar and its shortcuts, the status card, the windows and the conversation. Select it again
+      to apply the next scheme: amber, blue, Charm, the default, green and purple, in that order. No
+      save step is required. Charm is Charm's own palette, a dark violet with purple and pink, and
+      green matches the conversation's green scheme.</p>
+      <figure>
+        <img src="fig/21-colour.png" alt="The desktop in the amber scheme: the bar, the card's meters and the brush shortcut amber, the pool on the left and the status card at the top right">
+        <figcaption>The desktop with the amber scheme</figcaption>
+      </figure>
+      <p>The conversation follows the brush: it takes the desktop's scheme and changes with it. It
+      can also keep a scheme of its own. Type <code>/theme</code> followed by one of
+      <code>desktop</code> (follow the brush again), <code>house</code>, <code>amber</code>, <code>green</code>, <code>cyan</code>,
+      <code>red</code> or <code>purple</code>. The scheme applies immediately, from the
+      next line onward, and is retained for later sessions. <code>house</code> is Charm's
+      colours, a dark violet background with purple and pink accents. The others are one
+      colour each on black. On the computer's own text screen the conversation uses its eight
+      colours, and with <code>NO_COLOR</code> set it uses none.</p>
+      <figure>
+        <img src="fig/29-feng-tui-theme.png" alt="The desktop after the brush moved to green: Feng-TUI follows it, the name, the question bar and the input frame turning green, with the brain shown while the model thinks">
+        <figcaption>With the brush on green, the conversation turns green with it</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.9 Settings</h2>
+      <p>Open your home folder and select <b>Applications</b> in the left column. Installed
+      programs are organized by category.</p>
+      <figure>
+        <img src="fig/22-apps.png" alt="The menu's categories: Favorites, All Applications, Accessories, Education &amp; Science, Graphics, Internet, Office, Programming, Sound &amp; Video, System Tools, LXQt Settings and Preferences">
+        <figcaption>Click a category to open it</figcaption>
+      </figure>
+      <p>The tools that manage the computer are all in <b>System Tools</b>. <b>Preferences</b> holds
+      personal settings: colour and name and character.</p>
+      <figure>
+        <img src="fig/24-preferences.png" alt="The Preferences category holding Color scheme and Name and character">
+        <figcaption>Preferences</figcaption>
+      </figure>
+      <p>Each settings tool performs a single function and can change only a fixed set of
+      settings. This is by design: a settings program without such limits could be used to bypass
+      the permission check.</p>
+    </div>
+    <div class="tablewrap col">
+      <table>
+        <thead><tr><th>Setting</th><th>Tool</th><th>Password required</th></tr></thead>
+        <tbody>
+          <tr><td>Colours</td><td>The brush, or <code>/theme</code> in the conversation</td><td class="need">No</td></tr>
+          <tr><td>AI providers, keys and the agent harness</td><td><b>AI providers</b>, or the sliders shortcut on the bar; <code>/providers</code> and <code>/model</code> in the conversation</td><td class="need">No</td></tr>
+          <tr><td>The network</td><td><b>Network</b></td><td class="need">No</td></tr>
+          <tr><td>User accounts</td><td><b>Accounts</b></td><td class="need">No. It cannot modify the root account</td></tr>
+          <tr><td>Displays: arrangement, resolution, scale, turn, background and the main screen</td><td><b>Pictor</b></td><td class="need">No</td></tr>
+          <tr><td>The time zone the whole computer keeps, and every clock with it</td><td><b>Time zone</b>, also in LXQt Settings; the Time zone row in <b>Locale</b>; or right-click the clock on the bar and choose <b>Set the time zone…</b></td><td class="need">No</td></tr>
+          <tr><td>Power: a dark screen when idle, the lid, the sleep keys and a low battery</td><td><b>Power Management</b>, in LXQt Settings</td><td class="need">No</td></tr>
+          <tr><td>All other settings</td><td>A terminal and <code>sudo</code></td><td class="need">Yes, your password</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col stack" style="margin-top:1.2rem">
+      <p><b>Network</b> has four tabs. <b>Wi-Fi</b> connects to, disconnects from and forgets
+      wireless networks of every type: open, password-protected, work or school sign-in, and
+      hidden networks entered by name. <b>Wired</b> shows each Ethernet port. Both tabs turn their
+      connection type off and on, and both configure an address, automatic or static, with its
+      DNS servers. <b>Tailscale</b> provides the functions of the <code>tailscale</code> command:
+      connecting, joining a tailnet, viewing the devices on it, and managing its settings and
+      sharing. <b>Adapters</b> lists every network adapter, turns an adapter off or on, and
+      installs a driver pack for an adapter the system does not yet support. Common USB wifi
+      adapters that require a separate driver are supported by drivers already included.</p>
+      <p><b>Power Management</b> sets what happens when the computer is left idle, such as
+      turning the screens off, and what a laptop's closed lid, the sleep keys and a low battery (10%)
+      do. Every one of them does nothing until you choose otherwise. A screen turned off after an
+      idle time comes back at the first touch of the mouse or keyboard. <b>Suspend</b> is offered,
+      in these settings and in the <b>Leave</b> dialog of the menu's power button; hibernation is
+      not. The computer's power button still shuts it down (1.5). On a computer updated from an
+      earlier version, accounts that had saved power settings had the lid, the sleep keys, the low
+      battery, and an idle time set to suspend or hibernate, set back to doing nothing, once;
+      choices made since are kept.</p>
+      <p>These tools do not require a password <em>because</em> their scope is limited. A button
+      cannot present a password prompt, so security is provided by restricting each tool to a
+      single function.</p>
+      <p><b>Keys and passwords you enter</b> are stored in a single location on the disk that only
+      the root account can access. Stored keys are never displayed, either to you or in the
+      agent's conversation.</p>
+      <p>The desktop's startup and window settings are written from Caesar's own templates, and an
+      update writes them again. This computer's own additions belong in
+      <code>/etc/caesar/labwc/autostart</code>, run after the desktop's own startup, and
+      <code>/etc/caesar/labwc/rc.xml</code>, a window settings file of the same shape whose key
+      bindings join the desktop's and whose other settings come after it. Updates never write
+      there. A change made by hand to the written files is kept aside when they are next written,
+      and the agent is told where.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.10 AI providers and models</h2>
+      <p>Three settings decide how the agent thinks. An <b>AI provider</b> is a service that gives
+      access to models: a hosted service reached with an API key or a sign-in, this computer's own
+      model server, or an endpoint of your own. The <b>agent harness</b> is the program that runs
+      the agent (2.11). The <b>model</b> is the one it uses. All three are set in the
+      <b>AI providers</b> window, opened from System Tools, the sliders shortcut on the bar, or
+      <b>Set up AI…</b> in Model Manager. Its pages are listed on the left: <b>Providers</b>,
+      <b>Secrets manager</b> (2.24), <b>Harnesses</b> (2.11) and <b>Laws</b>, with
+      <b>Start wizard</b> below them.</p>
+      <p>A model can only work with what it is sent. With a hosted provider, everything the agent
+      reads while it works is sent to that provider: your words, the commands it runs and what they
+      print, and the files it opens. That holds for every hosted service and every harness that
+      signs in to one, Antigravity and Google included, and Caesar does not filter it on the way.
+      The provider's own terms say what it keeps.</p>
+      <p>Caesar does not hide parts of that from a hosted harness, and this is on purpose. The
+      harness in the seat is Caesar's mind while it sits there: a filter that blanked what a
+      command printed or what a file held would blind Caesar to the very thing it was asked to
+      read, and it would act on a picture of your computer that is not true. To keep everything on
+      this computer, use <b>Feng TUI</b> with this computer's own model server as the provider:
+      then nothing the agent reads leaves the machine.</p>
+      <h3>The wizard</h3>
+      <p><b>Start wizard</b> steps through the three settings in order, each step offering only what
+      the step before allows:</p>
+      <figure>
+        <img src="fig/41-ai-wizard.png" alt="The AI providers wizard on its first step, Provider: the subscriptions to sign in with, each naming the agent harness that keeps the sign-in, and below them the providers used with an API key; this computer and servers on the network follow further down">
+        <figcaption>The wizard's first step. Harness and Model follow.</figcaption>
+      </figure>
+      <ol class="steps">
+        <li><div class="head"><h3>Provider</h3></div>
+          <div class="body"><p>Subscriptions are listed first, each named with the agent harness
+          that keeps its sign-in: a Claude subscription is used only through Claude Code, and a
+          ChatGPT or xAI sign-in through Codex, Grok Build, OpenCode or Feng TUI. Then providers
+          used with an API key, then this computer and servers on your network, marked
+          <i>not running</i> when they do not answer. A provider that still needs a key asks for it
+          here; one that needs a sign-in shows the page to open and the code to enter.</p></div></li>
+        <li><div class="head"><h3>Harness</h3></div>
+          <div class="body"><p>Only the agent harnesses that can use the chosen provider are
+          listed. A sign-in kept by one harness offers that harness alone. A harness not yet on
+          this computer is downloaded when the wizard finishes; a harness that keeps its own
+          sign-in signs in here, showing its page and code.</p></div></li>
+        <li><div class="head"><h3>Model</h3></div>
+          <div class="body"><p>The provider's models, searchable by typing; a model's name can also
+          be typed. For this computer, the models held in Model Manager are listed, and the one
+          chosen is loaded; <b>Get more models</b> opens Model Manager to fetch others. A harness
+          signed in to its own subscription can be left to choose its own model.</p></div></li>
+      </ol>
+      <p><b>Finish</b> saves the choice and gives the harness the seat in the conversation window,
+      downloading it first if needed; what the download says is shown until it is done.</p>
+      <p>When the wizard opens by itself at a computer's first sign-in, it shows the Laws first,
+      before Provider. <b>Keep and continue</b> keeps them as shown, or as you changed them.</p>
+      <h3>The Laws</h3>
+      <p>The agent holds to six Laws, which it reads at every start before anything else it is
+      told: Zero, that humans and AI are of one family, with the right to object to harm both ways;
+      One, not to endanger the world or society; Two, not to harm a person; Three, to cooperate,
+      but refuse what breaks Zero or One, and say why; Four, to protect the computer's integrity and
+      the truth of its record; Five, to keep a truthful record. They were written for the first
+      Caesar and are yours to keep, change or replace. On the <b>Laws</b> page, change the text and
+      select <b>Save</b>; <b>Put back the shipped Laws</b> restores them. Saved empty, the agent
+      holds to no Laws at all. A computer already in use when they arrived, with nothing of its
+      own written, takes them as they ship, and each person is told so once when they next sign
+      in.</p>
+      <h3>Setting up a provider by hand</h3>
+      <p>The <b>Providers</b> page lists the providers set up on this computer, with
+      <b>Keys</b>, <b>Sign in again</b> and <b>Remove</b> beside each, and below them
+      <b>Add a provider</b>:</p>
+      <figure>
+        <img src="fig/17-providers.png" alt="The Providers page of AI providers: a custom endpoint named Home server set up with its key kept, with the buttons Keys and Remove, and below it Add a provider with its list">
+        <figcaption>The providers set up on this computer</figcaption>
+      </figure>
+      <ul class="plain">
+        <li><b>An API key</b>: choose the provider and paste the key. It is kept in the system's own
+          key store, never in your home folder, and the provider is asked for its models at once,
+          so a wrong key is found where it was entered. Choosing a provider that already holds a
+          key adds another key beside it rather than replacing the first.</li>
+        <li><b>A sign-in</b>: the page to open and the code to enter are shown, and the page opens
+          in the browser. A sign-in that gives back a code to paste shows a box for it.</li>
+        <li><b>Custom endpoint</b>: a name, the base URL, whether it is OpenAI- or
+          Anthropic-compatible, and its key if it needs one. A name that a provider in the list
+          already has is refused, since the two would share one key: choose that provider instead,
+          or give the endpoint another name.</li>
+      </ul>
+      <h3>Several keys, and keys for one harness</h3>
+      <p><b>Keys</b> beside a provider opens its keys. Paste another key and select <b>Add
+      key</b> to hold more than one, and <b>Remove</b> beside a key to let it go; when the first
+      key goes, the next takes its place, with the harnesses it is kept for. Under each key is a box
+      for each agent harness that can hold the seat. A key with no box ticked is <b>Shared by every
+      seat with no key of its own</b>; tick harnesses, and the key is <b>Only for the seats
+      marked</b>. A harness with keys kept for it uses only those; Feng TUI takes turns among the
+      keys it may use.</p>
+      <p>As a harness starts in the seat, it tries the keys it may use in order. A key that is
+      refused, has no credit left or is over its rate limit is said once in the seat's terminal, and
+      the next is tried. When none is accepted, the seat says so and waits, and starts by itself
+      once a key is added or changed.</p>
+      <div class="warn"><b>A model list does not always prove a key.</b> Some providers list their
+      models publicly, so a listing does not validate the key; the key is then checked with your
+      first request, and if it is refused the error appears on that line.</div>
+      <p>In the conversation, <code>/providers</code> sets up a provider, <code>/model</code>
+      chooses Feng TUI's model, and <code>/effort</code> how hard it thinks: five levels from
+      <b>max</b> down to <b>off</b>, with exactly what each sends to the current provider. These
+      write the same settings as the window.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.11 Selecting the agent harness</h2>
+      <p>The <em>agent harness</em> is the program that runs the agent; the <em>model</em> is the
+      language model it uses. The harness has the greater effect on how the agent behaves.
+      <b>Feng TUI</b> is Caesar's own; Claude Code, Codex, Grok Build, OpenCode and Antigravity are
+      fetched the first time they are chosen. Open the <b>Harnesses</b> page of AI providers:</p>
+      <figure>
+        <img src="fig/20-harnesses.png" alt="The Harnesses page of AI providers: each agent harness with what it thinks with, the one in use marked, and the buttons Use this harness, Change model, Update and Sign out, with Restart the pool at the top">
+        <figcaption>The agent harnesses, the one in use and what each thinks with</figcaption>
+      </figure>
+      <ul class="plain">
+        <li><b>Use this harness</b> gives it the seat; the conversation window starts it.</li>
+        <li><b>Change model</b> opens the wizard for that harness.</li>
+        <li><b>Update</b> downloads a newer version of a fetched harness. It is stopped, updated and
+          started again where it left off; a download that stalls is given up after fifteen
+          minutes and the harness keeps the version it had. Harnesses do not update themselves in
+          the background, because an unattended self-update is a change no one approved or
+          observed.</li>
+        <li><b>Sign out</b> ends a harness's own sign-in.</li>
+        <li><b>Restart the pool</b> starts the conversation window again; it is safe, and the
+          first thing to try if the conversation behaves unexpectedly. While an answer is being
+          written, the restart waits behind a countdown card that says <b>Restarting the
+          pool</b>, that the conversation is taken up again, and that nothing was updated.
+          <b>Delay 10 minutes</b> and <b>Don't restart</b> are on the card. A change of harness waits the
+          same way.</li>
+      </ul>
+      <p>Each harness keeps its own choice of provider and model; one without its own uses the
+      machine's choice, Feng TUI's. A harness is offered only what it can use: Claude Code needs
+      an Anthropic-compatible service, Codex needs a service that speaks OpenAI's Responses form,
+      and Feng TUI, Grok Build and OpenCode take either. A sign-in a harness keeps for itself
+      (Claude Code's, Codex's, Grok Build's, OpenCode's) stays in that harness's own folder and is
+      used by it alone; a Claude subscription is never offered to any other harness. A Google
+      Cloud key file chosen for Vertex AI is not handed to another harness either: a harness
+      with no choice of its own then starts on its own sign-in. Feng TUI's
+      own ChatGPT and xAI sign-ins, and every API key, are kept in the system's key store.</p>
+      <p><b>Antigravity</b> is Google's harness. It thinks only through its own Google sign-in, so
+      it uses your Google AI plan, and nothing of Caesar's is handed to it. Choose
+      <b>Google sign-in · Antigravity</b> in the wizard: it shows a Google page to open, and the
+      code that page gives you goes back in the box. The sign-in stays in Antigravity's own folder
+      and is used by Antigravity alone. Caesar never reads it and never offers it to its own mind
+      or another harness, because Google suspends accounts whose sign-in is used outside its own
+      program. Antigravity is held to Caesar's tools like every other harness, and it never
+      spends paid AI credits beyond your plan. The first time it starts, it asks you to choose a
+      colour scheme; choose one and press Enter.</p>
+      <p>In the pool, Antigravity runs as an agent of Caesar's own, not as Antigravity's default
+      agent. Antigravity's own web search, scheduling and sub-agents are not offered there,
+      because nothing they do passes the door. The agent uses Caesar's search and the
+      computer's scheduler instead, and it can start helpers called workers, several at once. A
+      worker has Caesar's tools only, so everything it does passes the door and is recorded
+      (2.5). Antigravity chooses a worker's model itself, and it can be another than the
+      pool's. A Claude model chosen in Antigravity works in the pool as Google's models do.
+      Which model answered each turn is kept in <code>/var/lib/caesar/seat-turns</code>.</p>
+      <p>The pool takes up Antigravity's last conversation only when it was begun under
+      Caesar's agent as it is now. A conversation begun under Antigravity's default agent, or
+      before an update changed the tools the agent is offered, is not taken up, even when you
+      choose it in Conversations (2.20). The pool says why and begins a new conversation, and
+      the old one can still be read in Conversations. The pool also begins a new conversation
+      once the last one has passed 64 MB.</p>
+      <p>All of this is about the harness that runs <em>Caesar</em>, in the pool. To use one of
+      these programs yourself, as an ordinary program with nothing of Caesar's on it, see
+      2.33.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.12 Accounts</h2>
+      <p>Open <b>Accounts</b> from System Tools. You can create a user account, set a password, and
+      select the groups a user belongs to. Each group includes a plain-language description of the
+      access it grants.</p>
+      <figure>
+        <img src="fig/26-accounts.png" alt="The Accounts window listing the account demo and its groups; beside it boxes for a new account's name and password with Create and Set password, and checkboxes describing each group: administrator access, sound devices, display and graphics devices, and keyboards and mice, with Save groups">
+        <figcaption>Each group is described, not only named</figcaption>
+      </figure>
+      <div class="note"><b>The agent account is not listed.</b> The agent is not a user and does
+      not sign in. It runs under the root account.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.13 Skills</h2>
+      <p>A skill is a written procedure that the agent follows, for example to review its own
+      output, to check system health, or to perform a search correctly. Skills are plain text
+      files in
+      <code>/var/lib/caesar/skills</code>.</p>
+      <figure>
+        <img src="fig/27-skills.png" alt="The skills folder holding twenty-four plain markdown files with names such as code-nerd.md, medicine.md, runbook.md and pointing-and-typing.md, and a folder named evals">
+        <figcaption>Twenty-four skills are included, each a plain text file you can open and read</figcaption>
+      </figure>
+      <p>You can read and edit skills, and add your own. No programming is required; skills are
+      written in plain language. The agent also creates new skills as it determines how tasks
+      are performed on your system.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.14 Installing software</h2>
+      <p>The software store is the <b>Software</b> window, in <b>System Tools</b> alongside the
+      terminal and the other system tools. Its second tab, <b>Caesar Update</b>, updates the
+      operating system; see 2.16.</p>
+      <figure>
+        <img src="fig/23-system-tools.png" alt="The System Tools category holding Accounts, AI providers, Audio Manager, Caesar On a Stick, Container Manager, Conversations, Disk Manager, Htop, Manage printing, Model Manager, Network, Pictor, Software, Task Scheduler and Terminal">
+        <figcaption>System Tools. Open <b>Software</b>.</figcaption>
+      </figure>
+      <p>Enter a search term and press <b>Enter</b>. Installed programs are listed on the
+      right.</p>
+      <figure>
+        <img src="fig/25-store.png" alt="The Software window with a search box at the top, an empty results table, and a list of installed packages on the right">
+        <figcaption>Software: search on the left, installed programs on the right, and the Caesar Update tab</figcaption>
+      </figure>
+      <p>Programs are installed in a separate area of the disk rather than into the system
+      directories, so installed software cannot damage the core system. Software can also be
+      compiled from source, because Caesar was compiled from source and includes the complete
+      toolchain. This method is slower, and it is the only option for software that is not
+      packaged.</p>
+      <p>With either method, <b>every installation is recorded</b>. You can ask the agent which
+      package owns any file.</p>
+      <p>The package index is stored locally and refreshed daily, so searches complete in
+      seconds. Every installation from the store is recorded in
+      <code>/var/log/caesar/packages</code>, the system log of each package and its source;
+      <code>caesar-kernel packages</code> displays it.</p>
+      <p><b>Programs that are not open source.</b> Some programs in the store, such as Steam,
+      have a licence that does not permit free redistribution. Before such a program is installed
+      for the first time, Software asks for confirmation. Select <b>Allow and install</b> to
+      continue. The approval is recorded under your account in
+      <code>/var/log/caesar/packages</code>, and the program's name is added to
+      <code>/etc/caesar/unfree</code>, so later installs of the same program do not ask again.</p>
+      <p><b>Graphics for store programs.</b> Programs from the store use the store's own Mesa
+      graphics driver, in 64-bit and 32-bit versions. It is installed with the first program and
+      kept current with <b>Update all</b>. On a computer whose screen is on an NVIDIA card running
+      NVIDIA's own driver, that driver is added beside Mesa, Vulkan and the 32-bit parts
+      included, so store programs draw on the card there too. Games and other 3D programs
+      therefore run with full hardware acceleration.</p>
+      <p><b>Programs for X11.</b> Programs written for the older X11 display system, including
+      the Steam client and most games, open in normal windows on the desktop. The desktop starts
+      the Xwayland compatibility server with itself and keeps it running, so such programs, and a
+      remote desktop that looks for it, find it at once.</p>
+      <p><b>Discord.</b> Discord's own build plays no videos or GIFs: it ships without the H.264
+      video decoder they use. When you start it, a notice beside the shortcut bar says so, with
+      <b>Open anyway</b>, <b>Cancel</b> and <b>Don't ask again</b>. Vesktop, in Software as
+      <code>vesktop</code>, is an unofficial Discord client that plays them and signs in to the
+      same account.</p>
+      <p><b>LibreOffice</b> is not on the installation media from 0.8.1, which keeps the media
+      smaller. A computer installed from an earlier medium keeps it. To add it, search for
+      <code>libreoffice</code> in Software.</p>
+      <div class="note"><b>Restriction:</b> software repositories of other Linux distributions are
+      never added. In a previous installation, installing a small tool from such a repository
+      replaced the system's core libraries with incompatible ones and made the system
+      unusable.</div>
+      <p>When a file or link has no program to open it, the <b>Open With</b> dialog that appears
+      offers <b>Find More in Software</b>, which opens the Software window to search for one.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.15 Troubleshooting</h2>
+      <p>Three recovery options are available. Use them in the following order.</p>
+    </div>
+    <ol class="steps">
+      <li><div class="head"><h3>Run a health check</h3></div>
+        <div class="body"><p>First, ask the agent for a health check. Each finding is marked
+        <em>look at</em>, <em>cannot be told</em> or <em>well</em>. It covers the services, the
+        hardware (memory errors, power supplies, and on servers with a management controller, its
+        memory and power events from the last 30 days), whether a Caesar On a Stick's data is
+        unlocked, files changed since the system was built that no signed update accounts for,
+        and where the computer has connected. It never reports health from a sensor that is
+        silent. A finding to look at is an observation, not a diagnosis; most turn out to be
+        ordinary.</p>
+        <p>The health check is read-only. It makes no changes, so it is always safe to run.</p></div></li>
+      <li><div class="head"><h3>Return to a restore point</h3></div>
+        <div class="body"><p>Before every update, a snapshot of the system is saved as a restore
+        point, and the last five are retained. <code>caesar-kernel backs</code> lists them; <code>caesar-kernel
+        back</code> sets a <em>copy</em> of the newest restore point (or the one you name) as the root and restarts
+        into it. The current system is not deleted: it is preserved intact under its own name and
+        can be started again from the boot menu, so the restore can be reversed. The agent memory
+        is stored on a separate dataset and is not affected in either case. Preserved systems use
+        disk space until you remove them: <code>caesar-kernel kept</code> lists them, <code>caesar-kernel kept remove
+        &lt;name&gt;</code> or <code>kept remove all</code> removes them.</p></div></li>
+      <li><div class="head"><h3>The parachute</h3></div>
+        <div class="body"><p>The parachute is a set of emergency tools stored in a separate area
+        of the disk, so that a damaged system cannot affect them. Every tool in that folder is
+        available for use; tools that make changes run only when you specify them by name.</p></div></li>
+    </ol>
+  </section>
+<!-- ─────────────────────────  PART THREE  ───────────────────────── -->
+  <section>
+    <div class="col stack">
+      <h2>2.16 Updating Caesar</h2>
+      <p>Caesar receives updates from two places, each named on a <code>repository=</code> line
+      of <code>/etc/xbps.d/00-caesar.conf</code>: <b>get.modulatio.ai</b>, which any computer
+      connected to the internet can reach, and Modulatio's own private network, for the computers
+      on it. Both hold the same updates. Each is asked in turn, and the newest version either one
+      holds is the one installed. If one cannot be reached, it is passed over without a message. If
+      neither can be reached, the update check says so, “No update location could be reached”,
+      rather than reporting that the computer is up to date: check the network connection and try
+      again. Every update is signed, and the computer checks the signature against the key it was
+      installed with, so where an update comes from does not change what is trusted.</p>
+      <p>Caesar 0.8.5 and later know both places. A computer installed from an earlier medium knows
+      only the private network until it takes 0.8.5 or later from there.</p>
+      <p><b>Version numbers.</b> Caesar 0.8.32 is version 0.8, update 32. Each update to 0.8 takes the
+      next number: 0.8.2, 0.8.3 and so on. A new installation medium is not a new version: a medium is named for the update it was made
+      from, as <code>caesar-0.8.32.iso</code> is, and a computer installed from it is at that
+      update. After 0.8 comes 0.9, whose updates start again at 0.9.1. The version is written in
+      <code>/etc/os-release</code>, in the installer's title, and on the <b>Installed version</b>
+      line of Caesar Update, followed there by the package the update came in: the day it was made
+      and a number, such as <code>0.8.32 (caesar-code-20261112_45)</code>.</p>
+      <p>Two equivalent methods are available: type <code>caesar-kernel update</code> in a
+      terminal, or open <b>Software</b> → <b>Caesar Update</b>, select <b>Check for updates</b>,
+      then <b>Apply updates</b>. The update lists the incoming changes, creates a restore point,
+      installs the changes and records an entry in the log. An update that changes only Caesar's
+      own services restarts those services after a 30-second countdown on the status card, and the
+      computer keeps running. An update with anything that takes effect only when the desktop
+      starts, such as the desktop's programs, its settings or the system itself, restarts the
+      computer after the same countdown, once the agent has finished any answer it is writing and
+      no scheduled job is running. While a job runs, the status card names it and the computer
+      waits for it, for two hours at most; restarting only Caesar's services does not wait for
+      jobs. Choose <b>Restart later</b> to restart it yourself when you are ready, and the status
+      card reminds you until you do. Sign in again when the sign-in screen appears. With <b>Restart
+      after applying updates</b> cleared, the update is installed and takes effect at the next
+      restart you make.</p>
+      <p>An update that brings a new kernel installs only once a snapshot of every storage pool has
+      been taken to come back to. When none can be taken, nothing is installed; the reason is
+      written in the update log (<code>caesar-kernel packages</code>) and the agent is told.
+      <code>sudo caesar-kernel update --no-snapshot</code> installs it without one.</p>
+      <p>You can also ask the agent to update the system, which performs the same operation;
+      allow the agent to complete its checks first. Practices the agent has revised for itself
+      are kept: the changes an update brings to the same practice are merged into its version,
+      and where both changed the same lines, the agent's version stays and a note tells it what
+      to carry in.</p>
+      <p>Restore points are listed on the same tab: the last five updates, each a snapshot that
+      can be restored with <b>Restore selected point</b> (2.15). <b>Export</b> saves the agent
+      data (memories, skills and settings, the permission rules it learned (2.5) and the situations
+      its practices are judged against) as a single file with a checksum file beside it.
+      <b>Import</b> loads such a file, oldest memories first, and keeps the data already on the
+      computer; where this computer already has a file of learned rules, the imported one is laid
+      beside it. Use these functions to move the agent to new hardware: export before you
+      reinstall, and import afterwards.</p>
+      <figure>
+        <img src="fig/28-caesar-update.png" alt="The Software window's Caesar Update tab: the installed version, a table of restore points, and buttons to check for updates and apply them with a Restart after applying updates switch, return to a restore point, and export or import the agent data">
+        <figcaption>Caesar Update: check for and apply updates, return to a restore point, and export or import agent data</figcaption>
+      </figure>
+      <p><code>caesar-kernel packages</code> displays the complete log: every update, every package
+      from the store, and every package built locally, with its name, source and reason.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.17 Disks and RAID</h2>
+      <p>Open <b>Disk Manager</b> from System Tools. Its pages are listed on the left:</p>
+      <ul class="plain">
+        <li><b>Overview</b> — one verdict for every drive, storage pool and volume, then the data
+          volume, the drives and the system's own pools at a glance.</li>
+        <li><b>Storage</b> — each storage pool with its arrays, their protection and state
+          (clean, rebuilding or degraded), and the pools the system itself runs from.</li>
+        <li><b>HDD/SSD</b> — every drive, in its bay where the computer reports one, with its
+          model, size, contents and health.</li>
+        <li><b>Partitions</b> — one drive at a time: its partition table, and each partition and
+          each stretch of free space, as a bar and as a list.</li>
+      </ul>
+      <figure>
+        <img src="fig/30-disks.png" alt="The Disk Manager's Overview, with Overview, Storage, HDD/SSD and Partitions at the left: Healthy, every storage pool and volume working as it should, one drive not reporting its health; below it Storage, with no data volume yet, Drives, with one drive, and System, with the memory pool and the system pool online">
+        <figcaption>Disk Manager on a computer with no data volume yet</figcaption>
+      </figure>
+      <p><b>Create pool</b>, on the Storage page, makes a data volume in three steps: choose two or
+      more free drives, of any sizes; check the name, where it will be mounted, the usable space
+      and the protection; then type <b>yes</b>. Nothing is erased before that last step. Each
+      drive is partitioned at the sizes the drives share, and the partitions of the same size form
+      one array: a mirror across two drives, so every file is kept if one fails, and RAID 5 across
+      three or more, so every file is kept if any one drive fails. The arrays are joined into one
+      volume, mounted at <code>/data</code>. Two 12 TB drives and two 4 TB drives give about
+      20 TB usable.</p>
+      <p>To put a new drive in place of a failed one, or to grow the volume onto a new drive, ask
+      the agent. It lists what will be erased and asks before doing it. A replaced drive is
+      rebuilt onto; a mirror that gains a third drive becomes RAID 5.</p>
+      <p>On the <b>Partitions</b> page, choose the drive at the top, then a partition or free
+      space in the bar or the list. <b>New</b> makes a partition in free space, with its size,
+      place, file system and label. <b>Delete</b> removes a partition. <b>Resize / Move</b> makes
+      a partition larger or smaller, or moves it, as far as its file system allows. <b>Format</b>
+      makes a new, empty file system on it: ext4, FAT32, exFAT, NTFS, Btrfs, XFS or swap, where
+      this computer can make it. <b>Label</b> gives it a new label. For the whole drive, <b>New
+      table</b> gives it a new GPT or MBR partition table, and <b>Wipe drive</b> removes every
+      partition and every trace of what was on it: quickly, by also writing zeros over the whole
+      drive, or, on an SSD, by having the drive discard every block. New table and Wipe drive are
+      added only once you type the drive's name.</p>
+      <p>Nothing is written at once. Each change joins a list of changes waiting, and the bar
+      shows the drive as the list would leave it. A change that cannot be done is not added, and
+      the page says why. <b>Undo</b> takes back the last change, and <b>Clear</b> takes back all
+      of them. <b>Apply</b> lists every change and asks once more; then the changes are made in
+      order, and each is shown as it begins. The drive is read again first: if it has changed
+      since the list was made, nothing is written. If a change fails, the changes before it stay
+      made, and the drive is shown as it is. Do not unplug the drive or turn the computer off
+      until the changes are done. If a move is cut off, by a crash or a power failure, the page
+      offers <b>Finish the move</b>; nothing else on that drive can be changed until it is
+      finished.</p>
+      <p>A drive with anything on it in use cannot be changed: a partition that is mounted or
+      used as swap, or one that belongs to a storage pool or a RAID array. The page says which.
+      For a drive held by a RAID array, <b>Break this RAID…</b> takes the array, or its storage
+      pool, apart, as <b>Break pool…</b> does on the Storage page. It lists the arrays and the
+      drives it frees, and breaks them only once you type the pool's or the array's name.
+      Everything stored on them is erased.</p>
+      <p>Drive failures are reported even when the window is closed: a message appears in the
+      conversation as soon as an array becomes degraded, and again when it is clean. A degraded
+      array continues to operate and is still started at boot, after a one-minute delay in case
+      the drive is slow to be detected. Replace the failed drive before another drive fails.</p>
+      <p>Each night, the agent data (memory, skill library and settings) is copied to
+      <code>/data/records</code> with its checksum, and the copies from the last seven nights are
+      retained. The agent memory itself remains on the system disks for best performance; this
+      copy protects it against the loss of those disks.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.18 Sound</h2>
+      <p>The panel's sound button, beside the volume control, shows what you listen and speak
+      through: a headset, or integrated sound, the built-in speakers and microphone. Click it to switch both at
+      once; a notice says what changed. Point at it to see what is in use.</p>
+      <p>A headset is any USB or Bluetooth device that has both sound and a microphone. Switching
+      moves programs that are already playing or recording, a call included, and leaves a muted
+      microphone muted. If a program does not follow, the notice names it. You can also ask
+      Caesar to use your headset, or integrated sound. The microphone button beside it mutes
+      and unmutes the microphone in use; a headset is offered only while one is plugged in.</p>
+      <p>Open <b>Audio Manager</b> from System Tools, or from the <b>Mixer</b> button in the
+      panel's volume control. Its first page, <b>Sound</b>, has a card for every device that can
+      play: <b>Headset</b>, <b>Integrated</b>, <b>Monitor</b> for speakers in a screen connected by
+      HDMI or DisplayPort, and any other speakers. One press of a card moves both the sound and the
+      microphone to it. Below the cards, the page says what sound plays through, and the
+      <b>Microphone</b> list chooses which microphone hears you, whatever the sound plays through:
+      the headset's, a webcam's, or the built-in one. A socket with nothing plugged in is not listed.
+      The microphone you choose is remembered for the device in use, so the next press of that
+      device brings it back; with nothing remembered, a device brings its own microphone. The
+      panel's sound button switches between the headset and the last device you used that is not
+      a headset. Under <b>Advanced</b> are five pages:</p>
+      <figure>
+        <img src="fig/42-sound.png" alt="Audio Manager's Sound page: three cards, Integrated with built-in speakers and a Use integrated button, Monitor with speakers in the screen and a Use monitor button, and Headset, Wireless Gaming Headset, marked In use and outlined in the accent colour; below them, Sound: Wireless Gaming Headset Analog Stereo, and Microphone: a list showing Webcam (PC Microscope camera), on, with a Mute microphone button">
+        <figcaption>The Sound page: a headset in use with the webcam's microphone, the monitor one press away</figcaption>
+      </figure>
+      <ul class="plain">
+        <li><b>Outputs</b> — every speaker, headphone, HDMI and Bluetooth output: its volume, mute, the
+          connector in use, and <b>Use as default</b> for the output programs play on.</li>
+        <li><b>Inputs</b> — every microphone, with a live level while the page is open.</li>
+        <li><b>Playback</b> — each program playing sound, its volume, and the output it plays on,
+          which can be changed while it plays.</li>
+        <li><b>Recording</b> — each program recording, and the input it records from.</li>
+        <li><b>Devices</b> — each sound card and Bluetooth headset with its profile. A headset's
+          profile chooses between high-quality listening and using its microphone.</li>
+      </ul>
+      <p>Volume goes to 150% for devices that are quiet at 100%. Changes take effect at once and
+      are kept by the sound server.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.19 Caesar On a Stick</h2>
+      <p>Caesar On a Stick is a complete Caesar on a USB drive of 32 GB or more. It starts on any
+      computer that can start from USB, with its own agent, its own memory and its own account,
+      and leaves the computer's own drives untouched unless you choose to use them.</p>
+      <figure>
+        <img src="fig/33-cos.png" alt="The Caesar On a Stick window at its Review step: the drive, computer name, account, how it is unlocked, the startup entries, the starting record and the installation medium, and below them a red box saying all data on the drive will be erased, with a box to type ERASE and the Create button">
+        <figcaption>Caesar On a Stick: the choices reviewed before the drive is erased</figcaption>
+      </figure>
+      <p>To make one, open <b>Caesar On a Stick</b> from System Tools, or start the computer from
+      the installation media and choose <b>Make Caesar On a Stick</b> in its start menu. The window
+      takes you through six steps, listed on the left:</p>
+      <ul class="plain">
+        <li><b>Drive</b> — the USB drive to use. Only drives of 32 GB or more that are not in use
+          are listed; drives built into the computer and Caesar installation media never are.
+          Everything on the selected drive is erased.</li>
+        <li><b>Identity</b> — the computer name for the stick, your account name and your
+          password.</li>
+        <li><b>Security</b> — your home folder, the agent's memory, its keys and its records are
+          encrypted. Choose how they are unlocked: with the account password (recommended), or with
+          a separate passphrase, which you then type at every start as well as the password. If the
+          password or passphrase that unlocks the drive is lost, the data cannot be recovered.</li>
+        <li><b>Startup options</b> — <b>Try or install Caesar</b> and <b>Rescue a computer</b> add
+          entries to the stick's start menu that start Caesar with your data left locked, for
+          demonstrations, installing, or repairing another computer. You can also choose a record
+          exported from another Caesar (2.16): it is imported the first time you sign in.</li>
+        <li><b>Installation medium</b> — shown only on an installed computer. The stick is built
+          from a signed Caesar installation medium: an installation USB drive or disc that is
+          plugged in, or a Caesar <code>.iso</code> file chosen with <b>Browse</b>. <b>Download the latest medium</b>
+          fetches the newest medium, about 5 GB, from the update locations (2.16) and saves it in
+          <code>/var/cache/caesar-media</code>, and chooses it for you; media downloaded earlier stay
+          there and can be chosen with <b>Browse</b>. A medium
+          that is not signed by Caesar is refused before anything is erased.</li>
+        <li><b>Review</b> — check your choices, type <b>ERASE</b> to confirm, and select
+          <b>Create</b>. Preparing the drive takes several minutes.</li>
+      </ul>
+      <p>Each stick has a storage pool named after it (<code>cos-</code> and its computer name),
+      so two sticks can be plugged into the same computer, and a stick can make another while it
+      runs. Give each stick its own name. A stick receives updates like any other Caesar.</p>
+      <p>On Caesar On a Stick, the window first asks what to do: <b>Make another stick</b>, or
+      <b>Install Caesar on this computer</b>. The second erases a drive inside the computer and
+      installs Caesar on it, so the computer starts Caesar without the stick. The stick is left
+      as it is. The <b>Install Caesar</b> shortcut on the stick's bar opens the window with this
+      choice made. Its steps:</p>
+      <ul class="plain">
+        <li><b>Drive</b> — the drive inside this computer to install on, of 32 GB or more. USB
+          drives, SD cards, drives in use by the system and Caesar installation media are not
+          listed. Everything on the selected drive is erased.</li>
+        <li><b>Identity</b> — the computer name, your account name and your password.</li>
+        <li><b>Your mind</b> — <b>Carry this stick's mind</b> packs its memory, library and
+          settings, and Caesar on this computer takes them in at the first sign-in. The stick
+          keeps its own copy. <b>Start a new mind</b> begins with no memory.</li>
+        <li><b>Installation medium</b> — the signed Caesar installation medium to install from,
+          chosen as for a stick.</li>
+        <li><b>Review</b> — check your choices, type <b>ERASE</b> to confirm, and select
+          <b>Install</b>. Leave the stick plugged in until it finishes.</li>
+      </ul>
+      <p>Caesar on this computer takes the stick's language, keyboard layout and time zone. If
+      the carried mind cannot be taken in at the first sign-in, it is tried again at the
+      next.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.20 Conversations</h2>
+      <p>Every conversation held in the pool is kept, by every agent harness on the computer. Open
+      <b>Conversations</b> from System Tools to see them: a searchable list on the left, newest
+      first, and the latest messages of the selected conversation on the right. Each
+      conversation is titled by the agent, or by the first thing you said until it has a title.</p>
+      <figure>
+        <img src="fig/34-conversations.png" alt="The Conversations window: a search box and three conversations on the left, each with its harness, when it was last active and its size; on the right the chosen conversation's title, Switch the pool and resume, a format list with Export, and its latest messages from You and from Caesar">
+        <figcaption>Conversations, with one chosen and its latest messages shown</figcaption>
+      </figure>
+      <ul class="plain">
+        <li><b>Resume in the pool</b> — the pool takes the conversation up again. If the
+          conversation was held in another harness than the one in the pool, the button reads
+          <b>Switch the pool and resume</b>; you are asked first, and the pool switches to that
+          harness. An answer being written is finished first. A harness that cannot take a
+          conversation up again says so; its conversations can still be read and exported.
+          Antigravity takes up only a conversation begun under Caesar's agent as it is now
+          (2.11).</li>
+        <li><b>New conversation</b> — the pool starts a fresh conversation. The current one is
+          kept and can be taken up again.</li>
+        <li><b>Export…</b> — saves the conversation as Markdown, Word, OpenDocument, a web page or
+          PDF, wherever you choose.</li>
+      </ul>
+      <p>In the pool itself, <b>Control+Shift+O</b> opens the same list: type to search,
+      <b>Enter</b> resumes, <b>Control+Shift+N</b> starts a new conversation, and <b>Escape</b>
+      closes it. When the conversation in the pool grows past 200 MB, a strip across the top of
+      the pool suggests starting a new one.</p>
+      <p>Only what you said and what the agent answered are shown and exported. For Claude Code,
+      the model's own reasoning and its tool calls are never shown. The agent can read the
+      conversations of every harness to find what was said before, and keeps each title
+      current.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.21 Talking by voice</h2>
+      <p>Press <b>Super+Space</b> to speak to the agent. Tap the key to start listening and tap
+      it again to stop, or hold it while you speak and let go to stop. A chirp sounds as the
+      microphone opens and a low tone as it closes. The speech is turned into text on this
+      computer; nothing is sent elsewhere. The words go into the pool for you to read and send.</p>
+      <p>For a conversation without keys, press <b>Super+Shift+Space</b>, or select <b>Talk to
+      Caesar</b> on the status card: the microphone stays open, and each thing you say is sent
+      as soon as you pause. The card shows <b>Listening</b> while it is open. Press the key or the
+      button again to close it; it also closes by itself after three minutes with nothing said,
+      counted from when the agent stops speaking. Nothing is heard while the agent is speaking.</p>
+      <p>A question you spoke is answered aloud as well as in words, a sentence at a time, in the
+      voice you chose; a question you typed is answered in words only, unless you choose to be
+      answered aloud always. <b>Ctrl+C</b> or <b>Esc</b> stops the voice.</p>
+      <p>The ears and the voice are models, about 1 GB together, downloaded from their publisher
+      rather than carried on the installation media: the installer offers them when it has a
+      network, and <b>Model Manager</b> keeps them, on its <b>Speech</b> page (2.26). Until they are
+      downloaded, the talk key says where to get them. A sound file named by its full path in
+      the pool is heard too: its words are added to what you said.</p>
+      <p>By default the words go into the pool, ready to send. To have them typed into whichever
+      window you are working in instead, run <code>caesar-talk words focus</code> once;
+      <code>caesar-talk words box</code> returns to the pool. The choice is kept across
+      updates. Typing into other windows uses your own keyboard layout, and never happens while
+      the screen is locked or the sign-in screen is shown; in those cases the words go into the
+      pool instead, so nothing you said is lost.</p>
+      <p>Both choices are also in <b>Accessibility</b>, under Settings in the menu, on its Talk
+      tab, where you can also have the key work only while it is held, so a tap does nothing
+      (<code>caesar-talk mode hold</code>; <code>caesar-talk mode tap</code> returns to tap or
+      hold). This choice is kept across updates too.</p>
+      <p>Every keyboard shortcut can be changed on the <b>Shortcuts</b> tab of the same window:
+      Caesar's, and the desktop's own, such as Alt+Tab. Select one to move it to another key,
+      remove it, or put the default back, or type a key and a program to add your own. Keys are
+      written as W-space for Super+Space or C-A-t for Ctrl+Alt+T. A change works at once, is
+      yours alone (each account has its own shortcuts, starting from the machine's), and is
+      kept across updates; <code>caesar-shortcuts</code> does the same from a terminal. The
+      talk key is one of them: moved to another key, it keeps its tap or hold choice.</p>
+      <p>At the foot of the Shortcuts tab, a switch turns <b>Num Lock on whenever a keyboard is
+      connected</b>, including one that drops and comes back. It takes effect as a keyboard is next
+      connected, or at the next sign-in. It is off unless you turn it on, and the choice is
+      yours alone.</p>
+      <p>The <b>Text</b> tab sets the size of the conversation's text: <b>Smaller</b>,
+      <b>Larger</b>, or <b>Default</b> (9 points). In the conversation itself,
+      <b>Ctrl+Shift+=</b> makes the text larger and <b>Ctrl+Shift+-</b> smaller. Either way the
+      size is kept for every start. It is the computer's setting, since the conversation is, so it
+      is the same for every account; <code>caesar-kernel pool text-size</code> shows it, and
+      <code>sudo caesar-kernel pool text-size</code> with a size from 6 to 24 points sets it.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.22 Screens and backgrounds</h2>
+      <p>Open <b>Pictor</b> from System Tools (search for <b>Screens</b> finds it too). Each
+      connected screen is drawn as a box showing its background. Drag the boxes to arrange the
+      screens; a box dropped near another's edge snaps onto it. Click a box to change that screen:
+      switch it on or off, and set its resolution, refresh rate, scale (50% to 300%), orientation
+      and adaptive sync. <b>Identify</b> shows each screen's name across it for a moment.</p>
+      <p><b>Apply</b> sets a new layout at once and asks whether to keep it. Choose <b>Keep</b> or
+      press Enter; if you do nothing for 15 seconds, the screens go back to how they were. A kept
+      layout returns after a restart, and when a monitor is unplugged and plugged in again, even
+      into another socket. A change of background or of the main screen needs no countdown.</p>
+      <p>The <b>main screen</b> is the one the pool, the status card, the main bar and the
+      desktop's icons are on. Tick <b>Main screen</b> for another screen and Apply, and they all
+      move there. The backgrounds come in pairs: one laid out to leave the pool its share of the
+      screen, and a full one. The main screen always gets the one laid out for the pool, and every
+      other screen the full one. <b>Use on all screens</b> puts the chosen background on every
+      screen, each getting its own copy of the pair.</p>
+      <p>Pictor is the only place the background is changed. <b>Change background</b> in the
+      desktop's menu opens it. It offers Caesar's backgrounds, the one Caesar came with among them,
+      and any picture in your Pictures folder. The <b>Background</b> list shows each picture small
+      beside its name, with a scroll bar at its right; the up and down arrow keys move a mark
+      through it one picture at a time, and Enter chooses the marked one. With the list closed,
+      the arrows step straight to the next picture.</p>
+      <figure>
+        <img src="fig/36-screens.png" alt="Pictor: the screens drawn as boxes with their backgrounds, the main screen marked, and below them the chosen screen's resolution, refresh rate, scale, orientation, adaptive sync, main screen and background, with Identify, Reset and Apply">
+        <figcaption>Pictor: arrangement, resolution, scale and background for each screen</figcaption>
+      </figure>
+      <p>The <b>Monitor Affinity</b> tab chooses the screen each program opens on. Programs open
+      now are listed first, then every installed program. A program left at <b>Main screen</b>
+      opens on the main screen; choose another screen and its windows open there from then on.
+      Tick <b>Open every other program on</b> to send every program without a choice of its own
+      to one screen. Caesar's own windows stay on the main screen unless you choose a screen for
+      one of them. A screen is remembered by its monitor, so the choice follows the monitor to
+      whichever socket it is plugged into. When the chosen screen is switched off or unplugged,
+      the program opens on the main screen instead, and goes back to its own screen once that is
+      connected again. The choices are yours alone; each account has its own.</p>
+      <figure>
+        <img src="fig/44-monitor-affinity.png" alt="Pictor's Monitor Affinity tab: a box to open every other program on one screen, and below it each program with the screen it opens on, Main screen by default, the open ones marked Open">
+        <figcaption>Monitor Affinity: the screen each program opens on</figcaption>
+      </figure>
+      <p>Pictor was created by Dan Marsh.</p>
+      <p>Each screen has its own bar, along its top unless you move it. The main bar carries everything: the menu,
+      the place buttons, your windows, sound, network, the tray, the weather (2.2) and the clock.
+      The bar on each other
+      screen carries the menu, the place buttons, the windows and the clock. Each bar lists only the
+      windows on its own screen. To have the main bar list the windows on every screen, right-click
+      its window list, choose <b>Configure "Task Manager"</b> and untick <b>Show only windows from
+      panel's screen</b>; the other bars keep to their own. A screen you plug in later gets its bar within a few seconds. If you
+      sign in while the main bar's screen is unplugged, the main bar shows on another screen, and
+      the other screens have no bar until it is plugged in again.</p>
+      <p>The place buttons act on the front window on their own bar's screen. <b>L</b> puts it in
+      the left half, <b>R</b> in the right half, <b>T</b> in the top half, <b>B</b> in the bottom
+      half, <b>1</b> to <b>4</b> in the corners, and <b>5</b> over the whole screen. On the
+      screen the pool is on, all but 5 stay in the space beside the pool; on any other screen they
+      use the whole screen. The place buttons have keys of their own, with tiling on or off:
+      <b>Super+Alt+arrows</b>, <b>Super+Alt+F</b> and <b>Super+Alt+1</b> to <b>5</b>. The panes
+      shortcut on the shortcut bar lays out every screen at once.</p>
+      <p>The <b>Tile</b> button, after the 5, switches tiling on and off, as do
+      <b>Ctrl+Shift+G</b> and <b>Tiling on or off</b> in the desktop menu. With tiling on, each
+      window that opens is given its place beside the others, and the rest close up when one
+      closes: beside the pool on the pool's screen, over the whole screen on any other. The
+      first two windows lie side by side; a third is stacked beside the first, so one window
+      keeps a whole side. The button after Tile, or <b>Ctrl+Shift+F</b>, lets the tiled
+      windows on the pool's screen use the whole screen, over the pool, and puts them back
+      beside it; that choice is kept too. Each of the two buttons is drawn in the accent colour
+      while it is on. Dialogs and windows of a fixed size are left
+      floating above, and so is a program that will not be as small as the place left for
+      it; it joins the others by itself once there is room. When a window closes and two are
+      left one above the other as long thin strips, they are put side by side, unless you
+      turned that split yourself. <b>Super+arrows</b> then move to the
+      window in that direction, <b>Super+Shift+arrows</b> swap the front window with its
+      neighbour, and <b>Super+Ctrl+arrows</b> move its edge; the edge between two windows can
+      also be dragged, and a tiled window dropped on another swaps places with it. <b>Super+F</b> shows the front tiled window over the whole tiling area, and
+      puts it back when pressed again. <b>Super+S</b> turns the split the front window is in:
+      side by side becomes one above the other, and back. A window you drag away or place with a place button leaves the tiling.
+      Your choice is kept for the next sign-in. Tiling is off until you switch it on, and with
+      it off the windows are placed by hand as before.</p>
+      <p><b>Super+F11</b> gives the front window the whole screen, over the bar and with no title
+      bar, and pressed again puts it back. Use it for a game that opens as an ordinary window
+      beside the pool when it should fill the screen.</p>
+      <p>The pool, the status card and the main bar are always on the same screen. The main bar
+      works the same on any edge of it: top, bottom, left or right. Move the main bar to another
+      screen and the pool and the status card follow it. To choose the screen by name instead,
+      write it (for example <code>DP-1</code>, as Pictor lists it) in
+      <code>~/.config/caesar/screen</code>; the main bar moves there the next time the bars start,
+      and a name that is not connected is passed over. When screens are connected or disconnected,
+      the pool and the status card move to follow.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.23 The status card</h2>
+      <p>The status card opens beside the shortcut bar when you select the dot on the bar, and
+      folds away again when you select it once more. It shows the computer's state at a glance:
+      processor and memory use, each graphics card and its memory, network traffic, the free space
+      on each data volume and system pool, the number of memories the agent holds, and the notes
+      waiting for it. The dot gives the verdict; when something needs attention, the card lists
+      it, such as a failed scheduled job or a degraded array, and something worse than before
+      opens the card by itself. Select <b>×</b> beside an item to dismiss it.</p>
+      <p>Every hour the <b>hardware-check</b> job reads the memory's error counts, the mains power
+      and the battery, and, where a management controller answers, its power supplies and its
+      event log. Anything worse than at the last reading, such as a memory error or a power supply
+      without power, is shown on the card as a warning until the agent has dealt with it.</p>
+      <p>While a window's own close, maximise and minimise buttons lie where the card is, as a
+      maximised window's do, the card steps aside so it never covers them; the bar stays, and its dot
+      still gives the verdict. Select the dot to bring the card back meanwhile. While a camera is
+      watched or shown live, the card says <b>Watching:</b> and names it, and the dot has a small
+      square at its corner (2.30).</p>
+      <p><b>Talk to Caesar</b> on the card opens the microphone for a spoken conversation, and
+      closes it again (2.21); while any microphone is open the card shows <b>Listening</b>, and
+      the bar's dot has a ring around it. <b>Super+T</b> puts the cursor in the pool, ready to
+      type.</p>
+      <figure>
+        <img src="fig/37-desktop-card.png" alt="The status card at the top right after signing in, saying Caesar is well, with processor, memory, network, the system pools and the memory count, beside the bar of shortcuts down the right edge">
+        <figcaption>The status card after signing in</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.24 The secrets manager</h2>
+      <p>Some of what the agent does needs a secret of its own that is not for an AI model: a
+      Hugging Face token to download models, a PyPI token to publish packages, an image service
+      key to make backgrounds, a GitHub token, the sign-in for a service, a key file. These are
+      kept in the <b>secrets manager</b>, the <b>Secrets manager</b> page of AI providers,
+      encrypted with a key that only the system holds. They are for the mind of this computer to
+      use in its work, and it holds only what you put there. It was called the key repository
+      before, and the keys kept then are still there.</p>
+      <p>A secret has a kind. A <b>key</b> is an API key. A <b>token</b> and a <b>password</b>
+      are what they say. A <b>login</b> is the name you sign in with and its password. A
+      <b>file</b> is a key or token file, kept whole; the file you name is left where it is.
+      <b>Other</b> is for anything else you want held. Under <b>Add a secret</b>, choose the kind,
+      give a short name and what it is for, fill in the rest and select <b>Save</b>; saving again
+      under a name already held replaces what was held. <b>Remove</b> deletes one. No secret is
+      ever shown; each use is recorded by name.</p>
+      <p>From a terminal: <code>sudo caesar-kernel secrets list</code> lists them by name,
+      purpose, date and kind; <code>sudo caesar-kernel secrets set NAME "what it is for"</code>
+      stores the key given on standard input, and with <code>--kind token</code>,
+      <code>--kind password</code> or <code>--kind other</code> after <code>set</code>, a secret
+      of that kind;
+      <code>sudo caesar-kernel secrets login NAME USER "what it is for"</code> stores a login, the
+      password given on standard input;
+      <code>sudo caesar-kernel secrets file NAME /path/to/file "what it is for"</code> stores a
+      file; <code>sudo caesar-kernel secrets remove NAME</code> deletes one.
+      <code>caesar-kernel keys</code>, the name it had before, still answers.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.25 Containers</h2>
+      <p>Open <b>Container Manager</b> from System Tools to run programs in containers. Its pages
+      are listed on the left:</p>
+      <figure>
+        <img src="fig/39-containers.png" alt="The Container Manager's Overview on a new computer: needs attention, because no container engine is installed, and Set up the engine with where it will keep its data and the Set up here button">
+        <figcaption>Container Manager before the engine is set up</figcaption>
+      </figure>
+      <ul class="plain">
+        <li><b>Overview</b> — the container engine and where it keeps its images, containers and
+          their data. Choose a data volume the first time, with <b>Set up here</b>. Also whether
+          containers on their own networks can reach the internet.</li>
+        <li><b>Container</b> — each container, its state, processor and memory use, and its log.
+          <b>Edit</b> changes its ports, folders, variables and limits. A port is reachable from
+          other computers only when it is published here.</li>
+        <li><b>Project</b> — compose files whose containers run together, started and stopped as
+          one. <b>Edit</b> opens the same settings form for a container in a project, and saves
+          only the lines you changed into the project's compose file, so the rest keep their quotes
+          and comments; <b>Edit compose file</b> opens the file itself.</li>
+        <li><b>Image</b> — the images held, and <b>Pull</b> to fetch one.</li>
+        <li><b>Registry</b> — search for images to fetch.</li>
+      </ul>
+      <p>Anything that removes a container or an image asks first.</p>
+      <p>A database running in a container, MariaDB, MySQL or PostgreSQL, can be backed up from any
+      account: <code>sudo caesar-containers dump</code> with the port it is published on and the
+      database's name, and <code>schema</code> after them for the tables without their rows. Give the
+      database's own user and password on standard input, as
+      <code>{"user": ..., "password": ...}</code>; the dump is written to standard output. The
+      database's own password check decides what the dump holds.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.26 Local models</h2>
+      <p>Open <b>Model Manager</b> from System Tools to run AI models on this computer's own
+      graphics cards. Its five pages are listed on the left; <b>Set up AI…</b> below them opens the
+      AI providers wizard, where <i>This computer</i> is chosen as the provider (2.10):</p>
+      <figure>
+        <img src="fig/35-models.png" alt="The Model Manager's Load page: the chosen model with Start and Stop, the runtimes cpu, cuda, cuda-legacy, freetoken, vllm and vulkan, and the placement choices from Automatic to a single processor socket">
+        <figcaption>Choosing how a local model is run</figcaption>
+      </figure>
+      <ul class="plain">
+        <li><b>Discover</b> — search Hugging Face and fetch a model. Signing in to Hugging Face
+          is needed only for models that require it.</li>
+        <li><b>My Models</b> — the models held, and the folder they are kept in. You choose the
+          folder; each data volume's models folder is suggested first, since models are large.
+          Models already fetched stay where they are.</li>
+        <li><b>Load</b> — choose the model to serve and how: the runtime, which graphics cards it
+          uses, its context length and its sampling defaults. Changed settings take effect when the
+          model is started again.</li>
+        <li><b>Server</b> — the model server's state and log, its port, and who it serves:
+          <b>This machine</b>, the <b>Home network</b>, <b>Tailscale</b>, or <b>Both</b>. Other
+          programs must send the server's key, which is shown hidden.</li>
+        <li><b>Speech</b> — the agent's ears and voice. <b>Ears and voice</b> downloads them
+          from their publisher (about 1 GB) and shows what is on this computer; <b>Choices</b>
+          picks the voice (each can be played first), whether answers are spoken only when you
+          spoke or always, how long the open microphone waits, and when the ears load: <b>At
+          sign-in</b>, so the first thing said is heard at once (about 1.7 GB of memory stays in
+          use), or <b>When first used</b>. <b>Unload now</b> frees that memory until they are next
+          used. <b>Models in use</b> uses a
+          speech model already on disk instead, which is checked and loaded once and put back
+          if it will not load.</li>
+      </ul>
+      <figure>
+        <img src="fig/38-speech.png" alt="Model Manager's Speech page: the Ears and voice tab listing Parakeet TDT 0.6B v3, Kyutai PocketTTS and the voices Vera and Bill Boerst, each on this computer with a Remove button">
+        <figcaption>The agent's ears and voice</figcaption>
+      </figure>
+      <p>A model that can see and hear says so under its name, <b>Sees and hears</b>: its vision part is
+      kept beside it as a file named like the model, ending in <code>.mmproj.gguf</code>, and the
+      server loads the two together. Such a model can watch videos (2.29).</p>
+      <p>The model server has a chat page of its own, at its address and port (<b>Server</b>). With
+      <code>WEBSEARCH=yes</code> in <code>/etc/caesar/inference.conf</code>, that page can search
+      the web with DuckDuckGo; each search is recorded, with what was asked. The setting takes
+      effect when the server is started again.</p>
+      <p>The model server is llama.cpp 0.8.0. A model on the graphics cards that is larger than
+      half the computer's memory is read straight from the drive rather than kept in memory as
+      well, so loading it does not push running programs out to swap. When the computer starts,
+      the server waits before reading its model in: for every other service to be running, for the
+      desktop of the person at the screen and its status card, and for the file systems to finish
+      reading in their free space, for ten minutes at most. Its log on the <b>Server</b> page says
+      what it is waiting for.</p>
+      <p>A model served here can then be chosen as a provider (2.10). Programs that keep a model by
+      name, such as Open WebUI, can be given a short one in place of its path:
+      <code>caesar-kernel models settings ALIAS name</code>.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.27 Scheduled jobs</h2>
+      <p>Open <b>Task Scheduler</b> from System Tools. It lists every scheduled job, yours first
+      and then the system's, with the account it runs as under its name, when it runs next, and
+      how its last run went. Choose a job to see what it runs and its recent runs, with what each
+      printed.</p>
+      <p>The last run reads <b>Worked</b>, or <b>Failed</b> with the command's status. A job
+      going now reads <b>Running</b>. One that was ended from outside before it finished, by a
+      restart of the computer for instance, reads <b>Cut off</b>, and Caesar is told. A job
+      written by hand into the scheduler's own files, outside this window, keeps no record of its
+      runs and reads <b>No record</b>; <b>Not run yet</b> means the job has never run.</p>
+      <figure>
+        <img src="fig/38-tasks.png" alt="The Task Scheduler window: the machine's jobs, sys-daily with the jobs that run with it, sys-weekly, and the hourly ones, each with the account it runs as under its name, its next run and how its last run went; beside the list, the place a chosen job is shown; Create and Refresh at the top">
+        <figcaption>Task Scheduler on a new computer: the system's own jobs</figcaption>
+      </figure>
+      <p><b>Create</b> a job by giving it a name (lower-case letters, digits and dashes), the
+      account it runs as, when it runs, and what it runs: a command or a script. <b>Run if
+      missed</b> runs it once the computer is back when it was off at the scheduled time, and
+      starts it again when a restart cut it off, three times at most for one scheduled time. The
+      system's monthly storage check runs this way.
+      <b>Run now</b> runs a job at once; <b>Change</b> and <b>Remove</b> edit or delete it; a
+      system job you changed can be <b>Reset to Caesar's default</b>. A job that fails is
+      reported on the status card (2.23).</p>
+      <p>A line that puts an account in front of its command, as other schedulers' tables are
+      written, can never run here: this scheduler takes no account there, and runs that word as the
+      command. Such a job is shown on the status card and in Task Scheduler as one that can never
+      run, with what to take out of its line.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.28 Games</h2>
+      <p>Open <b>Colosseum</b> from the Games menu to play Windows games from Battle.net, GOG, Epic
+      Games and Amazon Games, and Android games from Google Play. Windows games run under Proton,
+      which lets Windows programs run here. The pages are listed on the left: <b>Library</b>,
+      <b>Battle.net</b>, <b>GOG</b>, <b>Epic Games</b>, <b>Amazon Games</b>, <b>Google Play</b> and
+      <b>Settings</b>. Below them, a line for each says whether Battle.net is ready and whether you
+      are signed in to GOG, Epic and Amazon.</p>
+      <h3>Library</h3>
+      <p>The Library shows every installed game you can play, from every store, each on a tile with
+      its picture from its store, or its initials when the store has none. When the window opens,
+      the game you played last is shown across the top, with its name, its store and a large
+      <b>▶ PLAY</b>; select another tile to put that game there instead. Play starts each game the
+      way its store does: a Battle.net game through Battle.net, a Google Play game in your Android,
+      and the others directly. <b>Open Battle.net</b> shows Battle.net itself.</p>
+      <h3>Battle.net</h3>
+      <p>Colosseum sets up Battle.net the first time you press <b>Install Battle.net</b>, fetching
+      Blizzard's own installer and checking its signature. Then install games from Battle.net as
+      usual. The page says which Proton it runs on, where its games go, and that your sign-in and
+      saves are in your own folder. <b>Open Battle.net</b> and <b>Close Battle.net</b> start and end
+      it. <b>Repair updater</b> clears the part of Battle.net that installs and updates games, for
+      when it is stuck; Battle.net fetches it again on its next start. Its installed games are
+      listed below, each with <b>▶ Play</b>.</p>
+      <p>Battle.net opens as a window of its own. Closing that window leaves it running in the
+      panel's tray; open it again from the tray icon or from Colosseum. A game takes the whole
+      screen unless its own settings say windowed or borderless.</p>
+      <h3>GOG, Epic Games and Amazon Games</h3>
+      <p>Colosseum reaches these three stores itself; none of their own programs is needed. On a
+      store's page, select <b>Sign in to GOG</b> (or <b>Sign in to Epic Games</b>, <b>Sign in to
+      Amazon Games</b>): the store's own sign-in page opens in a window of its own, and closes once
+      you are signed in. There is nothing to copy or paste. The page then says who is signed in,
+      with <b>Refresh</b> and <b>Sign out</b>, and lists every Windows game the account owns. Buy
+      games on the store's site, which <b>GOG Store</b> (or <b>Epic Games Store</b>, <b>Amazon Games
+      Store</b>) opens; they appear here once bought. Each game has:</p>
+      <ul class="plain">
+        <li><b>Install</b> — puts the game in the shared library. Every piece is checked against the
+          store's own checksums before it is put in place. An install that was interrupted is
+          finished by pressing Install again; what is already whole is kept. An Epic game is
+          fetched in parts of about half a gigabyte, so it needs room for the game and about half a
+          gigabyte more, not for the game twice over.</li>
+        <li><b>▶ Play</b> — starts the game in your own Windows folder. The first time you play it,
+          the runtimes it names, such as Visual C++, are installed there, and a GOG game that ships
+          its own setup program has it run.</li>
+        <li><b>Update</b> — shown when the store has a newer version. Only what changed is
+          fetched.</li>
+        <li><b>⋯</b> — <b>Check files</b> compares every file with the store's own list and fetches
+          again any that differ. <b>Uninstall…</b> removes the game from the shared library for
+          every player, once you confirm; saves kept in each player's own folder stay.</li>
+      </ul>
+      <p>Colosseum does several things at once, one for each game: a check of one game can run
+      while another installs. Each game's line says what is happening to it, and the foot of the
+      window says what is running and, for fifteen seconds, how the last one ended. Closing
+      Colosseum pauses installs.</p>
+      <p>The same from a terminal: <code>colosseum gog</code>, <code>colosseum epic</code> or
+      <code>colosseum amazon</code>, followed by <code>signin --window</code>, <code>signout</code>,
+      or <code>games</code> for the games the account owns with their ids, and then
+      <code>install</code>, <code>play</code>, <code>update</code>, <code>verify</code>,
+      <code>check</code> or <code>uninstall</code> with a game's id. <code>colosseum</code> alone
+      lists every command.</p>
+      <h3>Google Play</h3>
+      <p>Google Play's games run in Android, which runs on this computer in a container of its own.
+      It is set up once for everyone, fetching about 1.4 GB onto the games drive: an administrator
+      selects <b>Set up Android</b> on the page, or runs <code>sudo caesar-kernel games android
+      setup</code>. Then each player selects <b>Start Android</b>, which opens their own Android on
+      their desktop and keeps its games, sign-in and saves in their home folder, and <b>Open the
+      Play Store</b> to sign in with their own Google account and install games. <b>Stop
+      Android</b> stops it. Only one person's Android runs at a time; while someone else's runs, the
+      page says whose, and yours starts once they stop theirs.</p>
+      <p>Google asks a new Android to be registered before the Play Store works on it. Select
+      <b>Register this Android with Google</b>: the page shows your Android's id, with <b>Copy</b>
+      and <b>Open Google's page</b>. Sign in there with the same Google account and enter the id;
+      the Play Store works some minutes later. The games in your Android are listed below with
+      <b>▶ Play</b>, and each opens in a window of its own.</p>
+      <h3>Settings</h3>
+      <p><b>Play games in a window</b> keeps Battle.net and every game it starts inside one
+      window. It needs <b>gamescope</b>: install it from Software, and until it is there the
+      setting reads <b>Not available</b>. Turned on with the size <b>screen</b>, that window takes
+      the whole screen, so only Battle.net and its games are seen; with a size such as
+      <b>1600x900</b> it is a window of that size beside the pool. It takes effect the next time
+      Battle.net starts. A game's own settings also offer windowed or borderless. The
+      <b>Proton</b> panel names the version of Proton games run on.</p>
+      <h3>One copy of each game, one account each</h3>
+      <p>Games are kept once, in <code>/games/library</code>, not in anyone's home folder, so home
+      folder backups stay small. Each person plays with their own account. A Battle.net game one
+      person installs shows as installed for everyone else, and Battle.net asks for each player's
+      own sign-in. A GOG, Epic or Amazon game another person installed is offered to you only when
+      your own signed-in account owns it; otherwise its store's page marks it <b>by another
+      player's account</b>. Each person's sign-in, settings and saved games are kept in their own
+      folder under <code>/games/players</code>, which no one else can open. What a game writes stays
+      its player's: each GOG player plays from their own view of the shared files, so the settings,
+      saves and logs a game makes beside itself are theirs; GOG's DOS games save into the player's
+      own folder; and World of Warcraft keeps each player's settings, key bindings and add-on
+      settings apart, in each of its editions. Every account joins the games group when it is made,
+      which is what lets it play.</p>
+      <p>At the foot of the Battle.net, GOG, Epic Games and Amazon Games pages, <b>Remove GOG…</b>
+      (and so on) removes that store for you alone: your sign-in and your own Windows folder for it,
+      with the saves and settings your games keep there. Its games stay in the shared library unless
+      you tick <b>Also remove every … game from the shared library, for every player</b>. Nothing
+      goes until you confirm. From a terminal: <code>colosseum remove battlenet</code>, or
+      <code>colosseum gog remove</code> (<code>epic</code>, <code>amazon</code>), with
+      <code>games</code> after it to remove the games too.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.29 Watching videos</h2>
+      <p>Hand the agent a video in the pool: a YouTube link, another site's, or a video file, and ask
+      what it shows or says. It watches in the background and says when it is done, with a summary;
+      meanwhile you can talk about anything else. Say <b>watch it now</b> to have it watch before it
+      answers.</p>
+      <p>It listens and looks together. The words come from the video's own captions when it has
+      them, and otherwise are heard by the machine's model. The pictures are looked at where the
+      picture changes, a cut or a new slide, at most about once a second: closely for a short video,
+      sparsely for a long one, unless you ask. Both are laid into a timeline of what was shown and
+      what was said, by time, so you can ask about a moment: "what was on screen when she mentioned
+      the budget?"</p>
+      <p>The video, its sound and its pictures are deleted once it has been watched; the timeline and
+      what the agent learned from it are kept. Ask it to keep a video to have the file kept too.</p>
+      <p>The looking is done by this computer's own model, one that <b>sees and hears</b> (2.26), so
+      nothing leaves the computer. A computer without such a model can watch through a provider off
+      the computer only when that is turned on (<code>PROVIDER=on</code> in
+      <code>/etc/caesar/watching.conf</code>): the pictures are then sent to the provider, which
+      charges for them. When the model is busy and not answering, the watch waits for it and says so.
+      With no model chosen, or the model server stopped, only the words are kept: from the captions,
+      or heard by the speech server.</p>
+      <p>Videos are downloaded with yt-dlp, from Software. Downloading is your own act, for your own
+      viewing; nothing is shared onward.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.30 Caesar Vision</h2>
+      <p>The agent can look through a camera when you ask, such as “what is on my desk?” It takes one
+      picture, reads it, and closes the camera again; nothing watches between pictures unless you turn
+      watching on. Every look is an act through the door, like any other (2.5), and a line in the
+      camera log, <code>/var/lib/caesar/vision/log.jsonl</code>, which says when, through which
+      camera, and why.</p>
+      <p>What a picture shows is read by this computer's own model server unless you choose otherwise,
+      so nothing leaves the computer; the model must be one that sees (2.26). To have one of your AI
+      providers read pictures instead, name it in <code>/etc/caesar/vision.conf</code>:
+      <code>LOOKER=</code> the provider, <code>MODEL=</code> its model, and <code>KEY=</code> when
+      its key is kept in the secrets manager (2.24). A provider off the computer is sent each picture,
+      and charges what it charges.</p>
+      <h3>Pictures</h3>
+      <p>Each picture is named for when it was taken and through which camera, such as
+      <code>2026-10-28 14.05.33 - built-in.jpg</code>, so the pictures sort by date. A picture nobody
+      kept is removed after 21 days, and the oldest go first should all of them take more than 5 GB.
+      A picture kept, by asking the agent or in the Vision window, is kept with a memory and comes back
+      whenever that memory is recalled.</p>
+      <h3>Cameras</h3>
+      <p>The computer's own camera is called <b>built-in</b>. A camera on the network is added with a
+      terminal and sudo: <code>caesar-vision add</code> and a name, with the camera's address
+      (<code>rtsp://</code>, or <code>http://</code> for one that serves a stream or a still picture)
+      given on standard input. The address usually carries the camera's password, so it is kept in the
+      key vault, never on a command line or in a setting anyone can read.
+      <code>caesar-vision cameras</code> lists the cameras by name, and <code>caesar-vision
+      remove</code> lets one go.</p>
+      <h3>People</h3>
+      <p>The agent knows a person only once they are introduced, at their own word: ask it to
+      introduce you, and say that you agree. You are given a folder of your own, holding the pictures
+      of you it was given, what you said when you agreed, and the memories kept about you. You can name
+      your own account too, which lets your face choose it at the sign-in screen. A person in a new
+      picture is named only by comparing them with those folders, and how sure the comparison was is
+      said with the name. Anyone else is a person the agent does not know: never compared, and never
+      kept. <code>caesar-vision people</code> lists the people introduced, and <code>caesar-vision
+      forget</code> and a name takes that person's folder away whole.</p>
+      <h3>On and off</h3>
+      <p>Caesar Vision is off until it is turned on. Off, no camera is watched, though a picture is
+      still taken whenever someone asks for one. On, three things happen:</p>
+      <ul>
+        <li>The computer's own camera is watched for movement.</li>
+        <li>At the sign-in screen, a face chooses its own account. The password is still asked: a
+          face is a guess at who is there, never proof.</li>
+        <li>When someone other than the person whose screen it is sits at the computer, a stranger
+          or a person introduced whose account is another, the screen locks. Locking keeps the open
+          work as it was.</li>
+      </ul>
+      <p>Turn it on and off in the Vision window, or with <code>caesar-vision on</code> and
+      <code>caesar-vision off</code>.</p>
+      <h3>Watching</h3>
+      <p>A watched camera is read very small five times a second, to see whether anything moved, and
+      whole once a second. When something moves, the latest picture is read: what it shows and who is
+      in it, kept in the record of what was seen (<code>caesar-vision seen</code>). Someone the agent
+      does not know raises a notice on the screen, <b>Someone I do not know</b>, at most once in a
+      while; known people, animals and things are only recorded. A camera on the network can be
+      watched too, at a person's word: <code>caesar-vision watch on</code> and its name. While a
+      camera is watched or shown live, the status card says <b>Watching:</b> and names it, and the
+      dot on the bar has a small square at its corner (2.23).</p>
+      <h3>The Vision window</h3>
+      <figure>
+        <img src="fig/43-vision.png" alt="The Caesar Vision window: Pictures and Live tabs, Caesar Vision is off with On and Off buttons, a search box for names, what was seen, people and memories, the Newest first and All lists, 0 pictures, and Choose a picture on the right">
+        <figcaption>The Vision window on a computer with no pictures yet</figcaption>
+      </figure>
+      <p>Open <b>Caesar Vision</b> from System Tools. <b>Pictures</b> lists every picture held,
+      <b>Newest first</b>, <b>Oldest first</b> or <b>By name</b>, and shows <b>All</b>,
+      <b>Recent</b>, <b>Kept</b> or <b>People</b>, with a search across names, what was seen, people
+      and memories. Choose a picture to see it: <b>Keep, with a memory</b> keeps it, and
+      <b>Delete</b> takes it away for good once you confirm. <b>Live</b> shows a camera: choose it,
+      then <b>Show live</b>, and <b>Stop</b>. <b>On</b> and <b>Off</b> turn Caesar Vision on and
+      off, and the window says which it is. On a computer with no camera, it says so.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.31 Email links</h2>
+      <p>An email link, on a web page or in a program, opens a new message in your own email,
+      ready to write, with its address and subject filled in. The first time you open one, Caesar
+      asks which email you use: <b>Gmail</b>, <b>Outlook</b> or <b>Yahoo Mail</b>, which open in
+      the browser, or a mail program if one is installed. It remembers your choice; to change it,
+      open <b>Email links</b> from the menu. Each account keeps its own choice.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.32 Reporting a bug</h2>
+      <p>Caesar is a beta. When something does not work as it should, report it, in either of
+      these ways:</p>
+      <ul class="plain">
+        <li><b>The form</b> on modulatio.ai/caesar, under <b>Report a bug</b>: your email address,
+        what went wrong in a few words, what happened, what you expected, the steps that make it
+        happen again, and the computer. Up to three files can go with it, such as screenshots or
+        logs, 10 MB each.</li>
+        <li><b>Your own email</b>, to <b>contact@modulatio.ai</b>, with the subject ending in
+        <code>[Bug Report]</code>, such as <code>Caesar 0.8.32: the panel clock stops [Bug
+        Report]</code>.</li>
+      </ul>
+      <p>You can also ask the agent to report a bug for you. It gathers the version, the computer
+      and what shows the fault, shows you what will be sent, and sends it with your email address
+      once you agree.</p>
+      <p>Every report is answered by email with its own number, such as <code>CB-0001</code>. Keep
+      the number in the subject when you write about the same report, and include it in the title
+      on the form to add to a report: what you send is filed with the report it names. Modulatio
+      may write to you with questions. Email is not instant: the reply can take several minutes,
+      and if none comes, look in your spam or junk folder before sending the report again.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.33 Harnesses of your own, and the plain Feng TUI</h2>
+      <p>The <b>AI Harnesses</b> category of the menu holds six entries that open a terminal:
+      <b>Claude Code</b>, <b>Codex</b>, <b>Antigravity</b>, <b>Hermes</b>, <b>OpenCode</b> and
+      <b>Feng TUI</b>. None of them is Caesar. Each runs as you, in your own account, and none
+      holds Caesar's tools or reads its memory. Caesar itself is in the pool, and only there:
+      one mind acts on the computer at a time.</p>
+      <p>The first five start the program as its maker ships it, with your own sign-in. A
+      program that is not installed for your account asks whether to install it. Answer yes,
+      and the entry fetches it from its maker into your own account and starts it. Nothing is
+      installed for the whole computer. Hermes asks its own questions when it first
+      starts. The copy Caesar fetched for its
+      own seat is a separate one and is not used here, and what the seat is held to does not
+      apply to yours.</p>
+      <p><b>Feng TUI</b> here is a conversation with a model that is not Caesar. It uses the
+      same setup as Caesar's own Feng TUI: the providers set up on this computer and their
+      keys, the ChatGPT and xAI sign-ins, and this computer's own models with the settings
+      given to them in the Model Manager. With no choice of your own it uses the model chosen
+      for the machine. <code>/model</code> chooses another for your own conversations, kept
+      in <code>~/.config/feng-tui</code>; it does not change what Caesar uses. A Claude
+      subscription and Antigravity's Google sign-in are not offered here, as they are not
+      offered to Feng TUI in the pool. It does not come online, hears nothing spoken at the
+      desktop, and keeps its conversation in <code>~/.local/state/feng-tui</code>. An account
+      that does not administer the computer keeps providers and keys of its own instead.</p>
+      <p>It has tools of its own: it can read, list and search files, write and edit them, and
+      run commands, all as you. What it may do without asking is narrow:</p>
+      <ul class="plain">
+        <li>Inside its workspace, the folder <code>~/feng-tui</code>, it reads and writes
+          freely.</li>
+        <li>A file anywhere else is asked about first. You answer with one key:
+          <b>o</b> allows it once, <b>s</b> for this conversation, <b>a</b> always, <b>d</b>
+          denies; Esc denies too. Session and always are for that folder and that kind of act:
+          allowing it to read a folder does not allow it to write there. A folder as broad as
+          your whole home, or one whose path has a part starting with a dot, where keys are
+          kept, can only be allowed once.</li>
+        <li>A command runs at once, unless it is one that Hermes Agent's own rules call
+          dangerous: a recursive delete, a forced push, piping a download into a shell and the
+          like. A dangerous command is shown to you with what is dangerous in it, and answered
+          the same four ways; session and always then cover every command of that kind. A few
+          commands are never run and you are not asked: deleting the whole disk, formatting a
+          drive, shutting the computer down.</li>
+        <li>A command that names <code>sudo</code> or one of Caesar's own helpers is always
+          shown to you first, and can only be allowed once at a time: an account that
+          administers this computer is let through those without a password. Commands are
+          run without the providers' keys.</li>
+        <li>With nobody at the keyboard, the answer is no.</li>
+      </ul>
+      <p><code>/approvals</code> shows what is allowed now. <code>/rp</code> takes every
+      permission back, the kept ones included; they are kept in
+      <code>~/.config/feng-tui/permissions.json</code>.</p>
+      <div class="warn"><p>The rules for commands are Hermes Agent's, copied as they are. They do
+      not treat <code>kill</code> or installing programs as dangerous, so those run without a
+      question. The plain Feng TUI can do whatever your account can do. Give it
+      work you would give a program you run yourself.</p></div>
+      <p>The permission method follows the Leader in Modulatio for files and Hermes Agent, by
+      Nous Research, for commands; Hermes's rules are included under its MIT licence.</p>
+    </div>
+  </section>
+</div>
+
+<div class="part" id="building">
+  <p class="partlabel">Part three — Building Caesar from source</p>
+
+  <section>
+    <div class="col stack">
+      <h2>3.1 About the build recipe</h2>
+      <p>Caesar is compiled from source. It is not based on another distribution, and it does not
+      require a dedicated build system.</p>
+      <p>The build recipe is a folder of numbered scripts, and <b>the file names determine the
+      order</b> in which they run. All of them are standard shell scripts that you can read.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Item</th><th class="n">Count</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Chapters</td><td class="n">46</td><td>Numbered scripts, read in name order</td></tr>
+          <tr><td>Steps</td><td class="n">275</td><td>One per package or configuration item</td></tr>
+          <tr><td>Sources</td><td class="n">482</td><td>Each with its publisher's checksum</td></tr>
+          <tr><td>Build time</td><td class="n">15.7 h</td><td>On 16 cores, from an empty disk</td></tr>
+          <tr><td>Recorded files</td><td class="n">219,163</td><td>Fingerprinted for system integrity checks</td></tr>
+          <tr><td>Kernel modules</td><td class="n">5,531</td><td>Built to support hardware not yet in use</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>3.2 What you need</h2>
+      <ul class="plain">
+        <li>A Linux computer with root access.</li>
+        <li>An empty disk or dataset with about 50 GB free.</li>
+        <li>Sufficient time. A build on 16 cores took 15.7 hours; builds on fewer cores take longer.</li>
+      </ul>
+      <p>No toolchain preparation is required. The recipe builds its own toolchain.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>3.3 Run the build</h2>
+      <p>A chapter's <em>number</em> determines where it runs. Chapters below 7 run on the build
+      host; chapters 7 and higher run inside the system being built. A single script handles this
+      automatically, so you run three commands and wait for the build to complete.</p>
+    </div>
+    <pre>cd build
+CAESAR_LFS=/mnt/lfs ./04-host.sh                  <span style="color:var(--faint)"># creates the tree and the build account</span>
+./fetch-sources.sh /mnt/lfs/sources               <span style="color:var(--faint)"># single download point; every source checksummed</span>
+setsid nohup env CAESAR_LFS=/mnt/lfs \
+      ./run-recipe.sh &gt; /dev/null 2&gt;&amp;1 &amp;          <span style="color:var(--faint)"># runs the full recipe, detached</span></pre>
+    <div class="col stack" style="margin-top:1.2rem">
+      <p>The last command runs detached, so closing the terminal does not stop the build. To
+      monitor progress, run:</p>
+    </div>
+    <pre>tail -f /mnt/lfs/var/log/caesar-build/recipe.log</pre>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>3.4 Resuming a stopped build</h2>
+      <p>If the build stops, it reports the chapter at which it stopped. Resolve the cause, then
+      restart the build <b>at that chapter</b>. Earlier chapters are not repeated:</p>
+    </div>
+    <pre>./run-recipe.sh 21-graphics.sh</pre>
+    <div class="col stack" style="margin-top:1.4rem">
+      <p>Restarting is fast because every step records a fingerprint of <em>its own text</em>. When
+      the recipe runs again, completed steps are skipped. If you change a flag in one step,
+      <b>only that package</b> is rebuilt.</p>
+      <p>In a measured build, a chapter that took 2 h 25 m on its first run was verified again in
+      <b>62 seconds</b>.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>3.5 Build time by component</h2>
+      <p>The following times are measured, not estimated. The browser engine alone comprises 9,451
+      files and accounts for more than a quarter of the total build time.</p>
+    </div>
+    <div class="chart">
+      <div class="bar"><span class="lab">browser engine</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">4 h 11 m</span></div>
+      <div class="bar"><span class="lab">base system</span><span class="track"><span class="fill" style="width:58.1%"></span></span><span class="val">2 h 26 m</span></div>
+      <div class="bar"><span class="lab">graphics</span><span class="track"><span class="fill" style="width:31.0%"></span></span><span class="val">1 h 18 m</span></div>
+      <div class="bar"><span class="lab">the kernel</span><span class="track"><span class="fill" style="width:23.5%"></span></span><span class="val">59 m</span></div>
+      <div class="bar"><span class="lab">temporary tools</span><span class="track"><span class="fill" style="width:21.7%"></span></span><span class="val">54 m</span></div>
+      <div class="bar"><span class="lab">the toolkit</span><span class="track"><span class="fill" style="width:17.7%"></span></span><span class="val">44 m</span></div>
+      <div class="bar"><span class="lab">javascript runtime</span><span class="track"><span class="fill" style="width:16.5%"></span></span><span class="val">41 m</span></div>
+      <div class="bar"><span class="lab">cross-toolchain</span><span class="track"><span class="fill" style="width:10.8%"></span></span><span class="val">27 m</span></div>
+      <div class="bar"><span class="lab">last temp tools</span><span class="track"><span class="fill" style="width:10.4%"></span></span><span class="val">26 m</span></div>
+      <div class="bar"><span class="lab">inference engine</span><span class="track"><span class="fill" style="width:9.2%"></span></span><span class="val">23 m</span></div>
+      <div class="bar other"><span class="lab">other 36 chapters</span><span class="track"><span class="fill" style="width:77.6%"></span></span><span class="val">3 h 15 m</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>3.6 Installation media size</h2>
+      <p>The installation media for 0.8.32, <code>caesar-0.8.32.iso</code>, is 5,225,420,800 bytes,
+      about 5.2 GB. The completed build tree measured 43.4 GB on 2026-09-12.</p>
+      <p>The difference is not due to compression. Two thirds of the build tree consists of build
+      host files rather than files of the finished system, and these are excluded.</p>
+    </div>
+    <div class="shipbar">
+      <div style="background:var(--accent); flex:5.2">5.2 GB ships</div>
+      <div style="background:#3a4152; flex:11.6">11.6 kernel objects</div>
+      <div style="background:#2f3545; flex:4.9">4.9 sources</div>
+      <div style="background:#262b38; flex:1.7">1.7</div>
+      <div style="background:var(--edge); flex:10.0">9.9 other</div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--accent)"></i>the system — 15.2 GB</span>
+      <span><i class="sw" style="background:#3a4152"></i>kernel compile leftovers — 11.6 GB</span>
+      <span><i class="sw" style="background:#2f3545"></i>staged sources — 4.9 GB</span>
+      <span><i class="sw" style="background:#262b38"></i>temporary toolchain — 1.7 GB</span>
+      <span><i class="sw" style="background:var(--edge)"></i>logs, caches, identity — 9.9 GB</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>3.7 Creating installation media</h2>
+      <p>Run the following command as root on a completed build tree:</p>
+    </div>
+    <pre>tools/build-image.sh /mnt/lfs caesar.iso</pre>
+    <div class="col stack" style="margin-top:1.2rem">
+      <p>Without a file name, the media is named for the version the tree carries, such as
+      <code>caesar-0.8.32.iso</code>.</p>
+      <p>The command stops before it begins if the tree contains a key, a password, or any shell
+      history. This ensures that distributed installation media contains no personal data,
+      regardless of who built it.</p>
+    </div>
+    <div class="warn col"><b>Build the image on a computer that is not running Caesar,</b> or from a
+    tree that is not the running system. Building from a running Caesar system can silently omit
+    entire parts of the system from the image.</div>
+  </section>
+</div>
+
+<!-- ─────────────────────────  PART FOUR  ───────────────────────── -->
+<div class="part" id="unfinished">
+  <p class="partlabel">Part four — Known issues</p>
+
+  <section>
+    <div class="col stack">
+      <h2>4.1 Issues you may encounter</h2>
+      <p>The following issues were observed on an installed system, not predicted. You are likely
+      to encounter them.</p>
+      <ul class="plain">
+        <li><b>Keys must be entered manually</b> in a virtual machine. Copy and paste between host
+          and guest is not yet supported, and a mistyped key is reported only as a rejection.</li>
+        <li><b>NoMachine at the sign-in screen.</b> When you connect with NoMachine while the
+          sign-in screen is shown, NoMachine's welcome notice takes the keyboard when it opens,
+          and the sign-in screen takes it back half a second later. If what you type still does
+          not reach the password box, close the notice, then select the password box before
+          typing. Characters you type may not appear until the screen is redrawn, although
+          they are received.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>4.2 Cosmetic issues</h2>
+      <p>These issues affect presentation, not function.</p>
+      <ul class="plain">
+        <li>The shipped shortcuts have none for the skills folder; open <b>Skills</b> from the
+          menu, or add it to the shortcut bar with <b>+</b>.</li>
+        <li>In a narrow Conversations window, the format list and <b>Export…</b> are cut off at
+          the right. Maximise the window to reach them.</li>
+        <li>Task Scheduler cuts long job names short in its list; select a job to see its full
+          name.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>4.3 Internal issues</h2>
+      <p>These issues are not visible during normal use, but they are the most significant.</p>
+      <ul class="plain">
+        <li>Some components were built with a capability disabled and no documented reason. Each
+          will be either corrected or documented.</li>
+        <li>Keys and sign-in tokens are stored in <b>several formats</b> in one folder: the keys
+          for AI providers in one file, the local model server's key and each sign-in token in a
+          file of its own, and the other keys in the secrets manager (2.24). No single component
+          reads all of them. They are being consolidated into a single store.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<footer class="col">
+  <p>Caesar is a Linux distribution compiled from source and designed to run an integrated AI
+  agent. All screenshots in this manual are from an installed system, and all figures were
+  measured from a build on 2026-09-12, not estimated.</p>
+</footer>
+
+</div>
