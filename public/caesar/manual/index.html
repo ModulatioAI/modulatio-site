@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.8.32</p>
+  <p class="eyebrow">User manual · Caesar 0.8.33</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -1520,15 +1520,17 @@
       windows on the pool's screen use the whole screen, over the pool, and puts them back
       beside it; that choice is kept too. Each of the two buttons is drawn in the accent colour
       while it is on. Dialogs and windows of a fixed size are left
-      floating above, and so is a program that will not be as small as the place left for
-      it; it joins the others by itself once there is room. When a window closes and two are
+      floating above. A program that will not be as small as the place beside the front window
+      is given half of the largest place instead; if no place has room for it, it floats above
+      and joins the others by itself once there is room. When a window closes and two are
       left one above the other as long thin strips, they are put side by side, unless you
       turned that split yourself. <b>Super+arrows</b> then move to the
       window in that direction, <b>Super+Shift+arrows</b> swap the front window with its
       neighbour, and <b>Super+Ctrl+arrows</b> move its edge; the edge between two windows can
       also be dragged, and a tiled window dropped on another swaps places with it. <b>Super+F</b> shows the front tiled window over the whole tiling area, and
       puts it back when pressed again. <b>Super+S</b> turns the split the front window is in:
-      side by side becomes one above the other, and back. A window you drag away or place with a place button leaves the tiling.
+      side by side becomes one above the other, and back. <b>Super+Shift+S</b> lays the windows
+      out evenly again, undoing every edge you moved and every split you turned. A window you drag away or place with a place button leaves the tiling.
       Your choice is kept for the next sign-in. Tiling is off until you switch it on, and with
       it off the windows are placed by hand as before.</p>
       <p><b>Super+F11</b> gives the front window the whole screen, over the bar and with no title
@@ -2188,7 +2190,7 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
   <section>
     <div class="col stack">
       <h2>4.1 Issues you may encounter</h2>
-      <p>The following issues were observed on an installed system at Caesar 0.8.32, not predicted.
+      <p>The following issues were observed on installed systems up to Caesar 0.8.33, not predicted.
       You are likely to encounter them.</p>
       <ul class="plain">
         <li><b>Keys must be entered manually</b> in a virtual machine. Copy and paste between host
@@ -2202,15 +2204,17 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
         <li><b>NoMachine and the Super key.</b> The pool takes the keyboard when it starts, after
           an update or a restart of the pool. If a NoMachine window showing another computer is in
           front at that moment, the other computer can be left with the Super key held, and the
-          keys you type there act as shortcuts. The cause is found and the correction comes with
-          the next update.</li>
+          keys you type there act as shortcuts. From update 0.8.33 the pool takes the keyboard
+          with a key of its own instead of Super+T, which removes the cause as found; it has not
+          yet been seen side by side with the old way. If it happens, press and release the
+          Super key once on the other computer.</li>
         <li><b>The harnesses in the pool do not all do the same yet.</b> Claude Code and
           Antigravity are the furthest along: their helpers pass the door and are named in the
-          record (2.5). Codex, Grok Build and OpenCode have no helpers that reach the door, and
-          Grok Build and OpenCode are not handed the agent's memory cues with each message. The
-          differences are being measured one harness at a time and closed.</li>
-        <li><b>Tiling has no workspaces.</b> Windows tile on the screen they are on (2.22); there
-          are no numbered workspaces to send a window to yet.</li>
+          record (2.5). From update 0.8.33 Grok Build's helpers do too, and its own scheduler,
+          searches and picture tools are refused in the pool; this was tried outside the pool
+          only. Codex and OpenCode have no helpers that reach the door, and Grok Build and
+          OpenCode are not handed the agent's memory cues with each message. The differences
+          are being measured one harness at a time and closed.</li>
         <li><b>An old Antigravity conversation is not taken up</b> after an update changes the
           tools its agent is offered (2.11). The pool says so and begins a new conversation; the
           old one can still be read in Conversations.</li>
