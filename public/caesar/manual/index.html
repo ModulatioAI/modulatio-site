@@ -775,10 +775,11 @@
   <section>
     <div class="col stack">
       <h2>2.9 Settings</h2>
-      <p>Open your home folder and select <b>Applications</b> in the left column. Installed
-      programs are organized by category.</p>
+      <p>Open the menu at the left end of the bar, or open your home folder and select
+      <b>Applications</b> in the left column. Installed programs are organized by category. A
+      category with nothing in it is not shown.</p>
       <figure>
-        <img src="fig/22-apps.png" alt="The menu's categories: Favorites, All Applications, Accessories, Education &amp; Science, Graphics, Internet, Office, Programming, Sound &amp; Video, System Tools, LXQt Settings and Preferences">
+        <img src="fig/22-apps.png" alt="The menu's categories on a new installation: Favorites, All Applications, Accessories, AI Harnesses, Games, Graphics, Internet, Sound &amp; Video, System Tools, LXQt Settings and Preferences">
         <figcaption>Click a category to open it</figcaption>
       </figure>
       <p>The tools that manage the computer are all in <b>System Tools</b>. <b>Preferences</b> holds
@@ -2170,8 +2171,8 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
   <section>
     <div class="col stack">
       <h2>4.1 Issues you may encounter</h2>
-      <p>The following issues were observed on an installed system, not predicted. You are likely
-      to encounter them.</p>
+      <p>The following issues were observed on an installed system at Caesar 0.8.32, not predicted.
+      You are likely to encounter them.</p>
       <ul class="plain">
         <li><b>Keys must be entered manually</b> in a virtual machine. Copy and paste between host
           and guest is not yet supported, and a mistyped key is reported only as a rejection.</li>
@@ -2181,6 +2182,21 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
           not reach the password box, close the notice, then select the password box before
           typing. Characters you type may not appear until the screen is redrawn, although
           they are received.</li>
+        <li><b>NoMachine and the Super key.</b> The pool takes the keyboard when it starts, after
+          an update or a restart of the pool. If a NoMachine window showing another computer is in
+          front at that moment, the other computer can be left with the Super key held, and the
+          keys you type there act as shortcuts. The cause is found and the correction comes with
+          the next update.</li>
+        <li><b>The harnesses in the pool do not all do the same yet.</b> Claude Code and
+          Antigravity are the furthest along: their helpers pass the door and are named in the
+          record (2.5). Codex, Grok Build and OpenCode have no helpers that reach the door, and
+          Grok Build and OpenCode are not handed the agent's memory cues with each message. The
+          differences are being measured one harness at a time and closed.</li>
+        <li><b>Tiling has no workspaces.</b> Windows tile on the screen they are on (2.22); there
+          are no numbered workspaces to send a window to yet.</li>
+        <li><b>An old Antigravity conversation is not taken up</b> after an update changes the
+          tools its agent is offered (2.11). The pool says so and begins a new conversation; the
+          old one can still be read in Conversations.</li>
       </ul>
     </div>
   </section>
@@ -2196,6 +2212,9 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
           the right. Maximise the window to reach them.</li>
         <li>Task Scheduler cuts long job names short in its list; select a job to see its full
           name.</li>
+        <li>In the Antigravity seat, the lines that separate the turns are narrower than the pool,
+          and a long list of tools is cut to its first few names. Both are drawn by Antigravity
+          itself.</li>
       </ul>
     </div>
   </section>
@@ -2211,6 +2230,10 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
           for AI providers in one file, the local model server's key and each sign-in token in a
           file of its own, and the other keys in the secrets manager (2.24). No single component
           reads all of them. They are being consolidated into a single store.</li>
+        <li>The door's record names a harness's helper by what the harness says of it (2.5).
+          Claude Code gives a helper's kind and its id, not which helper started another. An
+          action that a capability hands to a program of its own, such as an update, is recorded
+          by that program without the helper's name.</li>
       </ul>
     </div>
   </section>
