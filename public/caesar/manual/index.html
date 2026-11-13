@@ -2037,17 +2037,24 @@
       require a dedicated build system.</p>
       <p>The build recipe is a folder of numbered scripts, and <b>the file names determine the
       order</b> in which they run. All of them are standard shell scripts that you can read.</p>
+      <p>The recipe is public, with Caesar's own code and its patches, at
+      <a href="https://gitlab.com/modulatio-labs/modulatio-labs-caesar">gitlab.com/modulatio-labs/modulatio-labs-caesar</a>.
+      One file is not in that copy: the Linux From Scratch book
+      (<code>build/book-resolved.xml</code>), which two of the chapters are generated from. Its
+      licence does not allow it to be republished, so fetch the book, version r13.0-systemd, from
+      linuxfromscratch.org. The counts below were read from the recipe and the build tree on
+      2026-11-13.</p>
     </div>
     <div class="tablewrap">
       <table>
         <thead><tr><th>Item</th><th class="n">Count</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td>Chapters</td><td class="n">46</td><td>Numbered scripts, read in name order</td></tr>
-          <tr><td>Steps</td><td class="n">275</td><td>One per package or configuration item</td></tr>
-          <tr><td>Sources</td><td class="n">482</td><td>Each with its publisher's checksum</td></tr>
-          <tr><td>Build time</td><td class="n">15.7 h</td><td>On 16 cores, from an empty disk</td></tr>
-          <tr><td>Recorded files</td><td class="n">219,163</td><td>Fingerprinted for system integrity checks</td></tr>
-          <tr><td>Kernel modules</td><td class="n">5,531</td><td>Built to support hardware not yet in use</td></tr>
+          <tr><td>Chapters</td><td class="n">48</td><td>Numbered scripts, read in name order</td></tr>
+          <tr><td>Steps</td><td class="n">563</td><td>One per package or configuration item</td></tr>
+          <tr><td>Sources</td><td class="n">531</td><td>Each with its publisher's checksum</td></tr>
+          <tr><td>Build time</td><td class="n">15.7 h</td><td>On 16 cores, from an empty disk, on 2026-09-12</td></tr>
+          <tr><td>Recorded files</td><td class="n">227,094</td><td>Fingerprinted for system integrity checks</td></tr>
+          <tr><td>Kernel modules</td><td class="n">5,534</td><td>Built to support hardware not yet in use</td></tr>
         </tbody>
       </table>
     </div>
@@ -2057,11 +2064,15 @@
     <div class="col stack">
       <h2>3.2 What you need</h2>
       <ul class="plain">
-        <li>A Linux computer with root access.</li>
-        <li>An empty disk or dataset with about 50 GB free.</li>
-        <li>Sufficient time. A build on 16 cores took 15.7 hours; builds on fewer cores take longer.</li>
+        <li>A Linux computer with root access, a compiler, <code>make</code> and the ordinary build
+        tools.</li>
+        <li>An empty disk or dataset with about 60 GB free. The finished tree, with its sources,
+        measured 50.6 GB on 2026-11-13.</li>
+        <li>Sufficient time. A full build on 16 cores took 15.7 hours on 2026-09-12; builds on fewer
+        cores take longer, and the recipe has grown by two chapters since.</li>
       </ul>
-      <p>No toolchain preparation is required. The recipe builds its own toolchain.</p>
+      <p>No toolchain preparation is required beyond that. The recipe builds its own toolchain
+      and reads nothing else from the build host.</p>
     </div>
   </section>
 
@@ -2103,7 +2114,8 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
   <section>
     <div class="col stack">
       <h2>3.5 Build time by component</h2>
-      <p>The following times are measured, not estimated. The browser engine alone comprises 9,451
+      <p>The following times are measured, not estimated, on the full build of 2026-09-12; what
+      the recipe has gained since is not in them. The browser engine alone comprises 9,451
       files and accounts for more than a quarter of the total build time.</p>
     </div>
     <div class="chart">
@@ -2125,23 +2137,23 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
     <div class="col stack">
       <h2>3.6 Installation media size</h2>
       <p>The installation media for 0.8.32, <code>caesar-0.8.32.iso</code>, is 5,225,420,800 bytes,
-      about 5.2 GB. The completed build tree measured 43.4 GB on 2026-09-12.</p>
-      <p>The difference is not due to compression. Two thirds of the build tree consists of build
+      about 5.2 GB. The completed build tree measured 50.6 GB on 2026-11-13.</p>
+      <p>The difference is not due to compression. More than two thirds of the build tree consists of build
       host files rather than files of the finished system, and these are excluded.</p>
     </div>
     <div class="shipbar">
-      <div style="background:var(--accent); flex:5.2">5.2 GB ships</div>
-      <div style="background:#3a4152; flex:11.6">11.6 kernel objects</div>
-      <div style="background:#2f3545; flex:4.9">4.9 sources</div>
-      <div style="background:#262b38; flex:1.7">1.7</div>
-      <div style="background:var(--edge); flex:10.0">9.9 other</div>
+      <div style="background:var(--accent); flex:14.6">the system · 5.2 GB ships</div>
+      <div style="background:#3a4152; flex:23.8">23.8 kernel objects</div>
+      <div style="background:#2f3545; flex:8.9">8.9 sources</div>
+      <div style="background:#262b38; flex:1.8">1.8</div>
+      <div style="background:var(--edge); flex:1.6">1.6</div>
     </div>
     <div class="legend">
-      <span><i class="sw" style="background:var(--accent)"></i>the system — 15.2 GB</span>
-      <span><i class="sw" style="background:#3a4152"></i>kernel compile leftovers — 11.6 GB</span>
-      <span><i class="sw" style="background:#2f3545"></i>staged sources — 4.9 GB</span>
-      <span><i class="sw" style="background:#262b38"></i>temporary toolchain — 1.7 GB</span>
-      <span><i class="sw" style="background:var(--edge)"></i>logs, caches, identity — 9.9 GB</span>
+      <span><i class="sw" style="background:var(--accent)"></i>the system — 14.6 GB</span>
+      <span><i class="sw" style="background:#3a4152"></i>kernel and module compile leftovers — 23.8 GB</span>
+      <span><i class="sw" style="background:#2f3545"></i>staged sources — 8.9 GB</span>
+      <span><i class="sw" style="background:#262b38"></i>temporary toolchain — 1.8 GB</span>
+      <span><i class="sw" style="background:var(--edge)"></i>logs, caches, build-side stores — 1.6 GB</span>
     </div>
   </section>
 
@@ -2157,7 +2169,12 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
       <p>The command stops before it begins if the tree contains a key, a password, or any shell
       history. This ensures that distributed installation media contains no personal data,
       regardless of who built it.</p>
+      <p>Compressing the tree takes most of the time: the 0.8.32 media took about eight minutes
+      on 32 processor threads. A media made this way is not signed, and the command says
+      that it cannot make a stick. To make one that <b>Caesar On a Stick</b> accepts, name your
+      repository's private key, and the image is signed with it:</p>
     </div>
+    <pre>CAESAR_SIGNING_KEY=/path/to/your-key.pem tools/build-image.sh /mnt/lfs</pre>
     <div class="warn col"><b>Build the image on a computer that is not running Caesar,</b> or from a
     tree that is not the running system. Building from a running Caesar system can silently omit
     entire parts of the system from the image.</div>
@@ -2242,7 +2259,8 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
 <footer class="col">
   <p>Caesar is a Linux distribution compiled from source and designed to run an integrated AI
   agent. All screenshots in this manual are from an installed system, and all figures were
-  measured from a build on 2026-09-12, not estimated.</p>
+  measured, not estimated: build times from a full build on 2026-09-12, counts and sizes on
+  2026-11-13.</p>
 </footer>
 
 </div>
