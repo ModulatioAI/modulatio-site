@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.8.33</p>
+  <p class="eyebrow">User manual · Caesar 0.9.0</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -440,6 +440,17 @@
     <div class="note col"><b>Important:</b> your user account and the agent's root account are
     separate. For administrative tasks, such as installing a system program or changing a driver,
     use <code>sudo</code> and enter <em>your</em> password, as on any Linux system.</div>
+    <div class="note col"><b>When a window asks your password.</b> From update 0.9.0, a program
+    running in your account acts as root only through the agent, which judges each act and
+    records it, or through a window that asks <em>your</em> password. The window says what is
+    asked for. The password is remembered for fifteen minutes by the program that asked, and by
+    no other. Everyday acts ask nothing: the theme, displays, the time zone, networks, sound,
+    removable drives, your own scheduled jobs and conversations, and choosing an installed model.
+    Accounts, drives, updates, the store, stored keys, root's password, AI providers and the
+    agent's own settings ask. The agent itself is never asked. Its memory, what it sensed and the
+    record of its acts are readable by root alone; read them with <code>sudo</code>.
+    The 0.9.0 update makes a new root password, since the old one could have been read:
+    <code>sudo caesar-kernel root-phrase</code> shows it.</div>
   </section>
 
   <section>
@@ -797,9 +808,9 @@
         <thead><tr><th>Setting</th><th>Tool</th><th>Password required</th></tr></thead>
         <tbody>
           <tr><td>Colours</td><td>The brush, or <code>/theme</code> in the conversation</td><td class="need">No</td></tr>
-          <tr><td>AI providers, keys and the agent harness</td><td><b>AI providers</b>, or the sliders shortcut on the bar; <code>/providers</code> and <code>/model</code> in the conversation</td><td class="need">No</td></tr>
+          <tr><td>AI providers, keys and the agent harness</td><td><b>AI providers</b>, or the sliders shortcut on the bar; <code>/providers</code> and <code>/model</code> in the conversation</td><td class="need">Choosing an installed model or putting a new key in: no. Adding or changing a provider, or showing a stored key: yes</td></tr>
           <tr><td>The network</td><td><b>Network</b></td><td class="need">No</td></tr>
-          <tr><td>User accounts</td><td><b>Accounts</b></td><td class="need">No. It cannot modify the root account</td></tr>
+          <tr><td>User accounts</td><td><b>Accounts</b></td><td class="need">Listing: no. Creating or changing an account: yes. It cannot modify the root account</td></tr>
           <tr><td>Displays: arrangement, resolution, scale, turn, background and the main screen</td><td><b>Pictor</b></td><td class="need">No</td></tr>
           <tr><td>The time zone the whole computer keeps, and every clock with it</td><td><b>Time zone</b>, also in LXQt Settings; the Time zone row in <b>Locale</b>; or right-click the clock on the bar and choose <b>Set the time zone…</b></td><td class="need">No</td></tr>
           <tr><td>Power: a dark screen when idle, the lid, the sleep keys and a low battery</td><td><b>Power Management</b>, in LXQt Settings</td><td class="need">No</td></tr>
@@ -826,12 +837,12 @@
       earlier version, accounts that had saved power settings had the lid, the sleep keys, the low
       battery, and an idle time set to suspend or hibernate, set back to doing nothing, once;
       choices made since are kept.</p>
-      <p>These tools do not require a password <em>because</em> their scope is limited. A button
-      cannot present a password prompt, so security is provided by restricting each tool to a
-      single function.</p>
+      <p>Each tool is limited to its own settings. What it changes for you alone, or what any
+      person may change on a desktop, needs no password. What changes the system, another person's
+      account or the agent asks your password in a window, remembered fifteen minutes by that tool.</p>
       <p><b>Keys and passwords you enter</b> are stored in a single location on the disk that only
-      the root account can access. Stored keys are never displayed, either to you or in the
-      agent's conversation.</p>
+      the root account can access. Stored keys are never displayed in the agent's
+      conversation; their names are listed freely, and reading or using one asks your password.</p>
       <p>The desktop's startup and window settings are written from Caesar's own templates, and an
       update writes them again. This computer's own additions belong in
       <code>/etc/caesar/labwc/autostart</code>, run after the desktop's own startup, and
@@ -2190,7 +2201,7 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
   <section>
     <div class="col stack">
       <h2>4.1 Issues you may encounter</h2>
-      <p>The following issues were observed on installed systems up to Caesar 0.8.33, not predicted.
+      <p>The following issues were observed on installed systems up to Caesar 0.9.0, not predicted.
       You are likely to encounter them.</p>
       <ul class="plain">
         <li><b>Keys must be entered manually</b> in a virtual machine. Copy and paste between host
