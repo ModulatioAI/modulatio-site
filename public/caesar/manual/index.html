@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.0</p>
+  <p class="eyebrow">User manual · Caesar 0.9.1</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -698,6 +698,10 @@
       <h2>2.6 Signing in</h2>
       <p>This section describes each sign-in method, including why the first text console,
       which requires no password, is not a security risk.</p>
+      <p>Once you have signed in, your desktop is a sign-in session of the computer itself.
+      When a program needs an administrator for something, a password window opens and asks for
+      an administrator's password. Someone without an administrator account can ask an
+      administrator to type theirs.</p>
     </div>
     <div class="tablewrap">
       <table>
@@ -753,6 +757,42 @@
       <p>A drive plugged in before the computer starts is shown in <b>Computer</b> and the file
       window, and can be opened, like one plugged in later. A drive inside the computer, such as another
       system's own disk, asks for the administrator's password before it is mounted.</p>
+      <p>Everyone with an account on the computer, administrator or not, can open, unlock, eject
+      and safely remove a USB drive or a memory card without a password while sitting at the
+      computer. Nobody can do it from another computer, over SSH for instance. Formatting a
+      drive still needs an administrator. An external hard disk in a USB case is listed as a drive
+      too, so it can be powered off before you unplug it. A drive holding an older Mac file system
+      (HFS or HFS+) is not opened by itself when you plug it in; select it to open it.</p>
+      <h3>Repairing a USB drive</h3>
+      <p>When a USB stick or a memory card will not open, opens read-only, or shows files that
+      are missing or damaged, open <b>USB Drive Repair</b> from System Tools. To repair a drive that
+      is already open, right-click an empty part of its window and choose <b>Check and repair
+      drive…</b>. The Disk Manager also has a <b>USB Drive Repair…</b> button at the top.</p>
+      <p>Choose the drive from the list. USB Drive Repair checks it without changing anything,
+      and says in plain words what it found, with a button for each fix:</p>
+      <ul class="plain">
+        <li><b>Repair</b>: the file system has errors, or the drive was taken out without being
+          ejected. It is repaired in place, and your files are kept. Pieces of damaged files that
+          could be saved are put in files named <code>FSCK0000.REC</code> and so on. This works on
+          FAT32, exFAT, NTFS and ext4. A damaged Btrfs drive is not repaired automatically, because
+          that can make it worse; open it read-only and copy your files off.</li>
+        <li><b>Close it and check</b>: the drive is open, and a drive in use cannot be checked
+          properly. It is closed first.</li>
+        <li><b>Make writable</b>: the system is holding the drive read-only. If the drive has a
+          lock switch (most SD cards do), you are told to slide it to unlocked instead. A stick
+          that has failed into read-only for good is reported as such; copy your files off it.</li>
+        <li><b>Unlock</b>: the drive is encrypted with BitLocker or LUKS. Type its password or
+          recovery key.</li>
+        <li>A drive that reported read or write errors is reported, with the advice to copy your
+          files off it and replace it. Windows leaving an NTFS drive hibernated (Fast Startup) is
+          reported too: shut Windows down fully with the drive in.</li>
+      </ul>
+      <p><b>Restore (erase)…</b> is the last resort, for a drive an installer or disc image was
+      written to, one with a damaged partition table, or one nothing else fixes. It erases
+      everything on the drive and leaves one empty drive, formatted FAT32 (32 GB or smaller) or
+      exFAT (larger), or NTFS or ext4 if you choose. It names the drive by its maker, model, size
+      and label before you confirm, and asks for an administrator's password. If you swap
+      drives after checking, it refuses rather than erase the new one.</p>
     </div>
   </section>
 
@@ -828,6 +868,9 @@
       sharing. <b>Adapters</b> lists every network adapter, turns an adapter off or on, and
       installs a driver pack for an adapter the system does not yet support. Common USB wifi
       adapters that require a separate driver are supported by drivers already included.</p>
+      <p>The battery icon's menu on the bar has a <b>Power profile</b> menu: power saver,
+      balanced or performance, as far as the computer supports them. Anyone at the computer can
+      switch between them.</p>
       <p><b>Power Management</b> sets what happens when the computer is left idle, such as
       turning the screens off, and what a laptop's closed lid, the sleep keys and a low battery (10%)
       do. Every one of them does nothing until you choose otherwise. A screen turned off after an
@@ -854,7 +897,10 @@
       <code>/etc/caesar/labwc/rc.xml</code>, a window settings file of the same shape whose key
       bindings join the desktop's and whose other settings come after it. Updates never write
       there. A change made by hand to the written files is kept aside when they are next written,
-      and the agent is told where.</p>
+      and the agent is told where. A settings file of this computer's own under <code>/etc</code>
+      that an update carries for the first time is kept as it was: the update's copy is laid beside
+      it, its name ending <code>.new-</code> and the update's version, and the agent is told to
+      compare the two.</p>
     </div>
   </section>
 
@@ -1162,7 +1208,8 @@
       holds is the one installed. If one cannot be reached, it is passed over without a message. If
       neither can be reached, the update check says so, “No update location could be reached”,
       rather than reporting that the computer is up to date: check the network connection and try
-      again. Every update is signed, and the computer checks the signature against the key it was
+      again. In the first five minutes after the computer starts, while its network is still
+      coming up, the check asks again for up to a minute and a half before saying so. Every update is signed, and the computer checks the signature against the key it was
       installed with, so where an update comes from does not change what is trusted.</p>
       <p>Caesar 0.8.5 and later know both places. A computer installed from an earlier medium knows
       only the private network until it takes 0.8.5 or later from there.</p>
@@ -1736,6 +1783,13 @@
       <b>Run now</b> runs a job at once; <b>Change</b> and <b>Remove</b> edit or delete it; a
       system job you changed can be <b>Reset to Caesar's default</b>. A job that fails is
       reported on the status card (2.23).</p>
+      <p>One of the system's jobs, <b>snapshot-prune</b>, runs at 02:00, 10:00 and 18:00 and lets
+      go of restore points nobody will return to. The system takes a restore point before every
+      change it makes. Those are kept for a week, or a day on a drive with less than a fifth free.
+      After a day, only the newest of each hour is kept. On a drive more than four fifths full,
+      the oldest go first, but only when restore points are what fill it. When it is your files
+      that fill it, the job says so in its record and removes nothing. It never removes a restore
+      point an update made (2.15), or one you made yourself under a name of your own.</p>
       <p>A line that puts an account in front of its command, as other schedulers' tables are
       written, can never run here: this scheduler takes no account there, and runs that word as the
       command. Such a job is shown on the status card and in Task Scheduler as one that can never
