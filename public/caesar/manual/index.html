@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.2</p>
+  <p class="eyebrow">User manual · Caesar 0.9.3</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -761,7 +761,10 @@
       and safely remove a USB drive or a memory card without a password while sitting at the
       computer. Nobody can do it from another computer, over SSH for instance. Formatting a
       drive still needs an administrator. An external hard disk in a USB case is listed as a drive
-      too, so it can be powered off before you unplug it. A drive holding an older Mac file system
+      too, so it can be powered off before you unplug it. When you eject a drive, a notice says
+      when it is safe to remove: "<i>name</i> is safe to remove" appears only once everything
+      written to it is on the drive. If it could not be ejected, the notice says so and names
+      the program using it, so you can close that program and eject again. A drive holding an older Mac file system
       (HFS or HFS+) is not opened by itself when you plug it in; select it to open it.</p>
       <h3>Repairing a USB drive</h3>
       <p>When a USB stick or a memory card will not open, opens read-only, or shows files that
@@ -1133,7 +1136,10 @@
       from source, and other distributions' packages are built for different libraries: laid over
       Caesar's own, one can leave the computer unable to start. So Caesar installs only two kinds
       of software into the system: its own packages, named <code>caesar-</code>…, and programs
-      from the store (Nix). Everything else of that kind is refused:</p>
+      from the store (Nix). Everything else of that kind is refused, in these words: "This is
+      an unsupported install package - <i>name</i> is unsupported. Please have your agent
+      repackage it as a caesar xbps." Your agent can pack a program from another system again
+      as a Caesar package. Everything refused:</p>
       <ul class="plain">
         <li><b>Another system's packages.</b> The package manager itself refuses to install,
           reinstall or update any package not named <code>caesar-</code>…, its dependencies
@@ -1472,7 +1478,12 @@
       <h2>2.20 Conversations</h2>
       <p>Every conversation held in the pool is kept, by every agent harness on the computer. Open
       <b>Conversations</b> from System Tools to see them: a searchable list on the left, newest
-      first, and the latest messages of the selected conversation on the right. Each
+      first, and the latest messages of the selected conversation on the right. <b>Earlier
+      messages</b>, above the messages, loads the fifty before, back to the start of the
+      conversation. Typing in the search box narrows the list by title as you type; pressing
+      Enter searches inside the conversations, lists those with a message holding your words,
+      and shows those messages when you open one. A search inside reads every conversation, so
+      it can take some seconds. Each
       conversation is titled by the agent, or by the first thing you said until it has a title.</p>
       <figure>
         <img src="fig/34-conversations.png" alt="The Conversations window: a search box and three conversations on the left, each with its harness, when it was last active and its size; on the right the chosen conversation's title, Switch the pool and resume, a format list with Export, and its latest messages from You and from Caesar">
