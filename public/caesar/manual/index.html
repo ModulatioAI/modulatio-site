@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.1</p>
+  <p class="eyebrow">User manual · Caesar 0.9.2</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -867,7 +867,9 @@
       connecting, joining a tailnet, viewing the devices on it, and managing its settings and
       sharing. <b>Adapters</b> lists every network adapter, turns an adapter off or on, and
       installs a driver pack for an adapter the system does not yet support. Common USB wifi
-      adapters that require a separate driver are supported by drivers already included.</p>
+      adapters that require a separate driver are supported by drivers already included. A driver
+      pack is built for the kernel running; when an update brings a new kernel, every pack you
+      installed is built again for it, from the pack you gave.</p>
       <p>The battery icon's menu on the bar has a <b>Power profile</b> menu: power saver,
       balanced or performance, as far as the computer supports them. Anyone at the computer can
       switch between them.</p>
@@ -1127,6 +1129,31 @@
       compiled from source, because Caesar was compiled from source and includes the complete
       toolchain. This method is slower, and it is the only option for software that is not
       packaged.</p>
+      <p><b>Packages from other systems are not installed.</b> Caesar is its own system, compiled
+      from source, and other distributions' packages are built for different libraries: laid over
+      Caesar's own, one can leave the computer unable to start. So Caesar installs only two kinds
+      of software into the system: its own packages, named <code>caesar-</code>…, and programs
+      from the store (Nix). Everything else of that kind is refused:</p>
+      <ul class="plain">
+        <li><b>Another system's packages.</b> The package manager itself refuses to install,
+          reinstall or update any package not named <code>caesar-</code>…, its dependencies
+          included, however it is run, by a person or by the agent.</li>
+        <li><b>Other systems' package tools and app stores.</b> <code>apt</code>,
+          <code>dpkg</code>, <code>rpm</code>, <code>dnf</code>, <code>yum</code>,
+          <code>zypper</code>, <code>pacman</code>, <code>apk</code>, <code>emerge</code>,
+          <code>flatpak</code> (installing, or adding a source), <code>snap</code>,
+          Homebrew and the like are refused to the agent.</li>
+        <li><b>Other package sources.</b> Only Caesar's own update locations are used. Each
+          update sets aside any other source and signing key it finds, tells the agent, and locks
+          the package manager's keys, so no other source's packages can be accepted. An update
+          carried in on a drive must be signed by Caesar.</li>
+      </ul>
+      <p>Language installers are not affected: <code>pip</code>, <code>npm</code>,
+      <code>gem</code>, <code>cargo</code> and <code>go</code> work as before. A program that is only
+      packaged by another system can still be used: it is downloaded or taken apart, and packed
+      again as a Caesar package named <code>caesar-</code><i>name</i>, which the agent can do for
+      you (its practice is <i>registering-what-arrived</i>). Downloading another system's package
+      to take apart is allowed; installing it is not.</p>
       <p>With either method, <b>every installation is recorded</b>. You can ask the agent which
       package owns any file.</p>
       <p>The package index is stored locally and refreshed daily, so searches complete in
@@ -1234,11 +1261,16 @@
       jobs. Choose <b>Restart later</b> to restart it yourself when you are ready, and the status
       card reminds you until you do. Sign in again when the sign-in screen appears. With <b>Restart
       after applying updates</b> cleared, the update is installed and takes effect at the next
-      restart you make.</p>
+      restart you make; until then Caesar's window keeps running as it was.</p>
       <p>An update that brings a new kernel installs only once a snapshot of every storage pool has
       been taken to come back to. When none can be taken, nothing is installed; the reason is
       written in the update log (<code>caesar-kernel packages</code>) and the agent is told.
       <code>sudo caesar-kernel update --no-snapshot</code> installs it without one.</p>
+      <p>The kernel that was running when such an update began is kept: the boot menu offers it
+      beside the new one, and starts the new one unless you choose otherwise. If the new kernel
+      cannot be prepared to start, the kept one is still there to start from. A kept kernel is
+      let go at the next update that brings a kernel, when the kernel then running is kept in
+      its place.</p>
       <p>You can also ask the agent to update the system, which performs the same operation;
       allow the agent to complete its checks first. Practices the agent has revised for itself
       are kept: the changes an update brings to the same practice are merged into its version,
@@ -1401,9 +1433,12 @@
           fetches the newest medium, about 5 GB, from the update locations (2.16) and saves it in
           <code>/var/cache/caesar-media</code>, and chooses it for you; media downloaded earlier stay
           there and can be chosen with <b>Browse</b>. A medium
-          that is not signed by Caesar is refused before anything is erased.</li>
+          that is not signed by Caesar is refused before anything is erased. The stick is the
+          version of Caesar the chosen medium carries, its kernel included; it brings itself up
+          to date with its first update.</li>
         <li><b>Review</b> — check your choices, type <b>ERASE</b> to confirm, and select
-          <b>Create</b>. Preparing the drive takes several minutes.</li>
+          <b>Create</b>. Preparing the drive takes several minutes. If preparing stops part way,
+          the drive is closed again and can be chosen for another try at once.</li>
       </ul>
       <p>Each stick has a storage pool named after it (<code>cos-</code> and its computer name),
       so two sticks can be plugged into the same computer, and a stick can make another while it
@@ -2307,6 +2342,9 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
         <li>In the Antigravity seat, the lines that separate the turns are narrower than the pool,
           and a long list of tools is cut to its first few names. Both are drawn by Antigravity
           itself.</li>
+        <li>Some windows show no icon in their title bar and in the window list, among them the
+          file manager and Caesar's own windows: the window manager cannot yet draw the icon
+          theme's SVG pictures.</li>
       </ul>
     </div>
   </section>
