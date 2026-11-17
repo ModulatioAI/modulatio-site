@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.3</p>
+  <p class="eyebrow">User manual · Caesar 0.9.4</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -864,7 +864,8 @@
     <div class="col stack" style="margin-top:1.2rem">
       <p><b>Network</b> has four tabs. <b>Wi-Fi</b> connects to, disconnects from and forgets
       wireless networks of every type: open, password-protected, work or school sign-in, and
-      hidden networks entered by name. <b>Wired</b> shows each Ethernet port. Both tabs turn their
+      hidden networks entered by name. Where one network is sent on several bands, the faster
+      5 GHz and 6 GHz bands are preferred to a louder 2.4 GHz signal. <b>Wired</b> shows each Ethernet port. Both tabs turn their
       connection type off and on, and both configure an address, automatic or static, with its
       DNS servers. <b>Tailscale</b> provides the functions of the <code>tailscale</code> command:
       connecting, joining a tailnet, viewing the devices on it, and managing its settings and
@@ -1272,6 +1273,10 @@
       been taken to come back to. When none can be taken, nothing is installed; the reason is
       written in the update log (<code>caesar-kernel packages</code>) and the agent is told.
       <code>sudo caesar-kernel update --no-snapshot</code> installs it without one.</p>
+      <p>On a computer with an NVIDIA display driver, an update that would leave the driver and
+      the kernel built for different versions of each other is refused before anything is
+      installed, and the refusal names both. Such a computer would start with no display
+      driver.</p>
       <p>The kernel that was running when such an update began is kept: the boot menu offers it
       beside the new one, and starts the new one unless you choose otherwise. If the new kernel
       cannot be prepared to start, the kept one is still there to start from. A kept kernel is
@@ -1645,7 +1650,9 @@
       it off the windows are placed by hand as before.</p>
       <p><b>Super+F11</b> gives the front window the whole screen, over the bar and with no title
       bar, and pressed again puts it back. Use it for a game that opens as an ordinary window
-      beside the pool when it should fill the screen.</p>
+      beside the pool when it should fill the screen. A game whose window says it needs the
+      whole screen is given it as it opens, with no key. A window taken out of the whole
+      screen that has no place of its own is put in the space beside the pool.</p>
       <p>The pool, the status card and the main bar are always on the same screen. The main bar
       works the same on any edge of it: top, bottom, left or right. Move the main bar to another
       screen and the pool and the status card follow it. To choose the screen by name instead,
@@ -2021,7 +2028,9 @@
           face is a guess at who is there, never proof.</li>
         <li>When someone other than the person whose screen it is sits at the computer, a stranger
           or a person introduced whose account is another, the screen locks. Locking keeps the open
-          work as it was.</li>
+          work as it was. A lock that ends without the password, however the screen was
+          locked, is started again by itself, and <code>~/.local/state/caesar/screens.log</code>
+          says when.</li>
       </ul>
       <p>Turn it on and off in the Vision window, or with <code>caesar-vision on</code> and
       <code>caesar-vision off</code>.</p>
@@ -2329,8 +2338,10 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
           Antigravity are the furthest along: their helpers pass the door and are named in the
           record (2.5). From update 0.8.33 Grok Build's helpers do too, and its own scheduler,
           searches and picture tools are refused in the pool; this was tried outside the pool
-          only. Codex and OpenCode have no helpers that reach the door, and Grok Build and
-          OpenCode are not handed the agent's memory cues with each message. The differences
+          only. Codex and OpenCode have no helpers that reach the door, and Grok Build
+          cannot be handed the agent's memory cues with a message: they are kept and handed
+          over with its first act after. OpenCode is handed them with each message from
+          update 0.9.4. The differences
           are being measured one harness at a time and closed.</li>
         <li><b>An old Antigravity conversation is not taken up</b> after an update changes the
           tools its agent is offered (2.11). The pool says so and begins a new conversation; the
