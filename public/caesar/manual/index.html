@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.4</p>
+  <p class="eyebrow">User manual · Caesar 0.9.5</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -987,7 +987,13 @@
           so a wrong key is found where it was entered. Choosing a provider that already holds a
           key adds another key beside it rather than replacing the first.</li>
         <li><b>A sign-in</b>: the page to open and the code to enter are shown, and the page opens
-          in the browser. A sign-in that gives back a code to paste shows a box for it.</li>
+          in the browser. A sign-in that gives back a code to paste shows a box for it. The
+          ChatGPT page and code can be opened on another device, a phone with your passkey for
+          one. xAI's page names Grok Build, because the sign-in goes through the same xAI sign-in
+          Grok Build uses; if it shows a code to copy into Grok Build, nothing needs copying. The
+          ChatGPT and xAI sign-ins are renewed once a day while nothing uses them. One the
+          provider will no longer renew is shown as lapsed, and asks you to sign in again, rather
+          than as ready.</li>
         <li><b>Custom endpoint</b>: a name, the base URL, whether it is OpenAI- or
           Anthropic-compatible, and its key if it needs one. A name that a provider in the list
           already has is refused, since the two would share one key: choose that provider instead,
@@ -1039,8 +1045,17 @@
           first thing to try if the conversation behaves unexpectedly. While an answer is being
           written, the restart waits behind a countdown card that says <b>Restarting the
           pool</b>, that the conversation is taken up again, and that nothing was updated.
-          <b>Delay 10 minutes</b> and <b>Don't restart</b> are on the card. A change of harness waits the
-          same way.</li>
+          <b>Delay 10 minutes</b> and <b>Don't restart</b> are on the card.</li>
+        <li><b>Changing harness</b> is not a restart. With no answer being written the pool takes
+          the new harness at once. While one is being written, a card says <b>Switching to</b>
+          the harness you chose and that it takes the pool once that answer is finished;
+          <b>Switch now</b> on the card does not wait. If you choose again while it waits, the
+          harness chosen last is the one that starts. The new harness carries the conversation
+          on: it begins a conversation of its own whose first message says which conversation it
+          continues and holds the last of what was said in it (about the last fifty messages of
+          a long one), and it can read the rest. That stretch of the conversation is sent to the
+          new harness's provider. Choosing a conversation from Conversations instead takes that
+          conversation, with nothing carried.</li>
       </ul>
       <p>Each harness keeps its own choice of provider and model; one without its own uses the
       machine's choice, Feng TUI's. A harness is offered only what it can use: Claude Code needs
@@ -1854,18 +1869,19 @@
     <div class="col stack">
       <h2>2.28 Games</h2>
       <p>Open <b>Colosseum</b> from the Games menu to play Windows games from Battle.net, GOG, Epic
-      Games and Amazon Games, and Android games from Google Play. Windows games run under Proton,
+      Games and Amazon Games, Star Citizen through the RSI Launcher, and Android games from Google
+      Play. Windows games run under Proton,
       which lets Windows programs run here. The pages are listed on the left: <b>Library</b>,
-      <b>Battle.net</b>, <b>GOG</b>, <b>Epic Games</b>, <b>Amazon Games</b>, <b>Google Play</b> and
-      <b>Settings</b>. Below them, a line for each says whether Battle.net is ready and whether you
+      <b>Battle.net</b>, <b>RSI Launcher</b>, <b>GOG</b>, <b>Epic Games</b>, <b>Amazon Games</b>,
+      <b>Google Play</b> and <b>Settings</b>. Below them, a line for each says whether Battle.net is ready and whether you
       are signed in to GOG, Epic and Amazon.</p>
       <h3>Library</h3>
       <p>The Library shows every installed game you can play, from every store, each on a tile with
       its picture from its store, or its initials when the store has none. When the window opens,
       the game you played last is shown across the top, with its name, its store and a large
       <b>▶ PLAY</b>; select another tile to put that game there instead. Play starts each game the
-      way its store does: a Battle.net game through Battle.net, a Google Play game in your Android,
-      and the others directly. <b>Open Battle.net</b> shows Battle.net itself.</p>
+      way its store does: a Battle.net game through Battle.net, Star Citizen through the RSI Launcher, a Google Play
+      game in your Android, and the others directly. <b>Open Battle.net</b> shows Battle.net itself.</p>
       <h3>Battle.net</h3>
       <p>Colosseum sets up Battle.net the first time you press <b>Install Battle.net</b>, fetching
       Blizzard's own installer and checking its signature. Then install games from Battle.net as
@@ -1877,6 +1893,25 @@
       <p>Battle.net opens as a window of its own. Closing that window leaves it running in the
       panel's tray; open it again from the tray icon or from Colosseum. A game takes the whole
       screen unless its own settings say windowed or borderless.</p>
+      <h3>RSI Launcher (Star Citizen)</h3>
+      <p>Star Citizen is installed and started by its maker's own launcher. On the <b>RSI
+      Launcher</b> page, <b>Install RSI Launcher</b> fetches Roberts Space Industries' installer,
+      checks it against the maker's own listing and its signature, and installs it for you; this
+      takes a few minutes. Then <b>Open RSI Launcher</b>, sign in with your RSI account, and press
+      the launcher's <b>Install</b>. Leave the folder it offers as it is: Colosseum has already made
+      that folder lead to the shared library, so the game is kept once for everyone. The game is
+      about 160 GB.</p>
+      <p>Once it is installed, Star Citizen is on the page and in the Library. <b>▶ Play</b> opens
+      the launcher, and the launcher's <b>Launch Game</b> starts the game: it cannot be started past
+      the launcher, which signs you in to it. <b>Close RSI Launcher</b> ends the launcher and the
+      game.</p>
+      <p>Star Citizen asks a lot of a computer: a graphics card with at least 4 GB of its own
+      memory (a computer with only built-in graphics starts the game and it then stops, saying no
+      graphics device was found), 16 GB of memory, and 48 GB of memory and swap together. Where the
+      computer falls short of what Colosseum can measure, the page says so in a line under the
+      buttons; the launcher still opens. From a terminal: <code>colosseum status rsi</code>,
+      <code>colosseum install rsi</code>, <code>colosseum start rsi</code>,
+      <code>colosseum stop rsi</code>.</p>
       <h3>GOG, Epic Games and Amazon Games</h3>
       <p>Colosseum reaches these three stores itself; none of their own programs is needed. On a
       store's page, select <b>Sign in to GOG</b> (or <b>Sign in to Epic Games</b>, <b>Sign in to
@@ -1943,9 +1978,10 @@
       its player's: each GOG player plays from their own view of the shared files, so the settings,
       saves and logs a game makes beside itself are theirs; GOG's DOS games save into the player's
       own folder; and World of Warcraft keeps each player's settings, key bindings and add-on
-      settings apart, in each of its editions. Every account joins the games group when it is made,
+      settings apart, in each of its editions, as Star Citizen keeps each player's settings and key
+      bindings. Every account joins the games group when it is made,
       which is what lets it play.</p>
-      <p>At the foot of the Battle.net, GOG, Epic Games and Amazon Games pages, <b>Remove GOG…</b>
+      <p>At the foot of the Battle.net, RSI Launcher, GOG, Epic Games and Amazon Games pages, <b>Remove GOG…</b>
       (and so on) removes that store for you alone: your sign-in and your own Windows folder for it,
       with the saves and settings your games keep there. Its games stay in the shared library unless
       you tick <b>Also remove every … game from the shared library, for every player</b>. Nothing
@@ -2346,6 +2382,22 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
         <li><b>An old Antigravity conversation is not taken up</b> after an update changes the
           tools its agent is offered (2.11). The pool says so and begins a new conversation; the
           old one can still be read in Conversations.</li>
+        <li><b>A Windows game in "Windowed" mode, maximized, is larger than its space.</b> The
+          foot of the game's picture is cut off, where many games keep their action bar, and its
+          top slides under the shortcut strip. Windows games run through Wine, a separate
+          program, and Wine draws the game for the whole screen with no room left for Caesar's
+          bar and strip; Caesar gives the window the right space and Wine draws past it. Set
+          the game's display mode to <b>Windowed (Fullscreen)</b>, or press <b>Super+F11</b> on
+          the game. A game placed in a half or a quarter of the patio fits, and so does one run
+          in Colosseum's own game screen.</li>
+        <li><b>A launcher such as Battle.net's does not take the whole screen.</b> Super+F11 on
+          it does nothing. Its window has one fixed size, and Wine gives the whole screen back
+          at once for a window that does not fill it. Nothing needs doing: games started from
+          it take the whole screen as they should.</li>
+        <li><b>After Super+F11 takes a game out of the whole screen, the game's own full-screen
+          setting does nothing</b> until you press Super+F11 again. This is deliberate: a game
+          run through Wine asks for the whole screen again the moment it loses it, and without
+          this your key would lose to the program.</li>
       </ul>
     </div>
   </section>
