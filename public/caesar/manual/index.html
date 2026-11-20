@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.5</p>
+  <p class="eyebrow">User manual · Caesar 0.9.6</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -1080,7 +1080,9 @@
       because nothing they do passes the door. The agent uses Caesar's search and the
       computer's scheduler instead, and it can start helpers called workers, several at once. A
       worker has Caesar's tools only, so everything it does passes the door and is recorded
-      (2.5). Antigravity chooses a worker's model itself, and it can be another than the
+      (2.5). The agent can send a worker a message while it works, list its workers and stop
+      one. A command a stopped worker had already started through the door runs on to its
+      end. Antigravity chooses a worker's model itself, and it can be another than the
       pool's. A Claude model chosen in Antigravity works in the pool as Google's models do.
       Which model answered each turn is kept in <code>/var/lib/caesar/seat-turns</code>.</p>
       <p>The pool takes up Antigravity's last conversation only when it was begun under
@@ -1406,7 +1408,14 @@
       The microphone you choose is remembered for the device in use, so the next press of that
       device brings it back; with nothing remembered, a device brings its own microphone. The
       panel's sound button switches between the headset and the last device you used that is not
-      a headset. Under <b>Advanced</b> are five pages:</p>
+      a headset.</p>
+      <p>The <b>Starts on</b> list chooses what sound plays through when you sign in and when a
+      device is plugged in. <b>Headset takes over when plugged in</b> is how Caesar arrives: a
+      USB or Bluetooth device takes the sound as it appears. <b>Last used</b> keeps whatever was
+      playing, so plugging a headset in changes nothing until you switch to it. <b>Always</b>,
+      followed by a device's name, brings sound back to that device at every sign-in and every
+      time a device is plugged in or pulled. A switch you make by hand is left alone until
+      then. Under <b>Advanced</b> are five pages:</p>
       <figure>
         <img src="fig/42-sound.png" alt="Audio Manager's Sound page: three cards, Integrated with built-in speakers and a Use integrated button, Monitor with speakers in the screen and a Use monitor button, and Headset, Wireless Gaming Headset, marked In use and outlined in the accent colour; below them, Sound: Wireless Gaming Headset Analog Stereo, and Microphone: a list showing Webcam (PC Microscope camera), on, with a Mute microphone button">
         <figcaption>The Sound page: a headset in use with the webcam's microphone, the monitor one press away</figcaption>
@@ -1668,6 +1677,9 @@
       beside the pool when it should fill the screen. A game whose window says it needs the
       whole screen is given it as it opens, with no key. A window taken out of the whole
       screen that has no place of its own is put in the space beside the pool.</p>
+      <p>A Windows game you give the whole screen with Super+F11 keeps it until you press
+      Super+F11 again, even when the game asks to leave it. Taken out again, a Windows game
+      that has no title bar of its own is given the desktop's, so it can be moved and closed.</p>
       <p>The pool, the status card and the main bar are always on the same screen. The main bar
       works the same on any edge of it: top, bottom, left or right. Move the main bar to another
       screen and the pool and the status card follow it. To choose the screen by name instead,
@@ -1901,6 +1913,11 @@
       the launcher's <b>Install</b>. Leave the folder it offers as it is: Colosseum has already made
       that folder lead to the shared library, so the game is kept once for everyone. The game is
       about 160 GB.</p>
+      <p>The RSI Launcher and Star Citizen run on a Proton of their own, GE-Proton11-11, which
+      Easy Anti-Cheat accepts; Colosseum fetches it the first time and checks it. Battle.net and
+      the stores stay on the Proton they were tried with. If the game library was never set up
+      on this computer, the page shows <b>Set up the game library</b>: press it and give your
+      password.</p>
       <p>Once it is installed, Star Citizen is on the page and in the Library. <b>▶ Play</b> opens
       the launcher, and the launcher's <b>Launch Game</b> starts the game: it cannot be started past
       the launcher, which signs you in to it. <b>Close RSI Launcher</b> ends the launcher and the
@@ -2390,14 +2407,17 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
           the game's display mode to <b>Windowed (Fullscreen)</b>, or press <b>Super+F11</b> on
           the game. A game placed in a half or a quarter of the patio fits, and so does one run
           in Colosseum's own game screen.</li>
-        <li><b>A launcher such as Battle.net's does not take the whole screen.</b> Super+F11 on
-          it does nothing. Its window has one fixed size, and Wine gives the whole screen back
-          at once for a window that does not fill it. Nothing needs doing: games started from
-          it take the whole screen as they should.</li>
-        <li><b>After Super+F11 takes a game out of the whole screen, the game's own full-screen
-          setting does nothing</b> until you press Super+F11 again. This is deliberate: a game
-          run through Wine asks for the whole screen again the moment it loses it, and without
-          this your key would lose to the program.</li>
+        <li><b>A launcher such as Battle.net's is drawn small in the middle of a black screen
+          after Super+F11.</b> Its window has one fixed size, and Caesar holds the whole screen
+          you gave it. Press Super+F11 again to put it back. Nothing needs doing: games started
+          from it take the whole screen as they should.</li>
+        <li><b>Super+F11 overrules the game's own display setting until you press it
+          again.</b> After Super+F11 takes a game out of the whole screen, the game's own
+          full-screen setting does nothing; after Super+F11 gives a Windows game the whole
+          screen, its own windowed setting does nothing. This is deliberate: a game run through
+          Wine asks for the opposite of what you chose the moment it is given it, and without
+          this your key would lose to the program. From update 0.9.6 the second half was tried
+          with Wine's own small programs, not yet with a real game.</li>
       </ul>
     </div>
   </section>
@@ -2419,6 +2439,8 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
         <li>Some windows show no icon in their title bar and in the window list, among them the
           file manager and Caesar's own windows: the window manager cannot yet draw the icon
           theme's SVG pictures.</li>
+        <li>A Windows program that draws its own title bar, taken out of the whole screen with
+          Super+F11, can show the desktop's title bar above its own.</li>
       </ul>
     </div>
   </section>
