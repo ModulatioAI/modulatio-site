@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.6</p>
+  <p class="eyebrow">User manual · Caesar 0.9.8</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -168,6 +168,7 @@
       <ul class="plain">
         <li>A computer with UEFI firmware. Most computers manufactured since 2012 meet this requirement.</li>
         <li>A USB flash drive of 8 GB or larger, or a blank DVD.</li>
+        <li>A screen at least 1280 pixels wide. 1600 or wider is recommended (2.22).</li>
         <li><b>A disk that can be erased.</b> Caesar can be installed alongside existing data, but
           a disk dedicated to Caesar is the simplest and safest option.</li>
       </ul>
@@ -248,8 +249,10 @@
         <div class="body">
           <p>The installer switches to the selected language, and the installed system uses it as
           well. The keyboard layout is applied immediately, so you can test it in the next field
-          you type into. The time zone sets the clock of the installed system; UTC is selected
-          until you choose another.</p>
+          you type into. The time zone sets the clock of the installed system, and every clock and
+          record of Caesar's with it. No zone is chosen for you: choose yours, or UTC if you want
+          it. A computer installed before this asks once, at its next sign-in, if it was left on
+          UTC without anyone choosing it.</p>
           <p>Select <b>Next</b>.</p>
         </div>
       </li>
@@ -484,7 +487,7 @@
           <tr><td>Computer</td><td>Shows the computer's drives and anything plugged into it</td></tr>
           <tr><td>Trash</td><td>Opens the bin, where deleted files wait until it is emptied</td></tr>
           <tr><td>Terminal</td><td>Opens a command-line terminal</td></tr>
-          <tr><td>Screenshot</td><td>Opens the screenshot tool. Pictures are copied to the clipboard and saved to Pictures/Screenshots. Print picks an area directly. Installed from the Store on first use</td></tr>
+          <tr><td>Screenshot</td><td>Opens the screenshot tool. Each picture is copied to the clipboard; Save keeps it, in Pictures/Screenshots unless you choose another folder. A picture on the clipboard pasted into a folder in the file manager is saved there as a new file. Print picks an area directly. Installed from the Store on first use</td></tr>
           <tr><td>Panes</td><td>Rearranges all open windows</td></tr>
           <tr><td>Brush</td><td>Applies the next colour scheme</td></tr>
           <tr><td>Sliders</td><td>Opens AI providers: providers, keys and agent harnesses</td></tr>
@@ -676,6 +679,42 @@
       actor and, beside it, the helper that asked, as in
       <code>antigravity (caesar-worker 7c41eb19-...)</code>. The helper's name is what the
       harness says of itself: it is recorded, and the door never decides by it.</p>
+      <h3>Who may use the door</h3>
+      <p><b>Only the agent harness in the pool reaches the door.</b> No setting changes this: a
+      program that is not the harness in the pool, another agent harness among them, cannot act
+      through Caesar, read its memory or use its secrets. Caesar itself may still talk to any
+      other program or model on the machine.</p>
+      <ul class="plain">
+        <li><b>The pool's key.</b> Each time the pool starts, it makes a new key, held by the
+          kernel for the pool's own programs. They can sign with it; no program can read it out,
+          the pool's included, and no program outside the pool can use it. It is never written to
+          disk. The door keeps only its public half and answers a call only when the pool's key
+          signed it. The key is replaced every 6 hours. On a computer with no desktop, the seat
+          on the first text console gets a key of its own in the same way.</li>
+        <li><b>Refused calls are recorded.</b> A call the pool's key did not sign is refused with
+          <code>The door answers the harness in the pool only.</code>, and the record names the
+          program that made it.</li>
+        <li><b>Memory and secrets.</b> Caesar's memory and the secrets manager are opened only
+          inside the door: for the agent in the pool, Caesar's own services and jobs, root signed
+          in at the computer itself, and a command you run with sudo after it asked your
+          password. A window that asks no password (the Secrets page, Model Manager's sign-in
+          line) can list secrets and add or remove one, never read one. The secrets manager never
+          keeps a password that an account on the computer signs in with.</li>
+        <li><b>Harnesses started elsewhere run as you.</b> Claude Code, Antigravity, Codex, Grok
+          Build or OpenCode started as root anywhere but the pool runs as the person, with the
+          person's own copy and sign-in, and is offered none of Caesar's tools. A harness found
+          running as root outside the pool is stopped, and the stop is recorded. Its sign-in,
+          sign-out and status, which the AI providers window runs for the seat, are the exception;
+          a sign-in or sign-out you type with sudo is your own. Caesar's skills stay readable to
+          every account, to copy into another harness.</li>
+        <li><b>Root over the network.</b> Nobody signs in as root over the network. Sign in to
+          your own account and use sudo. Root can still sign in at the computer's second text
+          console and on the serial line, for repairs.</li>
+        <li><b>One Caesar and another.</b> A Caesar never reaches the door of another. It leaves
+          a message, and a file if needed, through the other computer's message account
+          (<code>caesar-peer ask HOST "words" [FILE]</code>); the other Caesar reads it as a
+          request to judge and answers the same way.</li>
+      </ul>
       <p><b>The agent improves its own policy list as it works.</b> When the door stops ordinary
       work that the agent then has to open by hand, or lets through something it should have
       stopped, the agent writes the case down, drafts one narrow rule, and tests it against
@@ -855,7 +894,7 @@
           <tr><td>The network</td><td><b>Network</b></td><td class="need">No</td></tr>
           <tr><td>User accounts</td><td><b>Accounts</b></td><td class="need">Listing: no. Creating or changing an account: yes. It cannot modify the root account</td></tr>
           <tr><td>Displays: arrangement, resolution, scale, turn, background and the main screen</td><td><b>Pictor</b></td><td class="need">No</td></tr>
-          <tr><td>The time zone the whole computer keeps, and every clock with it</td><td><b>Time zone</b>, also in LXQt Settings; the Time zone row in <b>Locale</b>; or right-click the clock on the bar and choose <b>Set the time zone…</b></td><td class="need">No</td></tr>
+          <tr><td>The time zone the whole computer keeps, and every clock with it (Caesar's services and the pool start again after a countdown on the status card, so they keep it too)</td><td><b>Time zone</b>, also in LXQt Settings; the Time zone row in <b>Locale</b>; or right-click the clock on the bar and choose <b>Set the time zone…</b></td><td class="need">No</td></tr>
           <tr><td>Power: a dark screen when idle, the lid, the sleep keys and a low battery</td><td><b>Power Management</b>, in LXQt Settings</td><td class="need">No</td></tr>
           <tr><td>All other settings</td><td>A terminal and <code>sudo</code></td><td class="need">Yes, your password</td></tr>
         </tbody>
@@ -1040,7 +1079,11 @@
           minutes and the harness keeps the version it had. Harnesses do not update themselves in
           the background, because an unattended self-update is a change no one approved or
           observed.</li>
-        <li><b>Sign out</b> ends a harness's own sign-in.</li>
+        <li><b>Sign out</b> ends a harness's own sign-in. Beside each harness's name the page says
+          whether it is <b>signed in</b>, <b>not signed in</b>, or whether its <b>sign-in
+          lapsed</b> and must be made again; <b>Sign out</b> is shown only where there is a
+          sign-in to end. A harness that is not signed in can still think through a provider
+          the machine has, chosen with <b>Change model</b>.</li>
         <li><b>Restart the pool</b> starts the conversation window again; it is safe, and the
           first thing to try if the conversation behaves unexpectedly. While an answer is being
           written, the restart waits behind a countdown card that says <b>Restarting the
@@ -1075,6 +1118,13 @@
       program. Antigravity is held to Caesar's tools like every other harness, and it never
       spends paid AI credits beyond your plan. The first time it starts, it asks you to choose a
       colour scheme; choose one and press Enter.</p>
+      <p>Antigravity sends the whole conversation again at every turn, so Caesar compacts it as
+      Claude Code compacts its own: when a turn nears the model's working limit (92% of it), the
+      model writes a summary of the conversation, and the seat goes on in a new conversation that
+      begins with that summary and the last few messages. The old conversation stays in the
+      conversations list, whole. To compact sooner and spend fewer tokens, put
+      <code>TRIM_PERCENT=50</code> (a share of the limit) or <code>TRIM_TOKENS=100000</code> in
+      <code>/etc/caesar/antigravity.conf</code>, with sudo.</p>
       <p>In the pool, Antigravity runs as an agent of Caesar's own, not as Antigravity's default
       agent. Antigravity's own web search, scheduling and sub-agents are not offered there,
       because nothing they do passes the door. The agent uses Caesar's search and the
@@ -1604,6 +1654,28 @@
       press Enter; if you do nothing for 15 seconds, the screens go back to how they were. A kept
       layout returns after a restart, and when a monitor is unplugged and plugged in again, even
       into another socket. A change of background or of the main screen needs no countdown.</p>
+      <p><b>Choosing a resolution.</b> The pool keeps the left 40% of the main screen, and every
+      window opens in the patio, the other 60%. Each program has a narrowest width it can be drawn
+      at. When the patio is narrower than that, the window runs past the right edge of the screen.
+      So the width of the main screen decides which programs fit. Count the width after scaling:
+      the resolution's width divided by the scale. A 2560-wide screen at 200% counts as 1280, and
+      a 3840-wide screen at 200% counts as 1920.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Width after scaling</th><th>For example</th><th>What fits beside the pool</th></tr></thead>
+        <tbody>
+          <tr><td>1600 or more (recommended)</td><td>1600&times;900, 1680&times;1050, 1920&times;1080, 1920&times;1200, 2560&times;1440, 3840&times;2160 at 200%</td><td>Every program we measured, Discord included</td></tr>
+          <tr><td>1366 to 1440</td><td>1366&times;768, 1440&times;900</td><td>Everything but Discord, which needs 1567</td></tr>
+          <tr><td>1280</td><td>1280&times;720, 1280&times;800, 2560&times;1600 at 200%</td><td>Caesar's own windows and most programs. Not Discord, and not KeePassXC, which needs 1334</td></tr>
+          <tr><td>Under 1280</td><td>1024&times;768</td><td>Small programs only. Caesar's own windows run past the edge</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col stack">
+      <p>Programs you install yourself may need more room. If a window runs past the edge, choose
+      a larger resolution or a lower scale for the main screen. On a high-resolution screen, a
+      scale of 150% instead of 200% often gives enough room.</p>
       <p>The <b>main screen</b> is the one the pool, the status card, the main bar and the
       desktop's icons are on. Tick <b>Main screen</b> for another screen and Apply, and they all
       move there. The backgrounds come in pairs: one laid out to leave the pool its share of the
@@ -1737,6 +1809,12 @@
       give a short name and what it is for, fill in the rest and select <b>Save</b>; saving again
       under a name already held replaces what was held. <b>Remove</b> deletes one. No secret is
       ever shown; each use is recorded by name.</p>
+      <p>A secret is opened only inside the door (2.5): for the agent in the pool, or for one of
+      Caesar's own services. No other program can open one, root included, and each refusal is
+      recorded. The secrets manager will not keep a password that an account on this computer
+      signs in with, which is also that account's sudo password: Caesar never holds a person's
+      password. The one exception to the door is the Model Manager, which may read the Hugging
+      Face token when you started it with sudo and typed your password.</p>
       <p>From a terminal: <code>sudo caesar-kernel secrets list</code> lists them by name,
       purpose, date and kind; <code>sudo caesar-kernel secrets set NAME "what it is for"</code>
       stores the key given on standard input, and with <code>--kind token</code>,
