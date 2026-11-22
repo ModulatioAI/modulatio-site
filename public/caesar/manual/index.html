@@ -215,7 +215,7 @@
       <p>The start menu's second entry, <b>Caesar, run from memory</b>, copies the system on the
       medium into the computer's memory before the session starts. The USB flash drive or DVD can
       then be taken out, and the installer still works without it. This needs as much memory as
-      the medium's system image plus 4 GB: 8,485 MiB, about 8.9 GB, for
+      the medium's system image plus 4 GB: 8,369 MiB, about 8.8 GB, for
       <code>caesar-0.9.9.iso</code>. A computer with less starts from the medium, as the first
       entry does, and says so among the boot messages; press <b>Esc</b> on the boot screen to see
       them.</p>
@@ -2442,13 +2442,16 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
   <section>
     <div class="col stack">
       <h2>3.6 Installation media size</h2>
-      <p>The installation media for 0.9.9, <code>caesar-0.9.9.iso</code>, is 5,322,653,696 bytes,
-      about 5.3 GB. The completed build tree measured 50.6 GB on 2026-11-13.</p>
+      <p>The installation media for 0.9.9, <code>caesar-0.9.9.iso</code>, is 5,200,822,272 bytes,
+      about 5.2 GB. The completed build tree measured 50.6 GB on 2026-11-13.</p>
       <p>The difference is not due to compression. More than two thirds of the build tree consists of build
       host files rather than files of the finished system, and these are excluded.</p>
+      <p>The media also leaves out LLVM's and clang's static libraries and Python's own test suite,
+      about 120 MB of the media: nothing on the system uses them. A program built against LLVM or
+      clang with CMake is linked to their shared libraries instead.</p>
     </div>
     <div class="shipbar">
-      <div style="background:var(--accent); flex:14.6">the system · 5.3 GB ships</div>
+      <div style="background:var(--accent); flex:14.6">the system · 5.2 GB ships</div>
       <div style="background:#3a4152; flex:23.8">23.8 kernel objects</div>
       <div style="background:#2f3545; flex:8.9">8.9 sources</div>
       <div style="background:#262b38; flex:1.8">1.8</div>
