@@ -180,7 +180,7 @@
     <div class="col stack">
       <h2>1.3 Create the installation media</h2>
       <p>Caesar is distributed as a single file ending in <code>.iso</code>, named for its
-      version: <code>caesar-0.9.0.iso</code>, with a <code>.sha256</code> checksum file beside it
+      version: <code>caesar-0.9.9.iso</code>, with a <code>.sha256</code> checksum file beside it
       to confirm the download is complete. Download it from <b>modulatio.ai/caesar</b>, with
       <b>Download the beta</b>; the page also gives its size and SHA-256 checksum. The same file
       supports three methods:</p>
@@ -193,7 +193,7 @@
       <code>sdX</code> with the device name of the flash drive and verify it carefully, because
       this operation erases the flash drive:</p>
     </div>
-    <pre>sudo dd if=caesar-0.9.0.iso of=/dev/sdX bs=4M status=progress conv=fsync</pre>
+    <pre>sudo dd if=caesar-0.9.9.iso of=/dev/sdX bs=4M status=progress conv=fsync</pre>
     <div class="warn col"><b>Verify the device name.</b> <code>dd</code> writes to the specified
     device without confirmation, even if it is your system disk. Run <code>lsblk</code> first
     and confirm that the device name refers to the USB flash drive.</div>
@@ -215,8 +215,8 @@
       <p>The start menu's second entry, <b>Caesar, run from memory</b>, copies the system on the
       medium into the computer's memory before the session starts. The USB flash drive or DVD can
       then be taken out, and the installer still works without it. This needs as much memory as
-      the medium's system image plus 4 GB: 8,394 MiB, about 8.8 GB, for
-      <code>caesar-0.9.0.iso</code>. A computer with less starts from the medium, as the first
+      the medium's system image plus 4 GB: 8,485 MiB, about 8.9 GB, for
+      <code>caesar-0.9.9.iso</code>. A computer with less starts from the medium, as the first
       entry does, and says so among the boot messages; press <b>Esc</b> on the boot screen to see
       them.</p>
     </div>
@@ -1323,7 +1323,7 @@
       <p><b>Version numbers.</b> Caesar 0.9.0 is version 0.9 as it was first released. Each update
       to 0.9 takes the next number: 0.9.1, 0.9.2 and so on, as 0.8's updates ran from 0.8.1 to 0.8.33.
       A new installation medium is not a new version: a medium is named for the update it was made
-      from, as <code>caesar-0.9.0.iso</code> is, and a computer installed from it is at that
+      from, as <code>caesar-0.9.9.iso</code> is, and a computer installed from it is at that
       update. The version is written in
       <code>/etc/os-release</code>, in the installer's title, and on the <b>Installed version</b>
       line of Caesar Update, followed there by the package the update came in: the day it was made
@@ -2442,13 +2442,13 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
   <section>
     <div class="col stack">
       <h2>3.6 Installation media size</h2>
-      <p>The installation media for 0.9.0, <code>caesar-0.9.0.iso</code>, is 5,225,359,360 bytes,
-      about 5.2 GB. The completed build tree measured 50.6 GB on 2026-11-13.</p>
+      <p>The installation media for 0.9.9, <code>caesar-0.9.9.iso</code>, is 5,322,653,696 bytes,
+      about 5.3 GB. The completed build tree measured 50.6 GB on 2026-11-13.</p>
       <p>The difference is not due to compression. More than two thirds of the build tree consists of build
       host files rather than files of the finished system, and these are excluded.</p>
     </div>
     <div class="shipbar">
-      <div style="background:var(--accent); flex:14.6">the system · 5.2 GB ships</div>
+      <div style="background:var(--accent); flex:14.6">the system · 5.3 GB ships</div>
       <div style="background:#3a4152; flex:23.8">23.8 kernel objects</div>
       <div style="background:#2f3545; flex:8.9">8.9 sources</div>
       <div style="background:#262b38; flex:1.8">1.8</div>
@@ -2471,7 +2471,7 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
     <pre>tools/build-image.sh /mnt/lfs caesar.iso</pre>
     <div class="col stack" style="margin-top:1.2rem">
       <p>Without a file name, the media is named for the version the tree carries, such as
-      <code>caesar-0.9.0.iso</code>.</p>
+      <code>caesar-0.9.9.iso</code>.</p>
       <p>The command stops before it begins if the tree contains a key, a password, or any shell
       history. This ensures that distributed installation media contains no personal data,
       regardless of who built it.</p>
