@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.8</p>
+  <p class="eyebrow">User manual · Caesar 0.9.9</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -713,7 +713,9 @@
         <li><b>One Caesar and another.</b> A Caesar never reaches the door of another. It leaves
           a message, and a file if needed, through the other computer's message account
           (<code>caesar-peer ask HOST "words" [FILE]</code>); the other Caesar reads it as a
-          request to judge and answers the same way.</li>
+          request to judge and answers the same way. Each computer has one message key
+          (<code>caesar-peer key HOST</code> shows it), and it works whether the other computer
+          is asked by its name or its address.</li>
       </ul>
       <p><b>The agent improves its own policy list as it works.</b> When the door stops ordinary
       work that the agent then has to open by hand, or lets through something it should have
@@ -1234,7 +1236,7 @@
       seconds. Every installation from the store is recorded in
       <code>/var/log/caesar/packages</code>, the system log of each package and its source;
       <code>caesar-kernel packages</code> displays it.</p>
-      <p><b>Programs that are not open source.</b> Some programs in the store, such as Steam,
+      <p><b>Programs that are not open source.</b> Some programs in the store, such as Discord,
       have a licence that does not permit free redistribution. Before such a program is installed
       for the first time, Software asks for confirmation. Select <b>Allow and install</b> to
       continue. The approval is recorded under your account in
@@ -1246,8 +1248,12 @@
       NVIDIA's own driver, that driver is added beside Mesa, Vulkan and the 32-bit parts
       included, so store programs draw on the card there too. Games and other 3D programs
       therefore run with full hardware acceleration.</p>
+      <p><b>Steam.</b> Steam is in Colosseum (2.28), where it is Valve's own program and draws
+      with the graphics drivers this computer is built with. Steam from Software draws with the
+      store's drivers instead; Software says so before installing it, and so does a notice when
+      it is started. Its folder in your home is never changed.</p>
       <p><b>Programs for X11.</b> Programs written for the older X11 display system, including
-      the Steam client and most games, open in normal windows on the desktop. The desktop starts
+      Steam and most games, open in normal windows on the desktop. The desktop starts
       the Xwayland compatibility server with itself and keeps it running, so such programs, and a
       remote desktop that looks for it, find it at once.</p>
       <p><b>Discord.</b> Discord's own build plays no videos or GIFs: it ships without the H.264
@@ -1656,25 +1662,30 @@
       into another socket. A change of background or of the main screen needs no countdown.</p>
       <p><b>Choosing a resolution.</b> The pool keeps the left 40% of the main screen, and every
       window opens in the patio, the other 60%. Each program has a narrowest width it can be drawn
-      at. When the patio is narrower than that, the window runs past the right edge of the screen.
-      So the width of the main screen decides which programs fit. Count the width after scaling:
+      at. When the patio is narrower than that, the window is drawn smaller so that it fits whole
+      in the patio, down to half its size, and clicks still land where you see them. Text in it
+      is smaller too. Programs that use the older X11 display system (most games and some older
+      programs) are not drawn smaller: they run past the right edge of the screen. So the width
+      of the main screen decides which programs are drawn at their own size. Count the width after scaling:
       the resolution's width divided by the scale. A 2560-wide screen at 200% counts as 1280, and
       a 3840-wide screen at 200% counts as 1920.</p>
     </div>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Width after scaling</th><th>For example</th><th>What fits beside the pool</th></tr></thead>
+        <thead><tr><th>Width after scaling</th><th>For example</th><th>Drawn at its own size beside the pool</th></tr></thead>
         <tbody>
           <tr><td>1600 or more (recommended)</td><td>1600&times;900, 1680&times;1050, 1920&times;1080, 1920&times;1200, 2560&times;1440, 3840&times;2160 at 200%</td><td>Every program we measured, Discord included</td></tr>
-          <tr><td>1366 to 1440</td><td>1366&times;768, 1440&times;900</td><td>Everything but Discord, which needs 1567</td></tr>
-          <tr><td>1280</td><td>1280&times;720, 1280&times;800, 2560&times;1600 at 200%</td><td>Caesar's own windows and most programs. Not Discord, and not KeePassXC, which needs 1334</td></tr>
-          <tr><td>Under 1280</td><td>1024&times;768</td><td>Small programs only. Caesar's own windows run past the edge</td></tr>
+          <tr><td>1366 to 1440</td><td>1366&times;768, 1440&times;900</td><td>Everything but Discord, which needs 1567 and is drawn a little smaller</td></tr>
+          <tr><td>1280</td><td>1280&times;720, 1280&times;800, 2560&times;1600 at 200%</td><td>Caesar's own windows and most programs. Discord, and KeePassXC, which needs 1334, are drawn smaller</td></tr>
+          <tr><td>Under 1280</td><td>1024&times;768</td><td>Small programs only. Caesar's own windows are drawn smaller</td></tr>
         </tbody>
       </table>
     </div>
     <div class="col stack">
-      <p>Programs you install yourself may need more room. If a window runs past the edge, choose
-      a larger resolution or a lower scale for the main screen. On a high-resolution screen, a
+      <p>Programs you install yourself may need more room. If a window is drawn too small to read
+      comfortably, or an X11 program runs past the edge, choose a larger resolution or a lower
+      scale for the main screen. Maximized or given the whole screen (Super+F11), a window is
+      drawn at its own size again whenever the screen is wide enough. On a high-resolution screen, a
       scale of 150% instead of 200% often gives enough room.</p>
       <p>The <b>main screen</b> is the one the pool, the status card, the main bar and the
       desktop's icons are on. Tick <b>Main screen</b> for another screen and Apply, and they all
@@ -1959,10 +1970,10 @@
     <div class="col stack">
       <h2>2.28 Games</h2>
       <p>Open <b>Colosseum</b> from the Games menu to play Windows games from Battle.net, GOG, Epic
-      Games and Amazon Games, Star Citizen through the RSI Launcher, and Android games from Google
-      Play. Windows games run under Proton,
+      Games and Amazon Games, Star Citizen through the RSI Launcher, your Steam games, and Android
+      games from Google Play. Windows games run under Proton,
       which lets Windows programs run here. The pages are listed on the left: <b>Library</b>,
-      <b>Battle.net</b>, <b>RSI Launcher</b>, <b>GOG</b>, <b>Epic Games</b>, <b>Amazon Games</b>,
+      <b>Battle.net</b>, <b>RSI Launcher</b>, <b>Steam</b>, <b>GOG</b>, <b>Epic Games</b>, <b>Amazon Games</b>,
       <b>Google Play</b> and <b>Settings</b>. Below them, a line for each says whether Battle.net is ready and whether you
       are signed in to GOG, Epic and Amazon.</p>
       <h3>Library</h3>
@@ -2007,6 +2018,42 @@
       buttons; the launcher still opens. From a terminal: <code>colosseum status rsi</code>,
       <code>colosseum install rsi</code>, <code>colosseum start rsi</code>,
       <code>colosseum stop rsi</code>.</p>
+      <h3>Steam</h3>
+      <p>The <b>Steam</b> page installs and opens Steam, Valve's own program, as Valve ships it.
+      <b>Install Steam</b> fetches it from Valve, checking each part against Valve's own
+      checksums (about 700 MB; Steam updates itself the first time it opens). <b>Open Steam</b>
+      shows it; sign in to it yourself. <b>Close Steam</b> ends it and any game it started. Steam
+      and its games draw with the graphics drivers this computer is built with, and never with a
+      card kept for computing (see below). A <b>Steam</b> entry in the Games menu opens it too,
+      and links that begin with <code>steam:</code> open in it.</p>
+      <p>Each player has a Steam of their own: their sign-in, saves and the Windows folders of
+      their Proton games are in the <code>Games</code> folder in their home, which only they
+      can open. The games themselves are one copy for every player, in
+      <code>/games/library/steam</code>. A game another player installed shows as not installed
+      in your Steam: press <b>Install</b> there, and Steam takes up the files that are already
+      on the disk and checks them, without fetching them again. Installed games are listed on the
+      page, each with <b>▶ Play</b>.</p>
+      <p>Steam's Big Picture shows the connection in use under <b>Settings → Internet</b>.
+      It is shown there and not changed there: Steam, like other programs written for
+      NetworkManager, is told the connection's state by Caesar (the service
+      <code>caesar-netstate</code>), and joining or leaving a network is done in Caesar's own
+      Network window.</p>
+      <p>What the computer lacks for Steam is said in lines under the buttons: 32-bit support,
+      which Steam needs to start any game and which comes with an update; a graphics card for
+      games; and the rules that let Steam open game pads. Steam still opens. If you used Steam
+      from Software before, its folder in your home stays as it is: sign in again in this
+      Steam, and add your old games under Steam's Settings, Storage, or install them again. From
+      a terminal: <code>colosseum install steam</code>, <code>colosseum start steam</code>,
+      <code>colosseum stop steam</code>, <code>colosseum status steam</code>.</p>
+      <h3>Which graphics card games use</h3>
+      <p>Games see only the graphics cards that are there for a screen. A card with no place to
+      plug a screen in, such as one kept for training or serving AI models, is hidden from every
+      game Colosseum starts, so a game can never take its memory. A laptop's second graphics card
+      is the exception: it has no screen of its own and games may use it. On a computer whose
+      screen card cannot draw 3D, games draw in software, slowly, and
+      <code>colosseum status</code> says so under <b>graphics</b>. To choose the cards yourself,
+      an administrator lists them in <code>/etc/caesar/games-cards</code>, one PCI address a line
+      (as <code>colosseum status</code> shows them), or the one word <code>none</code>.</p>
       <h3>GOG, Epic Games and Amazon Games</h3>
       <p>Colosseum reaches these three stores itself; none of their own programs is needed. On a
       store's page, select <b>Sign in to GOG</b> (or <b>Sign in to Epic Games</b>, <b>Sign in to
@@ -2069,7 +2116,7 @@
       own sign-in. A GOG, Epic or Amazon game another person installed is offered to you only when
       your own signed-in account owns it; otherwise its store's page marks it <b>by another
       player's account</b>. Each person's sign-in, settings and saved games are kept in their own
-      folder under <code>/games/players</code>, which no one else can open. What a game writes stays
+      <code>Games</code> folder in their home, which no one else can open. What a game writes stays
       its player's: each GOG player plays from their own view of the shared files, so the settings,
       saves and logs a game makes beside itself are theirs; GOG's DOS games save into the player's
       own folder; and World of Warcraft keeps each player's settings, key bindings and add-on
@@ -2509,6 +2556,11 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
           menu, or add it to the shortcut bar with <b>+</b>.</li>
         <li>In a narrow Conversations window, the format list and <b>Export…</b> are cut off at
           the right. Maximise the window to reach them.</li>
+        <li><b>A program wider than the patio is drawn smaller to fit, but not an X11 one.</b> A
+          program that will not be narrower than the patio is drawn smaller, down to half its
+          size; one drawn through the older X11 display system still runs past the right edge of
+          the screen, and so does one that would need to be drawn at less than half its size.
+          Maximize it, or choose a wider resolution for the main screen.</li>
         <li>Task Scheduler cuts long job names short in its list; select a job to see its full
           name.</li>
         <li>In the Antigravity seat, the lines that separate the turns are narrower than the pool,
