@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.9</p>
+  <p class="eyebrow">User manual · Caesar 0.9.10</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -173,6 +173,35 @@
           a disk dedicated to Caesar is the simplest and safest option.</li>
       </ul>
       <p>An internet connection is not required for installation, but is recommended afterwards.</p>
+      <p>Caesar is installed with a desktop, or without one, where the screen shows the agent
+      alone (1.5). The computer needs at least the following:</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>With a desktop</th><th>Without a desktop</th></tr></thead>
+        <tbody>
+          <tr><td>Processor</td><td colspan="2">A 64-bit x86 processor (x86-64). Caesar 0.9.9 and
+            earlier need one from 2013 or later: Intel Core 4th generation, AMD Ryzen, or
+            newer</td></tr>
+          <tr><td>Memory</td><td>2 GB; 4 GB or more recommended</td><td>2 GB; 4 GB or more recommended</td></tr>
+          <tr><td>Disk</td><td colspan="2">32 GB; 64 GB or more recommended</td></tr>
+          <tr><td>Screen</td><td>1280 pixels wide; 1600 or wider recommended (2.22)</td><td>Any, for
+            the agent on the first console. The installation itself needs one 1280 pixels
+            wide</td></tr>
+          <tr><td>Firmware</td><td colspan="2">UEFI</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col stack">
+      <p>The memory is what Caesar needs while it thinks through an AI provider over the internet.
+      Each of these needs more of its own: Caesar's ears and voice, about 1.7 GB when kept ready
+      (2.21); a model run on this computer (2.26); and games (2.28). With 2 GB and a desktop,
+      Caesar works but leans on swap; with 4 GB, a quarter of the memory stays free. Without a desktop the same is needed, and less swap is used: most of the memory is held by the model that places Caesar's memories, not by the desktop.</p>
+      <p>The system takes about 7 GB of the disk. The installer adds swap the size of the memory
+      (2 to 8 GB) and the agent memory (8% of the disk, at least 2 GB), and updates keep a copy
+      of the system as it was before them, so the rest of the disk is not idle space.</p>
+      <p>From the next installation medium, Caesar runs on any 64-bit x86 processor. ARM64 computers are not
+      supported yet; their requirements will be given here when they are.</p>
     </div>
   </section>
 
@@ -339,9 +368,25 @@
           <p>Use lowercase letters, digits and hyphens, starting with a letter. This name
           identifies the device on the network:</p>
           <figure>
-            <img src="fig/06-installer-hostname.png" alt="The computer name page, with caesar entered">
+            <img src="fig/06-installer-hostname.png" alt="The computer name page, with caesar entered, and below it the choice With a desktop or Without a desktop: the agent on the screen">
             <figcaption>The computer name</figcaption>
           </figure>
+          <p>The same page asks how the computer is used:</p>
+          <ul>
+            <li><b>With a desktop</b> — the sign-in screen, the desktop and the agent in the
+              pool, as the rest of this guide describes.</li>
+            <li><b>Without a desktop: the agent on the screen</b> — for a server or a small
+              computer. Nothing is drawn but the agent, on the first console, and less memory is
+              used (1.2). The agent is set up there the first time the computer starts: its name,
+              its personality, the agent harness, and a provider and model, asked one at a time.
+              A subscription is signed in to from a phone or another computer, with a page and a
+              code the agent shows. Your account is reached on the second console
+              (Ctrl+Alt+F2) or over the network.</li>
+          </ul>
+          <p>To give a computer installed without a desktop one later, run <code>sudo ln -s
+          /etc/sv/caesar-desktop /etc/sv/caesar-pool /var/service/</code> on the second console,
+          and restart the computer. To take it away, run <code>sudo rm /var/service/caesar-desktop
+          /var/service/caesar-pool</code> and restart.</p>
         </div>
       </li>
 
@@ -453,7 +498,7 @@
     agent's own settings ask. The agent itself is never asked. Its memory, what it sensed and the
     record of its acts are readable by root alone; read them with <code>sudo</code>.
     The 0.9.0 update makes a new root password, since the old one could have been read:
-    <code>sudo caesar-kernel root-phrase</code> shows it.</div>
+    <code>sudo caesar-kernel root-phrase</code> shows it. The door shows it to you alone, after your password, or to root at a console, and records each showing; it never hands it to the agent or to any program.</div>
   </section>
 
   <section>
@@ -585,7 +630,7 @@
           <tr><td>Ctrl + V</td><td>Paste</td></tr>
           <tr><td>Right click</td><td>Paste, in the terminal and the conversation</td></tr>
           <tr><td>Select with the mouse</td><td>Also copies, in the terminal and the conversation</td></tr>
-          <tr><td>Ctrl + C, nothing selected</td><td>Terminal only: stops the running program</td></tr>
+          <tr><td>Ctrl + C, nothing selected</td><td>Goes to the program: in the terminal it stops the running program, and in the pool the agent harness takes it as its own (Grok Build cancels its turn, Claude Code clears its line)</td></tr>
         </tbody>
       </table>
       <table>
@@ -692,7 +737,7 @@
           signed it. The key is replaced every 6 hours. On a computer with no desktop, the seat
           on the first text console gets a key of its own in the same way.</li>
         <li><b>Refused calls are recorded.</b> A call the pool's key did not sign is refused with
-          <code>The door answers the harness in the pool only.</code>, and the record names the
+          <code>The door answers the harness in the pool, or on the first console where there is no desktop, only.</code>, and the record names the
           program that made it.</li>
         <li><b>Memory and secrets.</b> Caesar's memory and the secrets manager are opened only
           inside the door: for the agent in the pool, Caesar's own services and jobs, root signed
@@ -749,7 +794,7 @@
         <thead><tr><th>Access method</th><th>Account</th><th>Requirement</th></tr></thead>
         <tbody>
           <tr><td>Sign-in screen</td><td>Your user account</td><td class="need">Your password, in the sign-in box</td></tr>
-          <tr><td>First console</td><td>The agent (root)</td><td class="free">None. This console runs the agent harness and is not a user sign-in</td></tr>
+          <tr><td>First console</td><td>The agent (root)</td><td class="free">None. With a desktop it shows nothing. Without one it runs the agent harness alone, and is not a user sign-in</td></tr>
           <tr><td>Second console</td><td>Your user account</td><td class="need">Your password</td></tr>
           <tr><td>Serial cable</td><td>Your user account</td><td class="need">Your password</td></tr>
           <tr><td>Over the network</td><td>Your user account</td><td class="need">A password or a key you installed</td></tr>
@@ -759,7 +804,9 @@
     </div>
     <div class="note col"><b>Why the first console requires no password:</b> the first console runs
     the agent under the root account, which administers the computer. The account has no password
-    because the agent never enters one. The console cannot be used to access your account, because
+    because the agent never enters one. The console offers nothing but the agent: when the agent
+    ends, it starts again, and no shell is ever reached there. The agent there holds the same key
+    to the door as the agent in the pool, and is held to the same rules. The console cannot be used to access your account, because
     your account is separate and password-protected. Caesar ships with <b>no network keys</b>, so
     remote access is not possible until you install a key yourself.</div>
   </section>
@@ -779,6 +826,16 @@
         <img src="fig/19-the-machine.png" alt="The file window showing the root of the filesystem: bin, boot, dev, etc, home, lib, mnt, nix, opt and others">
         <figcaption>The root of the file system</figcaption>
       </figure>
+      <p><b>A copy of your home folder.</b> Your settings, your sign-ins and your game saves are in
+      your home folder, so a copy of it keeps them. A few of your choices are kept by the computer
+      instead: the theme, the desktop picture, the jobs you scheduled and the programs installed
+      from Software. While you are signed in, Caesar writes a note of them into your home folder
+      (<code>~/.config/caesar/machine.json</code>), so the copy keeps those too. When your home
+      folder is put back on another Caesar, or on this one installed again, a window asks at
+      sign-in which of them to put back: tick them and press <b>Put back</b>, or press
+      <b>Keep this Caesar's</b>. Esc asks again at the next sign-in. Installing a program may ask
+      your password. Passwords, keys, networks and devices are never in the note: they stay
+      the computer's.</p>
       <p>Double-click a file to open it. Pictures (PNG, JPEG, GIF, WebP, SVG, BMP and TIFF) open in
       the <b>image viewer</b>, LXImage-Qt, which is also in the menu. Its arrow buttons go to the
       previous or next picture in the same folder. Text files open in FeatherPad, and music and
@@ -1110,7 +1167,8 @@
       used by it alone; a Claude subscription is never offered to any other harness. A Google
       Cloud key file chosen for Vertex AI is not handed to another harness either: a harness
       with no choice of its own then starts on its own sign-in. Feng TUI's
-      own ChatGPT and xAI sign-ins, and every API key, are kept in the system's key store.</p>
+      own ChatGPT and xAI sign-ins, and every API key, are kept in the system's key store, which
+      the door alone opens (2.24).</p>
       <p><b>Antigravity</b> is Google's harness. It thinks only through its own Google sign-in, so
       it uses your Google AI plan, and nothing of Caesar's is handed to it. Choose
       <b>Google sign-in · Antigravity</b> in the wizard: it shows a Google page to open, and the
@@ -1663,10 +1721,12 @@
       <p><b>Choosing a resolution.</b> The pool keeps the left 40% of the main screen, and every
       window opens in the patio, the other 60%. Each program has a narrowest width it can be drawn
       at. When the patio is narrower than that, the window is drawn smaller so that it fits whole
-      in the patio, down to half its size, and clicks still land where you see them. Text in it
-      is smaller too. Programs that use the older X11 display system (most games and some older
-      programs) are not drawn smaller: they run past the right edge of the screen. So the width
-      of the main screen decides which programs are drawn at their own size. Count the width after scaling:
+      in the patio, down to half its size, and clicks and its menus still land where you see
+      them. Text in it is smaller too. This holds for programs that use the older X11 display
+      system as well; on a screen less tall than such a program asks for, it can leave a strip
+      of the patio empty below it. Below half its size text grows too small to read, so a program
+      that would need less is drawn at half and runs past the right edge of the screen. So the
+      width of the main screen decides which programs are drawn at their own size. Count the width after scaling:
       the resolution's width divided by the scale. A 2560-wide screen at 200% counts as 1280, and
       a 3840-wide screen at 200% counts as 1920.</p>
     </div>
@@ -1820,12 +1880,19 @@
       give a short name and what it is for, fill in the rest and select <b>Save</b>; saving again
       under a name already held replaces what was held. <b>Remove</b> deletes one. No secret is
       ever shown; each use is recorded by name.</p>
-      <p>A secret is opened only inside the door (2.5): for the agent in the pool, or for one of
-      Caesar's own services. No other program can open one, root included, and each refusal is
-      recorded. The secrets manager will not keep a password that an account on this computer
+      <p>A secret is opened only inside the door (2.5): for the agent in the pool, for the agent
+      on the first console of a computer without a desktop, or for one of Caesar's own services.
+      No other program can open one, root included, and each refusal is recorded. The secrets manager will not keep a password that an account on this computer
       signs in with, which is also that account's sudo password: Caesar never holds a person's
       password. The one exception to the door is the Model Manager, which may read the Hugging
       Face token when you started it with sudo and typed your password.</p>
+      <p>What the agent thinks with is held the same way. A provider's API key, the ChatGPT and
+      xAI sign-ins the system keeps, and the key Caesar's own model server makes for itself are
+      opened by the door alone. The door answers the agent holding its key, Caesar's own
+      services, and you through sudo with your password. A window that asked no password is given
+      the names, may put a key in or let one go, and has a provider's models listed for it by the
+      door itself; it is never given a key. Each read, put and removal is recorded by the key's
+      name and who asked, and the key itself is never written in the record.</p>
       <p>From a terminal: <code>sudo caesar-kernel secrets list</code> lists them by name,
       purpose, date and kind; <code>sudo caesar-kernel secrets set NAME "what it is for"</code>
       stores the key given on standard input, and with <code>--kind token</code>,
@@ -2024,8 +2091,7 @@
       checksums (about 700 MB; Steam updates itself the first time it opens). <b>Open Steam</b>
       shows it; sign in to it yourself. <b>Close Steam</b> ends it and any game it started. Steam
       and its games draw with the graphics drivers this computer is built with, and never with a
-      card kept for computing (see below). A <b>Steam</b> entry in the Games menu opens it too,
-      and links that begin with <code>steam:</code> open in it.</p>
+      card kept for computing (see below). Links that begin with <code>steam:</code> open in it.</p>
       <p>Each player has a Steam of their own: their sign-in, saves and the Windows folders of
       their Proton games are in the <code>Games</code> folder in their home, which only they
       can open. The games themselves are one copy for every player, in
@@ -2042,8 +2108,11 @@
       which Steam needs to start any game and which comes with an update; a graphics card for
       games; and the rules that let Steam open game pads. Steam still opens. If you used Steam
       from Software before, its folder in your home stays as it is: sign in again in this
-      Steam, and add your old games under Steam's Settings, Storage, or install them again. From
-      a terminal: <code>colosseum install steam</code>, <code>colosseum start steam</code>,
+      Steam, and add your old games under Steam's Settings, Storage, or install them again.
+      Open one Steam at a time: Steam lets one be signed in to an account, and signs the other
+      out, which can leave server lists empty and games unable to start. Colosseum's Steam does
+      not open while another Steam is open, and says so. From a terminal:
+      <code>colosseum install steam</code>, <code>colosseum start steam</code>,
       <code>colosseum stop steam</code>, <code>colosseum status steam</code>.</p>
       <h3>Which graphics card games use</h3>
       <p>Games see only the graphics cards that are there for a screen. A card with no place to
@@ -2557,13 +2626,18 @@ setsid nohup env CAESAR_LFS=/mnt/lfs \
       <ul class="plain">
         <li>The shipped shortcuts have none for the skills folder; open <b>Skills</b> from the
           menu, or add it to the shortcut bar with <b>+</b>.</li>
+        <li><b>A desktop icon can stay under the top bar.</b> An icon the desktop has a place
+          saved for keeps that place even when the room kept for the bar grows, as it does from
+          update 0.9.10 where the bar names a screen the computer no longer has. Drag the icon
+          down, or right-click the desktop and choose <b>Sorting</b>.</li>
         <li>In a narrow Conversations window, the format list and <b>Export…</b> are cut off at
           the right. Maximise the window to reach them.</li>
-        <li><b>A program wider than the patio is drawn smaller to fit, but not an X11 one.</b> A
+        <li><b>A program much wider than the patio still runs past the screen's edge.</b> A
           program that will not be narrower than the patio is drawn smaller, down to half its
-          size; one drawn through the older X11 display system still runs past the right edge of
-          the screen, and so does one that would need to be drawn at less than half its size.
-          Maximize it, or choose a wider resolution for the main screen.</li>
+          size, an X11 one too; one that would need to be drawn at less than half its size still
+          runs past the right edge of the screen. An X11 program drawn smaller can leave a strip of
+          the patio empty below it, as the X11 display system cannot be told a window taller than
+          the screen. Maximize it, or choose a wider resolution for the main screen.</li>
         <li>Task Scheduler cuts long job names short in its list; select a job to see its full
           name.</li>
         <li>In the Antigravity seat, the lines that separate the turns are narrower than the pool,
