@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.11</p>
+  <p class="eyebrow">User manual · Caesar 0.9.12</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -195,7 +195,7 @@
     <div class="col stack">
       <p>The memory is what Caesar needs while it thinks through an AI provider over the internet.
       Each of these needs more of its own: Caesar's ears and voice, about 1.7 GB when kept ready
-      (2.21); a model run on this computer (2.26); and games (2.28). With 2 GB and a desktop,
+      (2.21); a model run on this computer (2.26); and games (2.28). Under 2 GB the agent cannot run its own memory embedder: setup asks for an AI provider that offers one, and your memories are sent to it. With 2 GB and a desktop,
       Caesar works but leans on swap; with 4 GB, a quarter of the memory stays free. Without a desktop the same is needed, and less swap is used: most of the memory is held by the model that places Caesar's memories, not by the desktop.</p>
       <p>The system takes about 7 GB of the disk. The installer adds swap the size of the memory
       (2 to 8 GB) and the agent memory (8% of the disk, at least 2 GB), and updates keep a copy
@@ -2400,6 +2400,47 @@
       work you would give a program you run yourself.</p></div>
       <p>The permission method follows the Leader in Modulatio for files and Hermes Agent, by
       Nous Research, for commands; Hermes's rules are included under its MIT licence.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col stack">
+      <h2>2.34 The agent's memory: Memoria Viva 2</h2>
+      <p>The agent remembers two kinds of thing: what it writes down itself (lessons, decisions, what it
+      got wrong), which it never lets go, and what its senses noticed, which it keeps while it is used.
+      What it wrote is also kept as plain rows in <code>/var/lib/caesar/archive.sqlite</code>, the
+      copy hardest to lose.</p>
+      <h3>Where it is kept, and the move in 0.9.12</h3>
+      <p>From 0.9.12 the memory is Memoria Viva 2, kept in HelixDB, a database that holds memories, the words in them
+      and how they connect, in <code>/var/lib/caesar/hot-hx</code>. Before, it was kept in Kùzu, whose
+      project was archived on 10 October 2025: its last release gets no further fixes. The first time
+      the agent's memory service starts on 0.9.12 it moves the memory across by itself, checks the new
+      store against the old one, and only then uses it; on a large memory this takes a few minutes. If
+      the check fails, the memory stays where it was and works as before, and the move is tried again
+      at the next update. The old store stays in <code>/var/lib/caesar/hot</code> as the way back:
+      when you are satisfied with the new one, tell the agent, and it removes it
+      (<code>caesar-kernel memory drop-old</code>).</p>
+      <h3>How memories are found</h3>
+      <p>Memories are found by meaning, and also by name: a file, a bug number, a program or a version
+      that few memories mention brings up the memories that mention it, which meaning alone often
+      misses. The memory cues shown with each message come from several lanes, each saying why: by
+      name, by meaning (with how close it is), or connected to another memory found. At night the
+      agent groups what it wrote into subjects and joins each memory to its nearest ones; its nightly
+      memory report names the subjects and the memories that span so many subjects they may be
+      several lessons in one.</p>
+      <h3>After the move: placing memories again</h3>
+      <p>Older memories were placed with the date or label they begin with, which drew memories of one
+      day together whatever they said. After the move the agent places them again without it, a few
+      at a time while it is idle. Until that is done some memories may be harder for it to find; the
+      status card says how far it has got and about how long is left, and the agent tells you when it
+      starts and when it is done.</p>
+      <h3>What it will not keep</h3>
+      <p>The agent does not keep a credential in its memory: a memory holding something with the
+      shape of a key, a token or a password given a value is refused, and the credential belongs in
+      the secrets manager (2.24). When it writes a memory close to one it already holds, it is shown
+      that one, so a correction takes the old memory's place rather than standing beside it.</p>
+      <p>The memory's database does not report on itself to anyone: HelixDB's usage reports are turned
+      off.</p>
     </div>
   </section>
 </div>
