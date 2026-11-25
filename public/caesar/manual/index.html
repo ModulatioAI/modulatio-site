@@ -128,7 +128,7 @@
 <div class="wrap">
 
 <header class="top">
-  <p class="eyebrow">User manual · Caesar 0.9.14</p>
+  <p class="eyebrow">User manual · Caesar 0.9.15</p>
   <h1>Caesar User Guide</h1>
   <p class="lede col">The purpose of this guide is to help you install Caesar on your computer,
   become familiar with the desktop, and learn to direct the agent to perform tasks. If you are
@@ -604,6 +604,12 @@
       </ol>
       <p>The line below each answer shows which model responded and how many tokens were used.
       The available keyboard shortcuts are listed at the bottom of the window.</p>
+      <p><b>When the agent refuses.</b> The agent may refuse an action that would damage the
+      computer, and when it does it names the damage it is preventing. It does not refuse your own
+      means of recovery: examining the computer, reading one of its practices, reporting a fault,
+      sending a helper to look, or restoring an earlier state you name. Asked for one of these, it
+      tells you once what it expects it to cost and then does it. An earlier state can also be
+      restored without the agent, from the start menu or the Wayback window (2.16).</p>
     </div>
     <div class="tablewrap">
       <table>
@@ -1388,6 +1394,13 @@
       <code>/etc/os-release</code>, in the installer's title, and on the <b>Installed version</b>
       line of Caesar Update, followed there by the package the update came in: the day it was made
       and a number, such as <code>0.9.0 (caesar-code-20261114_54)</code>.</p>
+      <p><b>What an update carries.</b> From 0.9.15 an update brings the system's own programs as
+      well as Caesar's: the kernel, the secure-connection libraries, Python, the browser's engine,
+      printing, sound and video and the rest are each a package that an update replaces, with your
+      own settings for them left as they are. While a large update is being installed, Caesar's
+      services are stopped and the agent does not answer; this can last several minutes, and the
+      countdown appears only once the installation is complete. Do not restart or switch off the
+      computer while it is being installed.</p>
       <p>Two equivalent methods are available: type <code>caesar-kernel update</code> in a
       terminal, or open <b>Software</b> → <b>Caesar Update</b>, select <b>Check for updates</b>,
       then <b>Apply updates</b>. The update lists the incoming changes, creates a restore point,
