@@ -186,24 +186,30 @@ import CaesarFilm from '../../components/CaesarFilm.astro';
 </section>
 
 <section class="caesar-section" id="report-a-bug">
-	<p class="caesar-kicker">REPORT A BUG</p>
-	<h2 class="caesar-heading">Something went wrong? Tell us.</h2>
+	<p class="caesar-kicker">REPORT A BUG, OR ASK FOR A FEATURE</p>
+	<h2 class="caesar-heading">Something went wrong, or something is missing? Tell us.</h2>
 	<form class="caesar-bugform" method="post" action="/caesar/report-bug.php" enctype="multipart/form-data">
+		<fieldset class="caesar-bugform__kind">
+			<legend>What are you sending?</legend>
+			<label><input type="radio" name="kind" value="bug" checked /> A bug report: something does not work as it should</label>
+			<label><input type="radio" name="kind" value="feature" /> A feature request: something you would like Caesar to do</label>
+		</fieldset>
 		<label>Your email, so we can answer you <input type="email" name="email" required maxlength="200" autocomplete="email" /></label>
-		<label>What went wrong, in a few words <input type="text" name="title" required maxlength="120" /></label>
-		<label>What happened <textarea name="happened" required rows="5" maxlength="6000"></textarea></label>
-		<label>What you expected to happen <textarea name="expected" rows="3" maxlength="3000"></textarea></label>
-		<label>Steps that make it happen again <textarea name="steps" rows="4" maxlength="6000"></textarea></label>
+		<label><span data-feature="What you would like, in a few words">What went wrong, in a few words</span> <input type="text" name="title" required maxlength="120" /></label>
+		<label><span data-feature="What you would like Caesar to do">What happened</span> <textarea name="happened" required rows="5" maxlength="6000"></textarea></label>
+		<label><span data-feature="Why it would help you">What you expected to happen</span> <textarea name="expected" rows="3" maxlength="3000"></textarea></label>
+		<label data-bug-only><span>Steps that make it happen again</span> <textarea name="steps" rows="4" maxlength="6000"></textarea></label>
 		<label>The computer (make and model, graphics card) <input type="text" name="computer" maxlength="400" /></label>
 		<label>Caesar's version <input type="text" name="version" value="0.9.16" maxlength="12" /></label>
 		<label>Files, if they help: screenshots, logs or text, or a zip of them (up to 3 files, 10 MB each) <input type="file" name="files[]" multiple accept=".png,.jpg,.jpeg,.webp,.gif,.txt,.log,.json,.conf,.md,.zip,.gz,.tgz,.xz,.zst,.pdf" /></label>
 		<label class="caesar-bugform__check"><input type="checkbox" name="private" value="yes" /> Keep this report private: do not show it on Discord</label>
 		<label class="caesar-bugform__trap" aria-hidden="true">Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
-		<button class="caesar-button caesar-button--solid" type="submit">SEND THE REPORT</button>
+		<button class="caesar-button caesar-button--solid" type="submit" data-feature="SEND THE REQUEST">SEND THE REPORT</button>
 		<p class="caesar-bugform__said" role="status" aria-live="polite"></p>
 	</form>
 	<p class="caesar-bugform__note">
-		Every report gets a reply with its own number, and we may write to you with questions about it.
+		Every report and every request gets a reply with its own number, and we may write to you with questions about it.
+		A feature request is read and recorded; we cannot promise each one will be built, and we write to you if yours is.
 		Your address is used for this report only.
 	</p>
 	<p class="caesar-bugform__note">
@@ -224,13 +230,13 @@ import CaesarFilm from '../../components/CaesarFilm.astro';
 		<p class="caesar-status">
 			Caesar 0.9.16 is available as a beta, and brings itself to each newer update once installed. It is early software: expect rough edges.
 			Installing erases the disk you choose, so keep a copy of anything on it.
-			Found a bug? Report it with the form above, and you will get a reply with your report's number.
+			Found a bug, or missing a feature? Send it with the form above, and you will get a reply with its number.
 			Reports are shown on our Discord, without your address, unless you ask us to keep one private.
 		</p>
 		<p class="caesar-status caesar-status--sum">
 			Rather send it by mail? Open the report in <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact%40modulatio.ai&su=Caesar%200.9.16%3A%20%28what%20went%20wrong%2C%20in%20a%20few%20words%29%20%5BBug%20Report%5D&body=What%20happened%3A%0A%0A%0AWhat%20you%20expected%20to%20happen%3A%0A%0A%0ASteps%20that%20make%20it%20happen%20again%3A%0A1.%0A2.%0A3.%0A%0AThe%20computer%20%28make%20and%20model%2C%20graphics%20card%29%3A%0A%0ACaesar%27s%20version%3A%200.9.16%0A" target="_blank" rel="noopener">Gmail</a>
 			or <a href="https://outlook.live.com/mail/0/deeplink/compose?to=contact%40modulatio.ai&subject=Caesar%200.9.16%3A%20%28what%20went%20wrong%2C%20in%20a%20few%20words%29%20%5BBug%20Report%5D&body=What%20happened%3A%0A%0A%0AWhat%20you%20expected%20to%20happen%3A%0A%0A%0ASteps%20that%20make%20it%20happen%20again%3A%0A1.%0A2.%0A3.%0A%0AThe%20computer%20%28make%20and%20model%2C%20graphics%20card%29%3A%0A%0ACaesar%27s%20version%3A%200.9.16%0A" target="_blank" rel="noopener">Outlook</a>, or write from any email to
-			contact@modulatio.ai with [Bug Report] at the end of the subject.
+			contact@modulatio.ai with [Bug Report] at the end of the subject, or [Feature Request] for something you would like Caesar to do.
 		</p>
 		<p class="caesar-status caesar-status--sum">
 			caesar-0.9.9.iso &middot; 5.2 GB &middot; SHA-256 98d0368d9d84c2a49ea1f4c6b91af9b8c87ce750ce100571653439ba8cdf08fd

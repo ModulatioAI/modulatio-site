@@ -2,6 +2,18 @@
 // under the button. Without this script the form still posts, and the server answers with a page.
 const form = document.querySelector('.caesar-bugform');
 if (form) {
+	// The choice at the top words the form: a feature request is asked what is wanted and why,
+	// not what went wrong, and has no steps to repeat. Each label keeps both wordings.
+	const worded = [...form.querySelectorAll('[data-feature]')];
+	worded.forEach((el) => { el.dataset.bug = el.textContent; });
+	const word = () => {
+		const feature = form.querySelector('input[name=kind]:checked')?.value === 'feature';
+		worded.forEach((el) => { el.textContent = feature ? el.dataset.feature : el.dataset.bug; });
+		form.querySelectorAll('[data-bug-only]').forEach((el) => { el.hidden = feature; });
+	};
+	form.querySelectorAll('input[name=kind]').forEach((el) => el.addEventListener('change', word));
+	form.addEventListener('reset', () => setTimeout(word));
+	word();
 	form.addEventListener('submit', async (event) => {
 		event.preventDefault();
 		const said = form.querySelector('.caesar-bugform__said');

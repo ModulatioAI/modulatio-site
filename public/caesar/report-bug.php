@@ -1,7 +1,8 @@
 <?php
-// A bug report from the form on modulatio.ai/caesar, mailed to contact@modulatio.ai with the
-// subject ending "[Bug Report]" and the reporter's address as Reply-To. Caesar's bug-mail service
-// reads that mail, gives it a number and answers the reporter; nothing else is kept here.
+// A bug report or a feature request from the form on modulatio.ai/caesar, mailed to
+// contact@modulatio.ai with the subject ending "[Bug Report]" or "[Feature Request]" and the
+// sender's address as Reply-To. Caesar's bug-mail service reads that mail, gives it a number and
+// answers its sender; nothing else is kept here.
 declare(strict_types=1);
 
 const TO = 'contact@modulatio.ai';
@@ -57,6 +58,8 @@ if (field('website', 200) !== '') {
     answer(200, 'Thank you. Your report was sent.');
 }
 
+// A feature request when the form says so; anything else is a bug report, as before the choice.
+$feature = field('kind', 20) === 'feature';
 $email = field('email', 200);
 $title = preg_replace('/[\r\n\t]+/', ' ', field('title', 120));
 $version = field('version', 80);
@@ -69,7 +72,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     answer(400, 'Please give an email address we can answer.');
 }
 if ($title === '' || $happened === '') {
-    answer(400, 'Please say in a few words what went wrong, and what happened.');
+    answer(400, $feature ? 'Please say in a few words what you would like, and what Caesar should do.'
+        : 'Please say in a few words what went wrong, and what happened.');
 }
 // A Caesar may send more than the bare number, such as "0.8.9 (caesar-code-20261108_2)" or
 // "Caesar 0.8.9": the version is the first number of that shape in what was sent.
@@ -125,15 +129,19 @@ if ($total > MAX_TOTAL) {
     answer(413, 'The files come to more than 20 MB together. Please send fewer, or put them in a zip.');
 }
 
-$subject = "Caesar $version: $title [Bug Report]";
+$subject = "Caesar $version: $title " . ($feature ? '[Feature Request]' : '[Bug Report]');
 $body = "Sent with the form on modulatio.ai/caesar.\n\n"
     . "Reported by: $email\n"
     . (field('private', 10) !== '' ? "Keep private: yes\n" : '')
     . "Caesar's version: $version\n"
     . "The computer: " . ($computer !== '' ? $computer : '(not given)') . "\n\n"
-    . "What happened:\n$happened\n\n"
-    . "What was expected:\n" . ($expected !== '' ? $expected : '(not given)') . "\n\n"
-    . "Steps that make it happen again:\n" . ($steps !== '' ? $steps : '(not given)') . "\n"
+    . ($feature
+        ? "What is asked for:\n$happened\n\n"
+            . "Why it would help:\n" . ($expected !== '' ? $expected : '(not given)') . "\n"
+            . ($steps !== '' ? "\nMore:\n$steps\n" : '')
+        : "What happened:\n$happened\n\n"
+            . "What was expected:\n" . ($expected !== '' ? $expected : '(not given)') . "\n\n"
+            . "Steps that make it happen again:\n" . ($steps !== '' ? $steps : '(not given)') . "\n")
     . ($files ? "\nFiles sent with it: " . implode(', ', array_column($files, 'name')) . "\n" : '');
 $headers = [
     'From' => 'Caesar bug form <' . TO . '>',
@@ -168,4 +176,6 @@ $times[] = $now;
 if (preg_match('/\[(CB-\d{4,})\]/i', $title, $named)) {
     answer(200, "Thank you. What you sent was added to report " . strtoupper($named[1]) . '.');
 }
-answer(200, "Thank you. Your report was sent. A reply with its number is on its way to $email.");
+answer(200, $feature
+    ? "Thank you. Your request was sent. A reply with its number is on its way to $email."
+    : "Thank you. Your report was sent. A reply with its number is on its way to $email.");
